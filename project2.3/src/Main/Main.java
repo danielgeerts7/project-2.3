@@ -1,12 +1,14 @@
 package Main;
 
+import Controller.ClientSocketController;
 import View.StartView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
@@ -17,9 +19,17 @@ public class Main extends Application {
 		primaryStage.setResizable(false);
         primaryStage.centerOnScreen();
 		primaryStage.show(); // Display the stage
+		
+		ClientSocketController.getInstance();
 	}
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
+	}
+	
+	public static void QuitApp() {
+		System.out.println("Quiting application. Bye...");
+		Platform.exit();
+		System.exit(0);
 	}
 }
