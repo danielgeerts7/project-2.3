@@ -11,13 +11,11 @@ import java.util.Scanner;
 public class ClientSocket {
 
 	public Socket socket = null;
-	private Scanner scanner = null;
 
 	private boolean canRun = true;
 
 	public ClientSocket(InetAddress serverAddress, int serverPort) throws Exception {
 		this.socket = new Socket(serverAddress, serverPort);
-		this.scanner = new Scanner(System.in);
 
 		// New Thread for receiving input coming from the Server
 		Thread thread = new Thread() {
@@ -35,23 +33,15 @@ public class ClientSocket {
 		thread.start();
 	}
 
-	public void sendInputMessage() {
-		String input = null;
-		while (canRun) {
-			input = scanner.nextLine();
-			PrintWriter out = null;
-			try {
-				out = new PrintWriter(this.socket.getOutputStream(), true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			out.println(input);
-			out.flush();
-
-			if (input.toLowerCase().contains("stop")) {
-				executeConnection();
-			}
+	private void sendMessageToServer(String msg) {
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(this.socket.getOutputStream(), true);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		out.println(msg);
+		out.flush();
 	}
 
 	private void readServerInput() throws IOException {
@@ -71,5 +61,9 @@ public class ClientSocket {
 		}
 		canRun = false;
 		System.out.println("Goodbye! - Terminated");
+	}
+	
+	public void LoginOnServer(String name) {
+		this.sendMessageToServer("login " + name);
 	}
 }
