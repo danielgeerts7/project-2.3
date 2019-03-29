@@ -16,21 +16,32 @@ public final class ClientSocketController {
 	public Socket socket = null;
 	private boolean msgReceived = false;
 	private String msgData = "";
+	private Thread runningThread = null;
 
 	private boolean stayConnected = true;
 
 	private static ClientSocketController instance = null;
-
-	public static ClientSocketController getInstance() {
-		if (instance == null) {
+	private static boolean popupOpen = false;
+	
+	public static ClientSocketController getInstance(boolean trySetInstance) {
+		if (instance == null && trySetInstance) {
 			try {
 				instance = new ClientSocketController(InetAddress.getLocalHost(), 7789);
 			} catch (UnknownHostException e) {
-				Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.ERROR);
+				if (!popupOpen) {
+					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.ERROR);
+					popupOpen = true;
+				}
 			} catch (Exception e) {
-				Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.ERROR);
+				if (!popupOpen) {
+					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.ERROR);
+					popupOpen = true;
+				}
 			}
+			return instance;
 		}
+
+		popupOpen = false;
 
 		return instance;
 	}
@@ -39,7 +50,7 @@ public final class ClientSocketController {
 		this.socket = new Socket(serverAddress, serverPort);
 
 		// New Thread for receiving input coming from the Server
-		Thread thread = new Thread() {
+		runningThread = new Thread() {
 			public void run() {
 				while (stayConnected) {
 					try {
@@ -51,7 +62,7 @@ public final class ClientSocketController {
 			}
 		};
 
-		thread.start();
+		runningThread.start();
 
 		System.out.println("Connected to Server: " + this.socket.getInetAddress());
 	}
@@ -72,14 +83,19 @@ public final class ClientSocketController {
 		msgReceived = false;
 		String data = null;
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-		while ((data = in.readLine()) != null) {
-			System.out.println("Message from server: " + data);
-			msgReceived = true;
-			msgData = data;
-			if (data.contains("ERR")) {
-				Popup.getInstance().newPopup(data, Popup.Type.ERROR);
+		
+		try {
+			while ((data = in.readLine()) != null) {
+				System.out.println("Message from server: " + data);
+				msgReceived = true;
+				msgData = data;
+				if (popupOpen && data.contains("ERR")) {
+					Popup.getInstance().newPopup(data, Popup.Type.ERROR);
+				}
 			}
+		}catch(Exception e){
+			System.out.println(e);
+			disconnect();
 		}
 	}
 
@@ -154,15 +170,22 @@ public final class ClientSocketController {
 		}
 	}
 
-	private void executeConnection() {
+	private void disconnect() {
 		logoutFromServer();
+
+        stayConnected = false;
+        if(runningThread != null) {
+            runningThread.interrupt();
+        }
+        runningThread = null;
 
 		try {
 			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		stayConnected = false;
+        socket = null;
+        
 		Main.QuitApp();
 	}
 }

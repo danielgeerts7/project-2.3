@@ -20,7 +20,7 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 		primaryStage.show(); // Display the stage
 		
-		ClientSocketController.getInstance();
+		ClientSocketController.getInstance(true);
 	}
 
 	public static void main(String[] args) throws Exception {

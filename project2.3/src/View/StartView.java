@@ -50,8 +50,9 @@ public class StartView extends SuperView {
 		btn_login.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 		    public void handle(ActionEvent e) {
-		        if (ClientSocketController.getInstance() != null && ClientSocketController.getInstance().loginOnServer(input_login.getText())) {
+		        if (ClientSocketController.getInstance(true) != null && ClientSocketController.getInstance(true).loginOnServer(input_login.getText())) {
 		        	constructChooseGamePane();
+		        	setOnlineLabel(true);
 		        }
 		    }
 		});
@@ -63,7 +64,7 @@ public class StartView extends SuperView {
 	private void constructChooseGamePane() {
 		clearPane();
 		
-		String[] games = ClientSocketController.getInstance().getGamelist();
+		String[] games = ClientSocketController.getInstance(true).getGamelist();
 		int counter = 1;
 		for (String i : games) {
 			Label txt_gameName = new Label(i);
@@ -72,7 +73,7 @@ public class StartView extends SuperView {
 			btn_chooseGame.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 			    public void handle(ActionEvent e) {
-			        if (ClientSocketController.getInstance().selectGame(txt_gameName.getText())) {
+			        if (ClientSocketController.getInstance(false) != null && ClientSocketController.getInstance(true).selectGame(txt_gameName.getText())) {
 			        	constructChooseOpponentPane();
 			        }
 			    }
