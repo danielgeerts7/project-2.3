@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import Main.Main;
 import View.Popup;
 
-public final class ClientSocketController {
+public final class ClientSocketController extends ClientCommandHandler {
 
 	public Socket socket = null;
 	private boolean msgReceived = false;
@@ -22,7 +22,10 @@ public final class ClientSocketController {
 
 	private static ClientSocketController instance = null;
 	private static boolean popupOpen = false;
-	
+
+	/*
+	 * getInstance(), else create a error popup
+	 */
 	public static ClientSocketController getInstance(boolean trySetInstance) {
 		if (instance == null && trySetInstance) {
 			try {
@@ -40,12 +43,13 @@ public final class ClientSocketController {
 			}
 			return instance;
 		}
-
 		popupOpen = false;
-
 		return instance;
 	}
 
+	/*
+	 * Constructor
+	 */
 	public ClientSocketController(InetAddress serverAddress, int serverPort) throws Exception {
 		this.socket = new Socket(serverAddress, serverPort);
 
@@ -67,7 +71,8 @@ public final class ClientSocketController {
 		System.out.println("Connected to Server: " + this.socket.getInetAddress());
 	}
 
-	private void sendMessageToServer(String msg) {
+	@Override
+	protected void sendMessageToServer(String msg) {
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(this.socket.getOutputStream(), true);
@@ -78,80 +83,9 @@ public final class ClientSocketController {
 		out.flush();
 		System.out.println("Client send: " + msg);
 	}
-
-	private void readServerInput() throws IOException {
-		msgReceived = false;
-		String data = null;
-		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		
-		try {
-			while ((data = in.readLine()) != null) {
-				System.out.println("Message from server: " + data);
-				msgReceived = true;
-				msgData = data;
-				if (popupOpen && data.contains("ERR")) {
-					Popup.getInstance().newPopup(data, Popup.Type.ERROR);
-				}
-			}
-		}catch(Exception e){
-			System.out.println(e);
-			disconnect();
-		}
-	}
-
-	/*
-	 * Tries to login onto the server
-	 * 
-	 * @param Return True when succeeded, False when failed
-	 */
-	public boolean loginOnServer(String name) {
-		this.sendMessageToServer("login " + name);
-		this.waitForResponse();
-
-		if (msgData.contains("OK")) {
-			return true;
-		} else {
-			Popup.getInstance().newPopup(msgData, Popup.Type.ERROR);
-			return false;
-		}
-	}
-
-	public void logoutFromServer() {
-		this.sendMessageToServer("logout");
-	}
-
-	public String[] getGamelist() {
-		this.sendMessageToServer("get gamelist");
-		this.waitForResponse();
-
-		if (msgData.contains("SVR GAMELIST")) {
-			String games = msgData.substring(msgData.indexOf('['), msgData.indexOf(']'));
-			String[] availableGames = games.split(",");
-			int i = 0;
-			for (String game : availableGames) {
-				availableGames[i] = game.replace("\"", "").replace(" ", "").replace("]", "").replace("[", "");
-				i++;
-			}
-			return availableGames;
-		} else {
-			Popup.getInstance().newPopup(msgData, Popup.Type.DEBUG);
-			return null;
-		}
-	}
-
-	public boolean selectGame(String gameName) {
-		this.sendMessageToServer("subscribe " + gameName);
-		this.waitForResponse();
-
-		if (msgData.contains("OK")) {
-			return true;
-		} else {
-			Popup.getInstance().newPopup(msgData, Popup.Type.DEBUG);
-			return false;
-		}
-	}
-
-	private void waitForResponse() {
+	
+	@Override
+	protected void waitForResponse() {
 
 		// TODO: change to callback instead of while-loop, this is bad for main Thread
 
@@ -170,22 +104,50 @@ public final class ClientSocketController {
 		}
 	}
 
-	private void disconnect() {
-		logoutFromServer();
+	@Override
+	protected String getMsgData() {
+		return msgData;
+	}
 
-        stayConnected = false;
-        if(runningThread != null) {
-            runningThread.interrupt();
-        }
-        runningThread = null;
+	private void readServerInput() throws IOException {
+		msgReceived = false;
+		String data = null;
+		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+		try {
+			while ((data = in.readLine()) != null) {
+				System.out.println("Message from server: " + data);
+				msgReceived = true;
+				msgData = data;
+				if (popupOpen && data.contains("ERR")) {
+					Popup.getInstance().newPopup(data, Popup.Type.ERROR);
+				}
+
+				super.doCommand(data);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e);
+			disconnect();
+		}
+	}
+
+	private void disconnect() {
+		super.logoutFromServer();
+
+		stayConnected = false;
+		if (runningThread != null) {
+			runningThread.interrupt();
+		}
+		runningThread = null;
 
 		try {
 			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        socket = null;
-        
+		socket = null;
+
 		Main.QuitApp();
 	}
 }
