@@ -11,6 +11,14 @@ import java.net.UnknownHostException;
 import Main.Main;
 import View.Popup;
 
+/**
+* ClientSockerController connects with the server
+* Trough the extension ClientCommandHandler, this class can call Commands
+* And can handle Server requests
+*
+* @author  Daniël Geerts
+* @since   2019-03-28
+*/
 public final class ClientSocketController extends ClientCommandHandler {
 
 	public Socket socket = null;

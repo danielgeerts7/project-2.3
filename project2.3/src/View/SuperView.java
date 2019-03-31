@@ -1,7 +1,7 @@
 package View;
 
 import Controller.ClientSocketController;
-import Main.Config;
+import Model.Config;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -11,6 +11,13 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+/**
+* SuperView contains all features that every scene needs
+* In this case, a update function and online label
+*
+* @author  Daniël Geerts
+* @since   2019-03-28
+*/
 public abstract class SuperView extends Pane {
 
 	private Label online_label = null;

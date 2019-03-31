@@ -1,6 +1,7 @@
 package Main;
 
 import Controller.ClientSocketController;
+import Model.Config;
 import View.StartView;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -21,6 +22,10 @@ public class Main extends Application {
 		primaryStage.show(); // Display the stage
 		
 		ClientSocketController.getInstance(true);
+	}
+	
+	public static void switchScene(Stage primaryStage, SuperView newScene) {
+		// TODO: switch from scene
 	}
 
 	public static void main(String[] args) throws Exception {

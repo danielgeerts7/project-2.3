@@ -1,7 +1,7 @@
 package View;
 
 import Controller.ClientSocketController;
-import Main.Config;
+import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,6 +13,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+* StartView is the first view when application is started
+*
+* @author  Daniël Geerts
+* @since   2019-03-28
+*/
 public class StartView extends SuperView {
 	
 	private GridPane mainpane = null;

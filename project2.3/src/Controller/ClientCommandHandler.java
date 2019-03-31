@@ -2,6 +2,13 @@ package Controller;
 
 import View.Popup;
 
+/**
+* ClientCommandHandler handles every command this client can do
+* The extension handles every incoming server Message (server request)
+*
+* @author  Daniël Geerts
+* @since   2019-03-31
+*/
 public abstract class ClientCommandHandler extends ServerMessageHandler {
 	
 	/*
@@ -107,9 +114,13 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 	
 }
 
-/*
- * Server message handler Class
- */
+/**
+* ServerMessageHandler handles every incoming server request
+* This needs to be a very dynamic class (that means that the request can happen at any time)
+*
+* @author  Daniël Geerts
+* @since   2019-03-31
+*/
 class ServerMessageHandler {
 	
 	protected void doCommand(String command) {
