@@ -79,7 +79,9 @@ public class StartView extends SuperView {
 		clearPane();
 		
 		showRemoteLabels(true);
-		TextField input_login = new TextField();
+		TextField input_login = new TextField(username);
+		input_login.setDisable(!username.isEmpty());
+
 		Button btn_login = new Button("Login");
 
 		btn_login.setOnAction(new EventHandler<ActionEvent>() {
