@@ -3,7 +3,6 @@ package View;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -24,11 +23,13 @@ import javafx.stage.Stage;
 */
 public final class Popup {
 	
-	public enum Type { ERROR, OK, DEBUG };
+	public enum Type { OK, YESNO, DEBUG };
 	
 	private int width = 400;
 	private int height = 200;	
 	private String img_errPath = "File:img/error_icon.gif";
+	private String img_debugPath = "File:img/debug_icon.gif";
+	private String img_helpPath = "File:img/help_icon.gif";
 	private List<Stage> popups = new ArrayList<Stage>();
 	
 	private static Popup instance = null;
@@ -50,43 +51,51 @@ public final class Popup {
 		pane.setVgap(10);
 		pane.setHgap(10);
 		
+		Label MESSAGE = new Label(text);
+		pane.add(MESSAGE, 1, 0);
+		
 		switch (type) {
-		case ERROR:
-			ImageView ERROR = getImageView(img_errPath);
-			Label MESSAGE = new Label(text);
-			Button OK = new Button("OK");
-			pane.add(ERROR, 0, 0);
-			pane.add(MESSAGE, 1, 0);
-			pane.add(OK, 1, 1);
-			
-			OK.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-			    public void handle(ActionEvent e) {
-					newStage.close();
-					popups.remove(newStage);
-			    }
-			});			
-			break;
 		case OK:
-			Label MESSAGE1 = new Label("OK: " + text);
-			Button OK1 = new Button("OK");
-			pane.add(MESSAGE1, 1, 0);
-			pane.add(OK1, 1, 1);
-			
-			OK1.setOnAction(new EventHandler<ActionEvent>() {
+			ImageView error = getImageView(img_errPath);
+			pane.add(error, 0, 0);
+			Button btn_ok = new Button("OK");
+			pane.add(btn_ok, 1, 1);
+			btn_ok.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 			    public void handle(ActionEvent e) {
 					newStage.close();
 					popups.remove(newStage);
 			    }
 			});
-		case DEBUG:
-			Label MESSAGE2 = new Label("DEBUG: " + text);
-			Button OK2 = new Button("OK");
-			pane.add(MESSAGE2, 1, 0);
-			pane.add(OK2, 1, 1);
+			break;
+		case YESNO:
+			Button btn_yes = new Button("YES");
+			Button btn_no = new Button("NO");
+			pane.add(btn_yes, 1, 1);
+			pane.add(btn_no, 1, 1);
+
+			btn_yes.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+			    public void handle(ActionEvent e) {
+					newStage.close();
+					popups.remove(newStage);
+			    }
+			});
 			
-			OK2.setOnAction(new EventHandler<ActionEvent>() {
+			btn_no.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+			    public void handle(ActionEvent e) {
+					newStage.close();
+					popups.remove(newStage);
+			    }
+			});
+			break;
+		case DEBUG:
+			ImageView debug = getImageView(img_debugPath);
+			pane.add(debug, 0, 0);
+			Button btn_debug = new Button("OK");
+			pane.add(btn_debug, 1, 1);
+			btn_debug.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 			    public void handle(ActionEvent e) {
 					newStage.close();
@@ -95,17 +104,6 @@ public final class Popup {
 			});
 			break;
 		}
-		
-		final AnimationTimer animator = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				if (popups.size() < 0) {
-					popups.get(0).requestFocus();
-					this.stop();
-				}
-			}
-		};
-		animator.start();
 
 		Scene stageScene = new Scene(pane, width, height);
 		newStage.setScene(stageScene);

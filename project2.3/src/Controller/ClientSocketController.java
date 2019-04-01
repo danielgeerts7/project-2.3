@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import Main.Main;
+import Model.Config;
 import View.Popup;
 
 /**
@@ -37,16 +37,18 @@ public final class ClientSocketController extends ClientCommandHandler {
 	public static ClientSocketController getInstance(boolean trySetInstance) {
 		if (instance == null && trySetInstance) {
 			try {
-				instance = new ClientSocketController(InetAddress.getLocalHost(), 7789);
+				instance = new ClientSocketController(Config.REMOTE_IP, Config.REMOTE_PORT);
 			} catch (UnknownHostException e) {
 				if (!popupOpen) {
-					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.ERROR);
+					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.OK);
 					popupOpen = true;
 				}
 			} catch (Exception e) {
 				if (!popupOpen) {
-					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.ERROR);
+					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.OK);
 					popupOpen = true;
+					Main.switchScene(Main.SceneType.START);
+					// is this the way to go?? ^^
 				}
 			}
 			return instance;
@@ -58,8 +60,8 @@ public final class ClientSocketController extends ClientCommandHandler {
 	/*
 	 * Constructor
 	 */
-	public ClientSocketController(InetAddress serverAddress, int serverPort) throws Exception {
-		this.socket = new Socket(serverAddress, serverPort);
+	public ClientSocketController(String remoteIp, int serverPort) throws Exception {
+		this.socket = new Socket(remoteIp, serverPort);
 
 		// New Thread for receiving input coming from the Server
 		runningThread = new Thread() {
@@ -128,7 +130,7 @@ public final class ClientSocketController extends ClientCommandHandler {
 				msgReceived = true;
 				msgData = data;
 				if (popupOpen && data.contains("ERR")) {
-					Popup.getInstance().newPopup(data, Popup.Type.ERROR);
+					Popup.getInstance().newPopup(data, Popup.Type.OK);
 				}
 
 				super.doCommand(data);
@@ -136,11 +138,11 @@ public final class ClientSocketController extends ClientCommandHandler {
 
 		} catch (Exception e) {
 			System.out.println(e);
-			disconnect();
+			this.disconnect();
 		}
 	}
 
-	private void disconnect() {
+	public void disconnect() {
 		super.logoutFromServer();
 
 		stayConnected = false;
