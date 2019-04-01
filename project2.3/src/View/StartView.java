@@ -25,7 +25,6 @@ public class StartView extends SuperView {
 	
 	public StartView(Stage primaryStage) {
 		super();
-		System.out.print("github test");
 		mainpane = new GridPane();
 		mainpane.setAlignment(Pos.CENTER);
 		mainpane.setMinSize(Config.WIDTH, Config.HEIGHT);
