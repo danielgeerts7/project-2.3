@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 /**
 * StartView is the first view when application is started
 *
-* @author  Daniël Geerts
+* @author  Daniï¿½l Geerts
 * @since   2019-03-28
 */
 public class StartView extends SuperView {
@@ -25,7 +25,7 @@ public class StartView extends SuperView {
 	
 	public StartView(Stage primaryStage) {
 		super();
-		
+		System.out.print("github test");
 		mainpane = new GridPane();
 		mainpane.setAlignment(Pos.CENTER);
 		mainpane.setMinSize(Config.WIDTH, Config.HEIGHT);
