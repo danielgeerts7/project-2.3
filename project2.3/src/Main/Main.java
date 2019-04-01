@@ -3,6 +3,7 @@ package Main;
 import Controller.ClientSocketController;
 import Model.Config;
 import View.StartView;
+import View.SuperView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
