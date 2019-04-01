@@ -25,3 +25,4 @@ hs_err_pid*
 .metadata
 project2.3/bin/.project
 project2.3/bin/.classpath
+.DS_Store
