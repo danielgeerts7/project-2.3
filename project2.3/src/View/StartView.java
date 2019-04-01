@@ -80,7 +80,7 @@ public class StartView extends SuperView {
 				@Override
 			    public void handle(ActionEvent e) {
 			        if (ClientSocketController.getInstance(false) != null && ClientSocketController.getInstance(true).selectGame(txt_gameName.getText())) {
-			        	constructChooseOpponentPane();
+			        	constructGamePane();
 			        }
 			    }
 			});
@@ -96,5 +96,9 @@ public class StartView extends SuperView {
 		clearPane();
 		
 		// TODO: still awaiting for my master to be coded
+	}
+	
+	private void constructGamePane() {
+		clearPane();
 	}
 }
