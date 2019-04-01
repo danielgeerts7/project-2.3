@@ -104,7 +104,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 			String[] availablePlayers = players.split(",");
 			int i = 0;
 			for (String game : availablePlayers) {
-				availablePlayers[i] = game.replace("\"", "").replace(" ", "").replace("]", "").replace("[", "");
+				availablePlayers[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
 				i++;
 			}
 			if (availablePlayers.length <= 1) {
