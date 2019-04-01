@@ -45,7 +45,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 			String[] availableGames = games.split(",");
 			int i = 0;
 			for (String game : availableGames) {
-				availableGames[i] = game.replace("\"", "").replace(" ", "").replace("]", "").replace("[", "");
+				availableGames[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
 				i++;
 			}
 			return availableGames;
@@ -69,7 +69,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 	}
 
 	public boolean challengeOpponent(String opponentName, String gameName) {
-		this.sendMessageToServer("challenge " + "\"" + opponentName + "\"" + " " + "\"" + gameName + "\"");
+		this.sendMessageToServer("challenge " + "\"" + opponentName + "\" \"" + gameName + "\"");
 		this.waitForResponse(false);
 
 		String msg = getMsgData();

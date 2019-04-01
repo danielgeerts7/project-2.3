@@ -99,10 +99,10 @@ class ServerMessageHandler {
 		HashMap<String, String> map = new HashMap<String, String>();
 		String[] list = s.split(",");
 		for (int i = 0; i < list.length; i ++) {
-			list[i] = list[i].replace(" ", "").replace("\"", "").replace("{", "").replace("}", "");
+			list[i] = list[i].replace("\"", "").replace("{", "").replace("}", "").trim();
 			System.out.println("l: " + list[i]);
 			String[] keyvalue = list[i].split(":");
-			map.put(keyvalue[0], keyvalue[1]); 
+			map.put(keyvalue[0].trim(), keyvalue[1].trim()); 
 		}
 		return map;
 	}
