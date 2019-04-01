@@ -35,7 +35,8 @@ public abstract class SuperView extends Pane {
 			public void handle(long now) {
 				update();
 				if (ClientSocketController.getInstance(false) != null
-						&& ClientSocketController.getInstance(true).socket.isConnected()) {
+						&& ClientSocketController.getInstance(true).getSocket() != null
+						&& ClientSocketController.getInstance(true).getSocket().isConnected()) {
 					setOnlineLabel(true);
 				} else {
 					setOnlineLabel(false);

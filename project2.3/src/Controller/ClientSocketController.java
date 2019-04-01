@@ -6,22 +6,28 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 import Main.Main;
 import Model.Config;
 import View.Popup;
 
 /**
-* ClientSockerController connects with the server
-* Trough the extension ClientCommandHandler, this class can call Commands
-* And can handle Server requests
-*
-* @author  Daniël Geerts
-* @since   2019-03-28
-*/
+ * ClientSockerController connects with the server Trough the extension
+ * ClientCommandHandler, this class can call Commands And can handle Server
+ * requests
+ *
+ * @author Daniël Geerts
+ * @since 2019-03-28
+ */
 public final class ClientSocketController extends ClientCommandHandler {
 
-	public Socket socket = null;
+	private Socket socket = null;
+
+	public Socket getSocket() {
+		return socket;
+	}
+
 	private boolean msgReceived = false;
 	private String msgData = "";
 	private Thread runningThread = null;
@@ -67,11 +73,7 @@ public final class ClientSocketController extends ClientCommandHandler {
 		runningThread = new Thread() {
 			public void run() {
 				while (stayConnected) {
-					try {
-						readServerInput();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					readServerInput();
 				}
 			}
 		};
@@ -93,37 +95,16 @@ public final class ClientSocketController extends ClientCommandHandler {
 		out.flush();
 		System.out.println("Client send: " + msg);
 	}
-	
-	@Override
-	protected void waitForResponse() {
 
-		// TODO: change to callback instead of while-loop, this is bad for main Thread
-
-		msgReceived = false;
-		if (this.socket.isConnected()) {
-			while (msgReceived == false) {
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			msgReceived = true;
-			msgData = "";
-		}
-	}
-
-	@Override
-	protected String getMsgData() {
-		return msgData;
-	}
-
-	private void readServerInput() throws IOException {
+	protected void readServerInput() {
 		msgReceived = false;
 		String data = null;
-		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			while ((data = in.readLine()) != null) {
 				System.out.println("Message from server: " + data);
@@ -138,8 +119,50 @@ public final class ClientSocketController extends ClientCommandHandler {
 
 		} catch (Exception e) {
 			System.out.println(e);
-			this.disconnect();
+			// this.disconnect();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see Controller.ClientCommandHandler#waitForResponse(boolean)
+	 */
+	@Override
+	protected void waitForResponse(boolean skipOK) {
+		// Timer for when the server is not responding within 3 seconds
+		boolean shouldPass = false;
+		long startTime = System.currentTimeMillis();
+		long elapsedTime = 0L;
+
+		msgReceived = false;
+		if (this.socket.isConnected()) {
+			while (!shouldPass && !msgReceived) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				elapsedTime = (new Date()).getTime() - startTime;
+				if (elapsedTime > 3000) {
+					shouldPass = true;
+					System.out.println("Server timed-out: main-thread running again");
+				}
+			}
+			System.out.println(" ====== Server responce time: " + elapsedTime + "ms ======");
+			if (skipOK && !shouldPass && msgData.contains("OK")) {
+				waitForResponse(skipOK);
+			}
+		} else {
+			msgReceived = true;
+			msgData = "";
+		}
+	}
+
+	@Override
+	protected String getMsgData() {
+		return msgData;
 	}
 
 	public void disconnect() {

@@ -151,7 +151,6 @@ public class StartView extends SuperView {
 
 		String[] opponents = ClientSocketController.getInstance(true).getPlayerlist();
 		int counter = 1;
-		System.out.println("p: " + opponents.length);
 		for (String enemie : opponents) {
 			if (!enemie.equals(playerName)) {
 				Label txt_opponentsName = new Label(enemie);

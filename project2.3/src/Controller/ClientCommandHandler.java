@@ -18,7 +18,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 	 */
 	public int loginOnServer(String name) {
 		this.sendMessageToServer("login " + name);
-		this.waitForResponse();
+		this.waitForResponse(false);
 
 		String msg = getMsgData();
 		if (msg.contains("OK")) {
@@ -37,8 +37,8 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public String[] getGamelist() {
 		this.sendMessageToServer("get gamelist");
-		this.waitForResponse();
-
+		this.waitForResponse(true);
+		
 		String msg = getMsgData();
 		if (msg.contains("SVR GAMELIST")) {
 			String games = msg.substring(msg.indexOf('['), msg.indexOf(']'));
@@ -57,7 +57,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public boolean selectGame(String gameName) {
 		this.sendMessageToServer("subscribe " + gameName);
-		this.waitForResponse();
+		this.waitForResponse(false);
 
 		String msg = getMsgData();
 		if (msg.contains("OK")) {
@@ -70,7 +70,20 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public boolean challengeOpponent(String opponentName, String gameName) {
 		this.sendMessageToServer("challenge " + "\"" + opponentName + "\"" + " " + "\"" + gameName + "\"");
-		this.waitForResponse();
+		this.waitForResponse(false);
+
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
+			return true;
+		} else {
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+			return false;
+		}
+	}
+	
+	public boolean acceptChallenge(String challengeNr) {
+		this.sendMessageToServer("challenge accept " + challengeNr);
+		this.waitForResponse(false);
 
 		String msg = getMsgData();
 		if (msg.contains("OK")) {
@@ -83,7 +96,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public String[] getPlayerlist() {
 		this.sendMessageToServer("get playerlist");
-		this.waitForResponse();
+		this.waitForResponse(true);
 
 		String msg = getMsgData();
 		if (msg.contains("SVR PLAYERLIST")) {
@@ -107,7 +120,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public void forfeit() {
 		this.sendMessageToServer("forfeit");
-		this.waitForResponse();
+		this.waitForResponse(false);
 
 		String msg = getMsgData();
 		if (msg.contains("OK")) {
@@ -120,8 +133,10 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	protected abstract void sendMessageToServer(String msg);
 
-	protected abstract void waitForResponse();
-
+	/* Wait for server to send response
+	 * @param skipOK when message from Server contains OK, then wait for next message */
+	protected abstract void waitForResponse(boolean skipOK);
 	protected abstract String getMsgData();
+	protected abstract void readServerInput();
 
 }
