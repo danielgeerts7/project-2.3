@@ -1,6 +1,7 @@
 package View;
 
 import Controller.ClientSocketController;
+import Main.Main;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -80,7 +81,7 @@ public class StartView extends SuperView {
 				@Override
 			    public void handle(ActionEvent e) {
 			        if (ClientSocketController.getInstance(false) != null && ClientSocketController.getInstance(true).selectGame(txt_gameName.getText())) {
-			        	constructGamePane();
+			        	Main.switchScene(Main.SceneType.GAME);
 			        }
 			    }
 			});
@@ -96,9 +97,5 @@ public class StartView extends SuperView {
 		clearPane();
 		
 		// TODO: still awaiting for my master to be coded
-	}
-	
-	private void constructGamePane() {
-		clearPane();
 	}
 }
