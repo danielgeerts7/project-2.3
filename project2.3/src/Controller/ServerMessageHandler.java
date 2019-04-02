@@ -23,11 +23,7 @@ abstract class ServerMessageHandler {
 
 	protected void doCommand(String command) {
 		if (command.contains("SVR")) {
-			if (command.contains("SVR PLAYERLIST")) {
-
-			} else if (command.contains("SVR GAMELIST")) {
-
-			} else if (command.contains("SVR GAME")) {
+			if (command.contains("SVR GAME")) {
 				if (command.contains("SVR GAME MATCH")) {
 					// Server send you a match with another player
 					// TODO: react on this
