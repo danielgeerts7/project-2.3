@@ -27,7 +27,7 @@ public final class Popup {
 	};
 
 	private int width = 425;
-	private int height = 175;
+	private int height = 200;
 	private String img_okPath = "File:img/OK.png";
 	private String img_debugPath = "File:img/DEBUG.png";
 	private String img_YesNoPath = "File:img/YESNO.png";
@@ -61,11 +61,11 @@ public final class Popup {
 				Pane pane = new Pane();
 				pane.setMinSize(width, height);
 
-				Label message = new Label(text);
+				Label message = new Label(addEnterInString(text, 40));
 				message.setAlignment(Pos.CENTER);
-				moveItem(message, width*.3, height*0.25);
+				moveItem(message, width * .3, height * 0.15);
 				pane.getChildren().add(message);
-				
+
 				String image = "";
 
 				switch (type) {
@@ -73,7 +73,7 @@ public final class Popup {
 					image = img_okPath;
 					Button btn_ok = new Button("OK");
 					btn_ok.setAlignment(Pos.CENTER);
-					moveItem(btn_ok, width*.5, height*.7);
+					moveItem(btn_ok, width * .5, height * .8);
 					pane.getChildren().add(btn_ok);
 					btn_ok.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
@@ -90,8 +90,8 @@ public final class Popup {
 					pane.getChildren().add(btn_no);
 					btn_yes.setAlignment(Pos.CENTER);
 					btn_no.setAlignment(Pos.CENTER);
-					moveItem(btn_yes, width*.6, height*0.7);
-					moveItem(btn_no, width*.4, height*0.7);
+					moveItem(btn_yes, width * .6, height * .8);
+					moveItem(btn_no, width * .4, height * .8);
 
 					btn_yes.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
@@ -116,7 +116,7 @@ public final class Popup {
 				case DEBUG:
 					image = img_debugPath;
 					Button btn_debug = new Button("OK");
-					moveItem(btn_debug, width*.5, height*.7);
+					moveItem(btn_debug, width * .5, height * .8);
 					pane.getChildren().add(btn_debug);
 					btn_debug.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
@@ -138,9 +138,9 @@ public final class Popup {
 
 					break;
 				}
-				
+
 				ImageView error = getImageView(image);
-				moveItem(error, width*.02, height*.2);
+				moveItem(error, width * .02, height * .2);
 				pane.getChildren().add(error);
 
 				Scene stageScene = new Scene(pane, width, height);
@@ -148,6 +148,29 @@ public final class Popup {
 				newStage.show();
 			}
 		});
+	}
+
+	private String addEnterInString(String text, int maxLineLength) {
+		int line = 1;
+		int last_space = 0;
+		int begin_sub = 0;
+		String newText = "";
+
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == ' ') {
+				last_space = i;
+			}
+			if ((line * maxLineLength) == i) {
+				newText += text.substring(begin_sub, last_space);
+				newText += "\n";
+				begin_sub = last_space + 1;
+				line++;
+			}
+			if (i == text.length() - 1) {
+				newText += text.substring(begin_sub, i + 1);
+			}
+		}
+		return newText;
 	}
 
 	private ImageView getImageView(String path) {
@@ -158,7 +181,7 @@ public final class Popup {
 		pic.setImage(image);
 		return pic;
 	}
-	
+
 	private void moveItem(Node n, double x, double y) {
 		n.setTranslateX(x);
 		n.setTranslateY(y);
