@@ -22,7 +22,9 @@ abstract class ServerMessageHandler {
 	}
 
 	protected void doCommand(String command) {
-		if (command.contains("SVR")) {
+		if (command.contains("SVR") 
+				&& !command.contains("SVR GAMELIST")
+				&& !command.contains("SVR GAMELIST")) {
 			if (command.contains("SVR GAME")) {
 				if (command.contains("SVR GAME MATCH")) {
 					// Server send you a match with another player
@@ -35,16 +37,27 @@ abstract class ServerMessageHandler {
 				} else if (command.contains("SVR GAME MOVE")) {
 					// You or your opponent has made its move
 					// TODO: react on this
-					Popup.getInstance().newPopup("Move from you or your opponent! Send to the new GameView();",
-							Popup.Type.DEBUG);
+					Popup.getInstance().newPopup("Received move from you or your opponent!", Popup.Type.DEBUG);
 				} else if (command.contains("SVR GAME CHALLENGE CANCELLED")) {
 					challengeCancelled(command);
 				} else if (command.contains("SVR GAME CHALLENGE")) {
 					gotChallenged(command);
+				} else if (command.contains("WIN")) {
+					// Match is over. Implement every outcome. There are 3
+					// if (command.contains("SVR GAME WIN"))
+					Popup.getInstance().newPopup("You won, winner!", Popup.Type.WIN);
+				} else if (command.contains("LOSS")) {
+					// Match is over. Implement every outcome. There are 3
+					// if (command.contains("SVR GAME WIN"))
+					Popup.getInstance().newPopup("You have lost, loser!", Popup.Type.LOSS);
+				} else if (command.contains("DRAW")) {
+					// Match is over. Implement every outcome. There are 3
+					// if (command.contains("SVR GAME WIN"))
+					Popup.getInstance().newPopup("You have played a draw!", Popup.Type.DRAW);
 				} else {
 					// Match is over. Implement every outcome. There are 3
 					// if (command.contains("SVR GAME WIN"))
-					Popup.getInstance().newPopup("Match is over! Create popup with WIN/LOSE state", Popup.Type.DEBUG);
+					Popup.getInstance().newPopup("Error! Sever command unknown", Popup.Type.DEBUG);
 				}
 			}
 

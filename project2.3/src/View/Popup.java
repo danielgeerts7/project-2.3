@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 public final class Popup {
 
 	public enum Type {
-		DEBUG, OK, YESNO, WIN, LOSE, DRAW
+		DEBUG, OK, YESNO, WIN, LOSS, DRAW
 	};
 
 	private int width = 425;
@@ -61,29 +61,17 @@ public final class Popup {
 				Pane pane = new Pane();
 				pane.setMinSize(width, height);
 
-				Label message = new Label(addEnterInString(text, 40));
-				message.setAlignment(Pos.CENTER);
-				moveItem(message, width * .3, height * 0.15);
-				pane.getChildren().add(message);
-
 				String image = "";
+				boolean addOKbtn = false;
 
 				switch (type) {
 				case OK:
 					image = img_okPath;
-					Button btn_ok = new Button("OK");
-					btn_ok.setAlignment(Pos.CENTER);
-					moveItem(btn_ok, width * .5, height * .8);
-					pane.getChildren().add(btn_ok);
-					btn_ok.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent e) {
-							newStage.close();
-						}
-					});
+					addOKbtn = true;
 					break;
 				case YESNO:
 					image = img_YesNoPath;
+					addOKbtn = false;
 					Button btn_yes = new Button("YES");
 					Button btn_no = new Button("NO");
 					pane.getChildren().add(btn_yes);
@@ -92,7 +80,6 @@ public final class Popup {
 					btn_no.setAlignment(Pos.CENTER);
 					moveItem(btn_yes, width * .6, height * .8);
 					moveItem(btn_no, width * .4, height * .8);
-
 					btn_yes.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent e) {
@@ -102,7 +89,6 @@ public final class Popup {
 							newStage.close();
 						}
 					});
-
 					btn_no.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent e) {
@@ -115,28 +101,38 @@ public final class Popup {
 					break;
 				case DEBUG:
 					image = img_debugPath;
-					Button btn_debug = new Button("OK");
-					moveItem(btn_debug, width * .5, height * .8);
-					pane.getChildren().add(btn_debug);
-					btn_debug.setOnAction(new EventHandler<ActionEvent>() {
+					addOKbtn = true;
+					break;
+				case WIN:
+					image = img_winPath;
+					addOKbtn = true;
+					break;
+				case LOSS:
+					image = img_losePath;
+					addOKbtn = true;
+					break;
+				case DRAW:
+					image = img_drawPath;
+					addOKbtn = true;
+					break;
+				}
+				
+				Label message = new Label(addEnterInString(text, 40));
+				message.setAlignment(Pos.CENTER);
+				moveItem(message, width * .3, height * 0.15);
+				pane.getChildren().add(message);
+				
+				if (addOKbtn) {
+					Button btn_ok = new Button("OK");
+					btn_ok.setAlignment(Pos.CENTER);
+					moveItem(btn_ok, width * .5, height * .8);
+					pane.getChildren().add(btn_ok);
+					btn_ok.setOnAction(new EventHandler<ActionEvent>() {
 						@Override
 						public void handle(ActionEvent e) {
 							newStage.close();
 						}
 					});
-					break;
-				case WIN:
-					image = img_winPath;
-
-					break;
-				case LOSE:
-					image = img_losePath;
-
-					break;
-				case DRAW:
-					image = img_drawPath;
-
-					break;
 				}
 
 				ImageView error = getImageView(image);
