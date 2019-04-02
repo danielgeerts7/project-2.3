@@ -128,6 +128,7 @@ public class StartView extends SuperView {
 					if (ClientSocketController.getInstance(true) != null) {
 						boolean successfull = ClientSocketController.getInstance(true).selectGame(gamename);
 						if (successfull) {
+							setSubscription(gamename);
 							constructChooseOpponentPane(playerName, gamename);
 						}
 					}

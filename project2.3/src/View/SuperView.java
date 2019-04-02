@@ -23,6 +23,7 @@ public abstract class SuperView extends Pane {
 
 	private Label online_label = null;
 	private Label login_label = null;
+	private Label subscription = null;
 	protected Button backToStartView = null;
 	protected String username = "";
 
@@ -56,8 +57,14 @@ public abstract class SuperView extends Pane {
 		login_label.setTranslateY(25);
 		super.getChildren().add(login_label);
 		
+		subscription = new Label();
+		this.setSubscription("");
+		subscription.setTranslateX(Config.WIDTH * 0.85);
+		subscription.setTranslateY(50);
+		super.getChildren().add(subscription);
+
 		backToStartView = new Button("Go back");
-		backToStartView.setTranslateX(Config.WIDTH /2);
+		backToStartView.setTranslateX(Config.WIDTH / 2);
 		backToStartView.setTranslateY(25);
 		super.getChildren().add(backToStartView);
 	}
@@ -82,10 +89,21 @@ public abstract class SuperView extends Pane {
 		}
 	}
 
+	protected void setSubscription(String name) {
+		if (name.equals("")) {
+			subscription.setText(String.format("Not yet subscribed for a game"));
+			subscription.setTextFill(Color.DARKRED);
+		} else {
+			subscription.setText(String.format("subscribed for: " + name));
+			subscription.setTextFill(Color.GREEN);
+		}
+	}
+
 	protected void showRemoteLabels(boolean doShow) {
 		online_label.setVisible(doShow);
 		login_label.setVisible(doShow);
 		backToStartView.setVisible(doShow);
+		subscription.setVisible(doShow);
 	}
 
 	/*
