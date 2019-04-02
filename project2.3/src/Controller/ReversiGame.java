@@ -3,14 +3,14 @@ package Controller;
 import java.math.*;
 import java.util.*;
 import java.util.Scanner;
+import java.util.Random;
 
 public class ReversiGame {
 	final static int BOARD_SIZE = 8;
 	final static char BLACK = '\u26AB';
 	final static char WHITE = '\u26AA';
 	final static char EMPTY = '\u2B1c';
-	//HashSet<Integer> valid_moves = new HashSet<Integer>();
-	ArrayList<Tuple> valid_moves = new ArrayList<>();
+	public ArrayList<Tuple> valid_moves = new ArrayList<>();
 	public Tuple[] offsets = new Tuple[8];
 	
 	public static void main(String[] args) {
@@ -94,28 +94,33 @@ public class ReversiGame {
 	}
 	
 	public void gameLoop(Board bord, char piece) {
+		int x;
+		int y;
 		printBoard(bord);
 		while(true){
 			try {
-				//if(piece == BLACK) {
-				for(Tuple v : valid_moves) {
-					System.out.print("["+v.x+","+v.y+"]");
+				if(piece == BLACK) {
+					for(Tuple v : valid_moves) {
+						System.out.print("["+v.x+","+v.y+"]");
+					}
+					System.out.print("\n");
+					Scanner reader = new Scanner(System.in);
+					System.out.println(piece + ", Enter a coordinate: ");
+					String coordinate = reader.nextLine();
+					List<String> coordinates = Arrays.asList(coordinate.split(","));
+					x = Integer.parseInt(coordinates.get(0));
+					y = Integer.parseInt(coordinates.get(1));
 				}
-				System.out.print("\n");
-				Scanner reader = new Scanner(System.in);  // Reading from System.in
-				System.out.println(piece + ", Enter a coordinate: ");
-				String coordinate = reader.nextLine();
-				List<String> coordinates = Arrays.asList(coordinate.split(","));
-				int x = Integer.parseInt(coordinates.get(0));
-				int y = Integer.parseInt(coordinates.get(1));
-				//Tuple move = new Tuple(y, x); 
-			//	}
+				else {
+					int randomInt = new Random().nextInt(valid_moves.size());
+					x = valid_moves.get(randomInt).x;
+					y = valid_moves.get(randomInt).y;
+				}
 				if(isValidMove(bord, piece, y, x)) {
 					placePiece(bord, piece, y ,x);
 					return;
 				}
 				else {
-					//throw new AssertionError("Errortje");
 					System.out.println("oei oei hij doet het niet!");
 				}
 			}
@@ -134,7 +139,7 @@ public class ReversiGame {
 				check.y += offsets[offset].y;
 				//System.out.print("\n" + bord.bord[check.x][check.y]);
 				//System.out.print(" == " + piece);
-				System.out.println(check.x + "," + check.y);
+				//System.out.println(check.x + "," + check.y);
 				try {
 					Character steen1 = bord.bord[check.x][check.y];
 					Character steen2 = piece;
