@@ -13,10 +13,10 @@ import View.Popup.PopupYesNo;
  * @author Daniël Geerts
  * @since 2019-03-31
  */
-class ServerMessageHandler {
-	
+abstract class ServerMessageHandler {
+
 	private Map<String, PopupYesNo> challenges = null;
-	
+
 	public ServerMessageHandler() {
 		challenges = new HashMap<String, PopupYesNo>();
 	}
@@ -24,11 +24,11 @@ class ServerMessageHandler {
 	protected void doCommand(String command) {
 		if (command.contains("SVR")) {
 			if (command.contains("SVR PLAYERLIST")) {
-				
+
 			} else if (command.contains("SVR GAMELIST")) {
-				
+
 			} else if (command.contains("SVR GAME")) {
-				 if (command.contains("SVR GAME MATCH")) {
+				if (command.contains("SVR GAME MATCH")) {
 					// Server send you a match with another player
 					// TODO: react on this
 					Popup.getInstance().newPopup("START MATCH NOW! new GameView();", Popup.Type.DEBUG);
@@ -39,7 +39,8 @@ class ServerMessageHandler {
 				} else if (command.contains("SVR GAME MOVE")) {
 					// You or your opponent has made its move
 					// TODO: react on this
-					Popup.getInstance().newPopup("Move from you or your opponent! Send to the new GameView();", Popup.Type.DEBUG);
+					Popup.getInstance().newPopup("Move from you or your opponent! Send to the new GameView();",
+							Popup.Type.DEBUG);
 				} else if (command.contains("SVR GAME CHALLENGE CANCELLED")) {
 					challengeCancelled(command);
 				} else if (command.contains("SVR GAME CHALLENGE")) {
@@ -53,7 +54,12 @@ class ServerMessageHandler {
 
 			if (command.contains("SVR HELP")) {
 				// Show all help information to client
-				Popup.getInstance().newPopup(command.replace("SVR HELP", ""), Popup.Type.OK);
+				if (!getMsgData().trim().equals("SVR HELP")
+						&& !getMsgData().contains("Available commands")
+						&& !getMsgData().contains("Help information for Strategic Game Server Fixed")
+						&& !getMsgData().contains("For more information on a command")) {
+					Popup.getInstance().newPopup(getMsgData().replace("SVR HELP", "").replace("  ", ""), Popup.Type.OK);
+				}
 			}
 		}
 	}
@@ -61,7 +67,7 @@ class ServerMessageHandler {
 	private void gotChallenged(String msg) {
 		String server_msg = msg.substring(msg.indexOf('{'), msg.indexOf('}'));
 		HashMap<String, String> map = stringToMap(server_msg);
-		
+
 		String challenger = map.get("CHALLENGER");
 		String gameType = map.get("GAMETYPE");
 		String challengeNr = map.get("CHALLENGENUMBER");
@@ -72,6 +78,7 @@ class ServerMessageHandler {
 				ClientSocketController.getInstance(true).acceptChallenge(challengeNr);
 				challenges.remove(challengeNr);
 			}
+
 			@Override
 			public void clickedNo() {
 				// Our client declined the challenge
@@ -88,7 +95,7 @@ class ServerMessageHandler {
 		HashMap<String, String> map = stringToMap(temp);
 		String challengeNr = map.get("CHALLENGENUMBER");
 		Popup.getInstance().newPopup("Challenge(" + challengeNr + ") got cancelled", Popup.Type.YESNO);
-		
+
 		if (challenges.containsKey(challengeNr)) {
 			challenges.get(challengeNr).clickedNo();
 			challenges.remove(challengeNr);
@@ -98,12 +105,23 @@ class ServerMessageHandler {
 	protected HashMap<String, String> stringToMap(String s) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		String[] list = s.split(",");
-		for (int i = 0; i < list.length; i ++) {
+		for (int i = 0; i < list.length; i++) {
 			list[i] = list[i].replace("\"", "").replace("{", "").replace("}", "").trim();
 			System.out.println("l: " + list[i]);
 			String[] keyvalue = list[i].split(":");
-			map.put(keyvalue[0].trim(), keyvalue[1].trim()); 
+			map.put(keyvalue[0].trim(), keyvalue[1].trim());
 		}
 		return map;
 	}
+
+	/*
+	 * Wait for server to send response
+	 * 
+	 * @param skipOK when message from Server contains OK, then wait for next
+	 * message
+	 */
+	protected abstract boolean waitForResponse(boolean skipOK);
+
+	protected abstract String getMsgData();
+
 }

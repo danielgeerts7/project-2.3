@@ -118,6 +118,10 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	public void help() {
+		this.sendMessageToServer("help");
+	}
+
 	public void forfeit() {
 		this.sendMessageToServer("forfeit");
 		this.waitForResponse(false);
@@ -133,10 +137,6 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	protected abstract void sendMessageToServer(String msg);
 
-	/* Wait for server to send response
-	 * @param skipOK when message from Server contains OK, then wait for next message */
-	protected abstract void waitForResponse(boolean skipOK);
-	protected abstract String getMsgData();
 	protected abstract void readServerInput();
 
 }

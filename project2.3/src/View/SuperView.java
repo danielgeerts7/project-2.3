@@ -25,6 +25,7 @@ public abstract class SuperView extends Pane {
 	private Label login_label = null;
 	private Label subscription = null;
 	protected Button backToStartView = null;
+	protected Button helpMeServer = null;
 	protected String username = "";
 
 	public SuperView() {
@@ -64,9 +65,14 @@ public abstract class SuperView extends Pane {
 		super.getChildren().add(subscription);
 
 		backToStartView = new Button("Go back");
-		backToStartView.setTranslateX(Config.WIDTH / 2);
+		backToStartView.setTranslateX((Config.WIDTH / 2) - 50);
 		backToStartView.setTranslateY(25);
 		super.getChildren().add(backToStartView);
+		
+		helpMeServer = new Button("Help");
+		helpMeServer.setTranslateX((Config.WIDTH / 2) + 50);
+		helpMeServer.setTranslateY(25);
+		super.getChildren().add(helpMeServer);
 	}
 
 	protected void setOnlineLabel(boolean isOnline) {
@@ -104,6 +110,7 @@ public abstract class SuperView extends Pane {
 		login_label.setVisible(doShow);
 		backToStartView.setVisible(doShow);
 		subscription.setVisible(doShow);
+		helpMeServer.setVisible(doShow);
 	}
 
 	/*

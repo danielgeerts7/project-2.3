@@ -33,7 +33,7 @@ public class StartView extends SuperView {
 		mainpane.setPadding(new Insets(10, 10, 10, 10));
 
 		constructChooseModesPane();
-		
+
 		super.getChildren().add(1, mainpane);
 	}
 
@@ -48,7 +48,7 @@ public class StartView extends SuperView {
 
 	private void constructChooseModesPane() {
 		clearPane();
-		
+
 		showRemoteLabels(false);
 		Label modesTitle = new Label("Choose modes:");
 		Button btn_local = new Button("Local (You vs AI)");
@@ -77,7 +77,7 @@ public class StartView extends SuperView {
 
 	private void constructLoginPane() {
 		clearPane();
-		
+
 		showRemoteLabels(true);
 		TextField input_login = new TextField(username);
 		input_login.setDisable(!username.isEmpty());
@@ -103,11 +103,20 @@ public class StartView extends SuperView {
 		});
 		mainpane.add(input_login, 0, 0);
 		mainpane.add(btn_login, 1, 0);
-		
+
 		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseModesPane();
+			}
+		});
+
+		super.helpMeServer.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (ClientSocketController.getInstance(false) != null) {
+					ClientSocketController.getInstance(false).help();
+				}
 			}
 		});
 	}
@@ -138,12 +147,14 @@ public class StartView extends SuperView {
 			mainpane.add(btn_chooseGame, 1, counter);
 			counter++;
 		}
-		
+
 		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
+
 			@Override
 			public void handle(ActionEvent e) {
 				constructLoginPane();
 			}
+
 		});
 	}
 
@@ -177,8 +188,9 @@ public class StartView extends SuperView {
 			}
 			counter++;
 		}
-		
+
 		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
+
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseGamePane(playerName);

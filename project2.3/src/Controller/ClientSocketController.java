@@ -129,15 +129,15 @@ public final class ClientSocketController extends ClientCommandHandler {
 	 * @see Controller.ClientCommandHandler#waitForResponse(boolean)
 	 */
 	@Override
-	protected void waitForResponse(boolean skipOK) {
+	protected boolean waitForResponse(boolean skipOK) {
 		// Timer for when the server is not responding within 3 seconds
-		boolean shouldPass = false;
+		boolean timedOut = false;
 		long startTime = System.currentTimeMillis();
 		long elapsedTime = 0L;
 
 		msgReceived = false;
 		if (this.socket.isConnected()) {
-			while (!shouldPass && !msgReceived) {
+			while (!timedOut && !msgReceived) {
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -146,18 +146,20 @@ public final class ClientSocketController extends ClientCommandHandler {
 
 				elapsedTime = (new Date()).getTime() - startTime;
 				if (elapsedTime > 3000) {
-					shouldPass = true;
+					timedOut = true;
 					System.out.println("Server timed-out: main-thread running again");
 				}
 			}
 			System.out.println(" ====== Server responce time: " + elapsedTime + "ms ======");
-			if (skipOK && !shouldPass && msgData.contains("OK")) {
+			if (skipOK && !timedOut && msgData.contains("OK")) {
 				waitForResponse(skipOK);
 			}
 		} else {
 			msgReceived = true;
 			msgData = "";
 		}
+		
+		return timedOut;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	private static Stage primaryReverence = null;
+	private static Stage primaryReference = null;
 	public enum SceneType { START, GAME }
 	
 	@Override
@@ -24,7 +24,7 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 		primaryStage.show(); // Display the stage
 		
-		primaryReverence = primaryStage;
+		primaryReference = primaryStage;
 		
 		ClientSocketController.getInstance(true);
 	}
@@ -34,8 +34,8 @@ public class Main extends Application {
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
-			StartView start = new StartView(primaryReverence);
-			primaryReverence.getScene().setRoot(start);
+			StartView start = new StartView(primaryReference);
+			primaryReference.getScene().setRoot(start);
 			break;
 		case GAME:
 			System.out.println("----> game view");
