@@ -2,13 +2,15 @@ package Controller;
 
 import java.math.*;
 import java.util.*;
+import java.util.Scanner;
 
 public class ReversiGame {
 	final static int BOARD_SIZE = 8;
 	final static char BLACK = '\u26AB';
 	final static char WHITE = '\u26AA';
 	final static char EMPTY = '\u2B1c';
-	HashSet<Integer> valid_moves = new HashSet<Integer>();
+	//HashSet<Integer> valid_moves = new HashSet<Integer>();
+	ArrayList<Tuple> valid_moves = new ArrayList<>();
 	public Tuple[] offsets = new Tuple[8];
 	
 	public static void main(String[] args) {
@@ -17,6 +19,34 @@ public class ReversiGame {
 	
 	public ReversiGame() {
 		addOffsets();
+		Board bord = startGame();
+		char piece = BLACK;
+		while(hasValidMove(bord, piece)) {
+			gameLoop(bord, piece);
+			if(hasValidMove(bord, inverse(piece))) {
+				piece = inverse(piece);
+			}
+		}
+		printBoard(bord);
+		int black = 0;
+		int white = 0;
+		for(char[] b : bord.bord) {
+			for(char c : b) {
+				if(c == WHITE) { white += 1; }
+				if(c == BLACK) { black += 1; }
+			}
+		}
+		if(black == white) {
+			System.out.println("It's a tie!");
+		}
+		else {
+			char winner;
+			System.out.println("Black: " + black);
+			System.out.println("White: " + white);
+			if(black > white) { winner = BLACK; }
+			else { winner = WHITE; }
+			System.out.println(winner + "is the winner");
+		}
 	}
 	
 	public char inverse(char piece) {
@@ -35,24 +65,91 @@ public class ReversiGame {
 		offsets[7] = new Tuple(-1,-1);
 	}
 	
-	public void startGame() {
+	public Board startGame() {
 		Board bord  = new Board(8);
+		for(int x = 0; x < BOARD_SIZE; x++) {
+			for(int y = 0; y < BOARD_SIZE; y++) {
+				bord.bord[x][y] = EMPTY;
+			}
+		}
+		int half = BOARD_SIZE/2;
+		bord.bord[half-1][half-1] = WHITE;
+		bord.bord[half][half] = WHITE;
+		bord.bord[half][half-1] = BLACK;
+		bord.bord[half-1][half] = BLACK;
+		return bord;
 		
 	}
 	
-	public boolean isValidMove(Board bord, char piece, int x, int y) {
-		if(bord.bord[x][y] == EMPTY) { return false; }
-		for(int offset = 0; offset < offsets.length; offset++ ) {
-			Tuple check = new Tuple(x+offsets[offset].x, y+offsets[offset].y);
-			while(0 <= check.x && check.x < BOARD_SIZE-1 && 0 <= check.y && check.y < BOARD_SIZE-1
-					&& bord.bord[check.x][check.y] == inverse(piece)) {
-				check.x += offsets[offset].x;
-				check.y += offsets[offset].y;
-				if(bord.bord[check.x][check.y] == piece) {
-					return true;
+	public void printBoard(Board bord) {
+		int row = 0;
+		System.out.println(" 0  1 2 3  4 5 6 7");
+		for(char[] b : bord.bord) {
+			System.out.print(row++);
+			for(char c : b) {
+				System.out.print(c);
+			}
+			System.out.print("\n");
+		}
+	}
+	
+	public void gameLoop(Board bord, char piece) {
+		printBoard(bord);
+		while(true){
+			try {
+				//if(piece == BLACK) {
+				for(Tuple v : valid_moves) {
+					System.out.print("["+v.x+","+v.y+"]");
+				}
+				System.out.print("\n");
+				Scanner reader = new Scanner(System.in);  // Reading from System.in
+				System.out.println(piece + ", Enter a coordinate: ");
+				String coordinate = reader.nextLine();
+				List<String> coordinates = Arrays.asList(coordinate.split(","));
+				int x = Integer.parseInt(coordinates.get(0));
+				int y = Integer.parseInt(coordinates.get(1));
+				//Tuple move = new Tuple(y, x); 
+			//	}
+				if(isValidMove(bord, piece, y, x)) {
+					placePiece(bord, piece, y ,x);
+					return;
+				}
+				else {
+					//throw new AssertionError("Errortje");
+					System.out.println("oei oei hij doet het niet!");
 				}
 			}
+			catch (NumberFormatException | AssertionError | IndexOutOfBoundsException | InputMismatchException ex ) {
+				System.out.println("Oei oei");
+			}
 		}
+	}
+	
+	public boolean isValidMove(Board bord, char piece, int x, int y) {
+		if(bord.bord[x][y] != EMPTY) { return false; }
+		for(int offset = 0; offset < offsets.length; offset++ ) {
+			Tuple check = new Tuple(x+offsets[offset].x, y+offsets[offset].y);
+			while(0 <= check.x && check.x < BOARD_SIZE-1 && 0 <= check.y && check.y < BOARD_SIZE-1 && bord.bord[check.x][check.y] == inverse(piece)) {
+				check.x += offsets[offset].x;
+				check.y += offsets[offset].y;
+				//System.out.print("\n" + bord.bord[check.x][check.y]);
+				//System.out.print(" == " + piece);
+				System.out.println(check.x + "," + check.y);
+				try {
+					Character steen1 = bord.bord[check.x][check.y];
+					Character steen2 = piece;
+					if(steen1.equals(steen2)) {
+						//System.out.println("true");
+						return true;
+					}
+				}
+				catch (IndexOutOfBoundsException e) {
+					
+				}
+				
+			}
+		}
+		//System.out.println("\n false");
 		return false;
 	}
 	
@@ -74,17 +171,27 @@ public class ReversiGame {
 	
 	public void flip(Board bord, char piece, int x, int y, Tuple offset) {
 		Tuple check = new Tuple(x+offset.x, y+offset.y);
+		while(bord.bord[check.x][check.y] == inverse(piece)) {
+			bord.bord[check.x][check.y] = piece;
+			check.x += offset.x;
+			check.y += offset.y;
+		}
 	}
 	
 	public boolean hasValidMove(Board bord, char piece) {
-		for(int x = 0; x < BOARD_SIZE; x++) {
-			for(int y = 0; y < BOARD_SIZE; y++) {
-				if(isValidMove(bord, piece, x, y)) {
-					return true;
+		valid_moves.clear();
+		for(int y = 0; y < BOARD_SIZE; y++) {
+			for(int x = 0; x < BOARD_SIZE; x++) {
+				if(isValidMove(bord, piece, y, x)) {
+					valid_moves.add(new Tuple(x,y));
 				}
 			}
 		}
-		return false;
+		if(valid_moves.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
@@ -108,8 +215,8 @@ class Board {
 }
 
 class Tuple {
-	static int x = -1;
-	static int y = -1;
+	int x = -1;
+	int y = -1;
 	
 	public Tuple(int x, int y) {
 		this.x = x;
