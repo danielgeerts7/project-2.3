@@ -1,9 +1,11 @@
-package Controller;
+package Model;
 
-import java.math.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.*;
 
 public class ReversiGame {
 	final static int BOARD_SIZE = 8;
@@ -137,14 +139,10 @@ public class ReversiGame {
 			while(0 <= check.x && check.x < BOARD_SIZE-1 && 0 <= check.y && check.y < BOARD_SIZE-1 && bord.bord[check.x][check.y] == inverse(piece)) {
 				check.x += offsets[offset].x;
 				check.y += offsets[offset].y;
-				//System.out.print("\n" + bord.bord[check.x][check.y]);
-				//System.out.print(" == " + piece);
-				//System.out.println(check.x + "," + check.y);
 				try {
 					Character steen1 = bord.bord[check.x][check.y];
 					Character steen2 = piece;
 					if(steen1.equals(steen2)) {
-						//System.out.println("true");
 						return true;
 					}
 				}
@@ -154,7 +152,6 @@ public class ReversiGame {
 				
 			}
 		}
-		//System.out.println("\n false");
 		return false;
 	}
 	
@@ -200,31 +197,4 @@ public class ReversiGame {
 	}
 }
 
-class Board {
-	
-	public char[][] bord;
-	
-	public Board(int size) {
-		bord = new char[size][size];
-		for(int x = 0; x < size; x++) {
-			for(int y = 0; y < size; y++) {
-				bord[x][y] = ReversiGame.EMPTY;
-			}
-		}
-	}
-	
-	public char[][] getBord(){
-		return bord;
-	}
-	
-}
 
-class Tuple {
-	int x = -1;
-	int y = -1;
-	
-	public Tuple(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-}
