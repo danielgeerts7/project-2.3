@@ -1,6 +1,7 @@
 package View;
 
 import Controller.ClientSocketController;
+import Main.Main;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,7 +16,7 @@ import javafx.stage.Stage;
 /**
  * StartView is the first view when application is started
  *
- * @author Daniël Geerts
+ * @author DaniÃ«l Geerts
  * @since 2019-03-28
  */
 public class StartView extends SuperView {
@@ -178,6 +179,7 @@ public class StartView extends SuperView {
 							if (successfull) {
 								// constructChooseOpponentPane();
 								System.out.println("Come at me " + opponent + ", you pussy!");
+                Main.switchScene(Main.SceneType.GAME);
 							}
 						}
 					}
