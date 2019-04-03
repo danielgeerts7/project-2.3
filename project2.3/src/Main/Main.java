@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
+	private static Stage primaryReference = null;
+	public enum SceneType { START, GAME }
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
@@ -21,11 +24,24 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
 		primaryStage.show(); // Display the stage
 		
+		primaryReference = primaryStage;
+		
 		ClientSocketController.getInstance(true);
 	}
 	
-	public static void switchScene(Stage primaryStage, SuperView newScene) {
+	public static void switchScene(SceneType scenetype) {
 		// TODO: switch from scene
+		switch (scenetype) {
+		case START:
+			System.out.println("----> start view");
+			StartView start = new StartView(primaryReference);
+			primaryReference.getScene().setRoot(start);
+			break;
+		case GAME:
+			System.out.println("----> game view");
+
+			break;
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
