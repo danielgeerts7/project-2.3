@@ -29,6 +29,7 @@ abstract class ServerMessageHandler {
 				if (command.contains("SVR GAME MATCH")) {
 					// Server send you a match with another player
 					// TODO: react on this
+					Main.Main.switchScene(Main.Main.SceneType.GAME);
 					Popup.getInstance().newPopup("START MATCH NOW! new GameView();", Popup.Type.DEBUG);
 				} else if (command.contains("SVR GAME YOURTURN")) {
 					// It is your turn in the game

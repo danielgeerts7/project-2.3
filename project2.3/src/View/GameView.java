@@ -35,7 +35,7 @@ public class GameView extends SuperView  {
 	private void constructGamePane() {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				pane.add(new ImageView(new Image("green_tile.png", 70, 70, false, false)), i, j);
+				pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
 			}
 		}
 		
