@@ -9,7 +9,7 @@ import View.Popup;
  * @author Daniël Geerts
  * @since 2019-03-31
  */
-public abstract class ClientCommandHandler extends ServerMessageHandler {
+public abstract class CommandHandler extends ServerMessageHandler {
 
 	/*
 	 * Tries to login onto the server
@@ -38,7 +38,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 	public String[] getGamelist() {
 		this.sendMessageToServer("get gamelist");
 		this.waitForResponse(true);
-		
+
 		String msg = getMsgData();
 		if (msg.contains("SVR GAMELIST")) {
 			String games = msg.substring(msg.indexOf('['), msg.indexOf(']'));
@@ -68,6 +68,20 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	public boolean doMove(String pos) {
+		this.sendMessageToServer("move " + pos);
+		this.waitForResponse(false);
+
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
+			return true;
+		} else {
+			System.out.println("Invalid play from our Client");
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+			return false;
+		}
+	}
+
 	public boolean challengeOpponent(String opponentName, String gameName) {
 		this.sendMessageToServer("challenge " + "\"" + opponentName + "\" \"" + gameName + "\"");
 		this.waitForResponse(false);
@@ -80,7 +94,7 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 			return false;
 		}
 	}
-	
+
 	public boolean acceptChallenge(String challengeNr) {
 		this.sendMessageToServer("challenge accept " + challengeNr);
 		this.waitForResponse(false);

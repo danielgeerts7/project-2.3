@@ -1,6 +1,6 @@
 package View;
 
-import Controller.ClientSocketController;
+import Controller.SocketController;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -64,7 +64,7 @@ public class StartView extends SuperView {
 		btn_remote.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (ClientSocketController.getInstance(true) != null) {
+				if (SocketController.getInstance(true) != null) {
 					constructLoginPane();
 				}
 			}
@@ -88,8 +88,8 @@ public class StartView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				String loginname = input_login.getText();
-				if (ClientSocketController.getInstance(true) != null) {
-					int successfull = ClientSocketController.getInstance(true).loginOnServer(loginname);
+				if (SocketController.getInstance(true) != null) {
+					int successfull = SocketController.getInstance(true).loginOnServer(loginname);
 					if (successfull == 1) {
 						username = loginname;
 						constructChooseGamePane(username);
@@ -114,8 +114,8 @@ public class StartView extends SuperView {
 		super.helpMeServer.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (ClientSocketController.getInstance(false) != null) {
-					ClientSocketController.getInstance(false).help();
+				if (SocketController.getInstance(false) != null) {
+					SocketController.getInstance(false).help();
 				}
 			}
 		});
@@ -124,7 +124,7 @@ public class StartView extends SuperView {
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
 
-		String[] games = ClientSocketController.getInstance(true).getGamelist();
+		String[] games = SocketController.getInstance(true).getGamelist();
 		int counter = 1;
 		for (String i : games) {
 			Label txt_gameName = new Label(i);
@@ -134,8 +134,8 @@ public class StartView extends SuperView {
 				@Override
 				public void handle(ActionEvent e) {
 					String gamename = txt_gameName.getText();
-					if (ClientSocketController.getInstance(true) != null) {
-						boolean successfull = ClientSocketController.getInstance(true).selectGame(gamename);
+					if (SocketController.getInstance(true) != null) {
+						boolean successfull = SocketController.getInstance(true).selectGame(gamename);
 						if (successfull) {
 							setSubscription(gamename);
 							constructChooseOpponentPane(playerName, gamename);
@@ -161,7 +161,7 @@ public class StartView extends SuperView {
 	private void constructChooseOpponentPane(String playerName, String game) {
 		clearPane();
 
-		String[] opponents = ClientSocketController.getInstance(true).getPlayerlist();
+		String[] opponents = SocketController.getInstance(true).getPlayerlist();
 		int counter = 1;
 		for (String enemie : opponents) {
 			if (!enemie.equals(playerName)) {
@@ -172,8 +172,8 @@ public class StartView extends SuperView {
 					@Override
 					public void handle(ActionEvent e) {
 						String opponent = txt_opponentsName.getText();
-						if (ClientSocketController.getInstance(true) != null) {
-							boolean successfull = ClientSocketController.getInstance(true).challengeOpponent(opponent,
+						if (SocketController.getInstance(true) != null) {
+							boolean successfull = SocketController.getInstance(true).challengeOpponent(opponent,
 									game);
 							if (successfull) {
 								// constructChooseOpponentPane();

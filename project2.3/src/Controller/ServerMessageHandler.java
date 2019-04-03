@@ -67,7 +67,7 @@ abstract class ServerMessageHandler {
 						&& !getMsgData().contains("Available commands")
 						&& !getMsgData().contains("Help information for Strategic Game Server Fixed")
 						&& !getMsgData().contains("For more information on a command")) {
-					Popup.getInstance().newPopup(getMsgData().replace("SVR HELP", "").replace("  ", ""), Popup.Type.OK);
+					Popup.getInstance().newPopup(getMsgData().replace("SVR HELP", "").replace("  ", "").trim(), Popup.Type.OK);
 				}
 			}
 		}
@@ -84,7 +84,7 @@ abstract class ServerMessageHandler {
 			@Override
 			public void clickedYes() {
 				// Our client has accepted the challenge
-				ClientSocketController.getInstance(true).acceptChallenge(challengeNr);
+				SocketController.getInstance(true).acceptChallenge(challengeNr);
 				challenges.remove(challengeNr);
 			}
 

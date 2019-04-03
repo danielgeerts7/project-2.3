@@ -1,6 +1,6 @@
 package View;
 
-import Controller.ClientSocketController;
+import Controller.SocketController;
 import Model.Config;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
@@ -36,9 +36,9 @@ public abstract class SuperView extends Pane {
 			@Override
 			public void handle(long now) {
 				update();
-				if (ClientSocketController.getInstance(false) != null
-						&& ClientSocketController.getInstance(true).getSocket() != null
-						&& ClientSocketController.getInstance(true).getSocket().isConnected()) {
+				if (SocketController.getInstance(false) != null
+						&& SocketController.getInstance(true).getSocket() != null
+						&& SocketController.getInstance(true).getSocket().isConnected()) {
 					setOnlineLabel(true);
 				} else {
 					setOnlineLabel(false);

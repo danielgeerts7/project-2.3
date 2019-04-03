@@ -1,6 +1,6 @@
 package Main;
 
-import Controller.ClientSocketController;
+import Controller.SocketController;
 import Model.Config;
 import View.StartView;
 import javafx.application.Application;
@@ -26,7 +26,7 @@ public class Main extends Application {
 		
 		primaryReference = primaryStage;
 		
-		ClientSocketController.getInstance(true);
+		SocketController.getInstance(true);
 	}
 	
 	public static void switchScene(SceneType scenetype) {
