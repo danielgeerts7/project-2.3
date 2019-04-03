@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
- * StartView is the first view when application is started
+ /* StartView is the first view when application is started
  *
  * @author Daniël Geerts
  * @since 2019-03-28
