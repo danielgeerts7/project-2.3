@@ -13,19 +13,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-/**
  * StartView is the first view when application is started
  *
  * @author Daniël Geerts
  * @since 2019-03-28
  */
+
 public class StartView extends SuperView {
 
 	private GridPane mainpane = null;
 
 	public StartView(Stage primaryStage) {
 		super();
-
 		mainpane = new GridPane();
 		mainpane.setAlignment(Pos.CENTER);
 		mainpane.setMinSize(Config.WIDTH, Config.HEIGHT);
