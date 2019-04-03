@@ -3,28 +3,31 @@ package Controller;
 import View.Popup;
 
 /**
-* ClientCommandHandler handles every command this client can do
-* The extension handles every incoming server Message (server request)
-*
-* @author  Daniël Geerts
-* @since   2019-03-31
-*/
+ * ClientCommandHandler handles every command this client can do The extension
+ * handles every incoming server Message (server request)
+ *
+ * @author Daniël Geerts
+ * @since 2019-03-31
+ */
 public abstract class ClientCommandHandler extends ServerMessageHandler {
-	
+
 	/*
 	 * Tries to login onto the server
 	 * 
 	 * @param Return True when succeeded, False when failed
 	 */
-	public boolean loginOnServer(String name) {
+	public int loginOnServer(String name) {
 		this.sendMessageToServer("login " + name);
-		this.waitForResponse();
+		this.waitForResponse(false);
 
-		if (getMsgData().contains("OK")) {
-			return true;
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
+			return 1;
+		} else if (msg.contains("ERR Already logged in")) {
+			return 0;
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.ERROR);
-			return false;
+			Popup.getInstance().newPopup(msg, Popup.Type.OK);
+			return -1;
 		}
 	}
 
@@ -34,120 +37,106 @@ public abstract class ClientCommandHandler extends ServerMessageHandler {
 
 	public String[] getGamelist() {
 		this.sendMessageToServer("get gamelist");
-		this.waitForResponse();
-
-		if (getMsgData().contains("SVR GAMELIST")) {
-			String games = getMsgData().substring(getMsgData().indexOf('['), getMsgData().indexOf(']'));
+		this.waitForResponse(true);
+		
+		String msg = getMsgData();
+		if (msg.contains("SVR GAMELIST")) {
+			String games = msg.substring(msg.indexOf('['), msg.indexOf(']'));
 			String[] availableGames = games.split(",");
 			int i = 0;
 			for (String game : availableGames) {
-				availableGames[i] = game.replace("\"", "").replace(" ", "").replace("]", "").replace("[", "");
+				availableGames[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
 				i++;
 			}
 			return availableGames;
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
 			return null;
 		}
 	}
 
 	public boolean selectGame(String gameName) {
 		this.sendMessageToServer("subscribe " + gameName);
-		this.waitForResponse();
+		this.waitForResponse(false);
 
-		if (getMsgData().contains("OK")) {
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
 			return true;
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
 			return false;
 		}
 	}
 
 	public boolean challengeOpponent(String opponentName, String gameName) {
-		this.sendMessageToServer("challenge " + opponentName + " " + gameName);
-		this.waitForResponse();
+		this.sendMessageToServer("challenge " + "\"" + opponentName + "\" \"" + gameName + "\"");
+		this.waitForResponse(false);
 
-		if (getMsgData().contains("OK")) {
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
 			return true;
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+			return false;
+		}
+	}
+	
+	public boolean acceptChallenge(String challengeNr) {
+		this.sendMessageToServer("challenge accept " + challengeNr);
+		this.waitForResponse(false);
+
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
+			return true;
+		} else {
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
 			return false;
 		}
 	}
 
 	public String[] getPlayerlist() {
 		this.sendMessageToServer("get playerlist");
-		this.waitForResponse();
+		this.waitForResponse(true);
 
-		if (getMsgData().contains("OK")) {
-			String games = getMsgData().substring(getMsgData().indexOf('['), getMsgData().indexOf(']'));
-			String[] availableGames = games.split(",");
+		String msg = getMsgData();
+		if (msg.contains("SVR PLAYERLIST")) {
+			String players = msg.substring(msg.indexOf('['), msg.indexOf(']'));
+			String[] availablePlayers = players.split(",");
 			int i = 0;
-			for (String game : availableGames) {
-				availableGames[i] = game.replace("\"", "").replace(" ", "").replace("]", "").replace("[", "");
+			for (String game : availablePlayers) {
+				availablePlayers[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
 				i++;
 			}
-			return availableGames;
+			if (availablePlayers.length <= 1) {
+				// Only our client is connected
+				return new String[0];
+			}
+			return availablePlayers;
 		} else {
 			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
-			return null;
+			return new String[0];
 		}
+	}
+
+	public void help() {
+		this.sendMessageToServer("help");
 	}
 
 	public void forfeit() {
 		this.sendMessageToServer("forfeit");
-		this.waitForResponse();
+		this.waitForResponse(false);
 
-		if (getMsgData().contains("OK")) {
+		String msg = getMsgData();
+		if (msg.contains("OK")) {
 			// End game - u lose!
-			Popup.getInstance().newPopup("Forfeit not implemented", Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Clients forfeit not implemented", Popup.Type.OK);
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
+			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
 		}
 	}
-	
+
 	protected abstract void sendMessageToServer(String msg);
 
-	protected abstract void waitForResponse();
-	
-	protected abstract String getMsgData();
-	
-}
+	protected abstract void readServerInput();
 
-/**
-* ServerMessageHandler handles every incoming server request
-* This needs to be a very dynamic class (that means that the request can happen at any time)
-*
-* @author  Daniël Geerts
-* @since   2019-03-31
-*/
-class ServerMessageHandler {
-	
-	protected void doCommand(String command) {
-		if (command.contains("SVR")) {
-			if (command.contains("SVR GAME")) {
-				if (command.contains("SVR GAME MATCH")) {
-					// Server send you a match with another player
-					// TODO: react on this
-				} else if (command.contains("SVR GAME YOURTURN")) {
-					// It is your turn in the game
-					// TODO: react on this
-				} else if (command.contains("SVR GAME MOVE")) {
-					// Your opponent has made its move
-					// TODO: react on this
-				} else if (command.contains("SVR GAME CHALLENGE")) {
-					// Accept incoming challenge
-				} else if (command.contains("SVR GAME CHALLENGE CANCELLED")) {
-					// Challenge is cancelled by opponent
-				} else {
-					// Match is over. Implement every outcome. There are 3
-					// if (command.contains("SVR GAME WIN"))
-				}
-			}
-
-			if (command.contains("SVR HELP")) {
-				// Show all help information to client
-			}
-		}
-	}
 }
