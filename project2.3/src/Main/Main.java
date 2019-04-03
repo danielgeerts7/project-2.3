@@ -13,8 +13,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	private static Stage primaryReference = null;
+
 	public enum SceneType { START, GAME };
-	
+  
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
@@ -33,7 +34,6 @@ public class Main extends Application {
 	}
 	
 	public static void switchScene(SceneType scenetype) {
-		// TODO: Switch from scene
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
