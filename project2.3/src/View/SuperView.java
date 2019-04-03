@@ -4,6 +4,7 @@ import Controller.SocketController;
 import Model.Config;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -26,7 +27,8 @@ public abstract class SuperView extends Pane {
 	private Label subscription = null;
 	protected Button backToStartView = null;
 	protected Button helpMeServer = null;
-	protected String username = "";
+	private static String username = "";
+	private static String gamePlaying = "";
 
 	public SuperView() {
 		this.setBackground(
@@ -53,13 +55,13 @@ public abstract class SuperView extends Pane {
 		super.getChildren().add(online_label);
 
 		login_label = new Label();
-		this.setLoginAsLabel("");
+		this.setUsername(username);
 		login_label.setTranslateX(Config.WIDTH * 0.85);
 		login_label.setTranslateY(25);
 		super.getChildren().add(login_label);
 		
 		subscription = new Label();
-		this.setSubscription("");
+		this.setSubscription(gamePlaying);
 		subscription.setTranslateX(Config.WIDTH * 0.85);
 		subscription.setTranslateY(50);
 		super.getChildren().add(subscription);
@@ -74,6 +76,14 @@ public abstract class SuperView extends Pane {
 		helpMeServer.setTranslateY(25);
 		super.getChildren().add(helpMeServer);
 	}
+	
+	protected void addChild(Node e) {
+		super.getChildren().add(1, e);
+	}
+	
+	protected void clearChildren() {
+		super.getChildren().clear();
+	}
 
 	protected void setOnlineLabel(boolean isOnline) {
 		if (isOnline) {
@@ -85,7 +95,7 @@ public abstract class SuperView extends Pane {
 		}
 	}
 
-	protected void setLoginAsLabel(String name) {
+	protected void setUsername(String name) {
 		if (name.equals("")) {
 			login_label.setText(String.format("User is not logged in yet"));
 			login_label.setTextFill(Color.DARKRED);
@@ -93,6 +103,7 @@ public abstract class SuperView extends Pane {
 			login_label.setText(String.format("Logged in as: " + name));
 			login_label.setTextFill(Color.GREEN);
 		}
+		username = name;
 	}
 
 	protected void setSubscription(String name) {
@@ -103,6 +114,7 @@ public abstract class SuperView extends Pane {
 			subscription.setText(String.format("subscribed for: " + name));
 			subscription.setTextFill(Color.GREEN);
 		}
+		gamePlaying = name;
 	}
 
 	protected void showRemoteLabels(boolean doShow) {
@@ -111,6 +123,10 @@ public abstract class SuperView extends Pane {
 		backToStartView.setVisible(doShow);
 		subscription.setVisible(doShow);
 		helpMeServer.setVisible(doShow);
+	}
+	
+	protected String getUsername() {
+		return username;
 	}
 
 	/*

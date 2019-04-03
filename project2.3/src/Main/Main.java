@@ -3,7 +3,6 @@ package Main;
 import Controller.SocketController;
 import Model.Config;
 import View.StartView;
-import View.SuperView;
 import View.GameView;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,7 +18,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
-		GameView game = new GameView(primaryStage);
 		Scene scene = new Scene(menu);
 		
 		primaryStage.setTitle(Config.APP_NAME); // Set the stage title

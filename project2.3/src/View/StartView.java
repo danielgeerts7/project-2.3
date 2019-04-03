@@ -1,7 +1,6 @@
 package View;
 
 import Controller.SocketController;
-import Main.Main;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,7 +33,7 @@ public class StartView extends SuperView {
 
 		constructChooseModesPane();
 
-		super.getChildren().add(1, mainpane);
+		super.addChild(mainpane);
 	}
 
 	@Override
@@ -79,8 +78,8 @@ public class StartView extends SuperView {
 		clearPane();
 
 		showRemoteLabels(true);
-		TextField input_login = new TextField(username);
-		input_login.setDisable(!username.isEmpty());
+		TextField input_login = new TextField(super.getUsername());
+		input_login.setDisable(!super.getUsername().isEmpty());
 
 		Button btn_login = new Button("Login");
 
@@ -91,12 +90,11 @@ public class StartView extends SuperView {
 				if (SocketController.getInstance(true) != null) {
 					int successfull = SocketController.getInstance(true).loginOnServer(loginname);
 					if (successfull == 1) {
-						username = loginname;
-						constructChooseGamePane(username);
+						constructChooseGamePane(loginname);
 						setOnlineLabel(true); // Super -> (this)client is connected with server
-						setLoginAsLabel(username); // Super -> set login label
+						setUsername(loginname); // Super -> set login label
 					} else if (successfull == 0) {
-						constructChooseGamePane(username);
+						constructChooseGamePane(loginname);
 					}
 				}
 			}

@@ -2,8 +2,6 @@ package View;
 
 import Model.Config;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -24,7 +22,7 @@ public class GameView extends SuperView  {
 		
 		constructGamePane();
 		
-		super.getChildren().add(pane);
+		super.addChild(pane);
 	}
 	
 	@Override
