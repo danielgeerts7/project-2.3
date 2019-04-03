@@ -17,7 +17,7 @@ import View.Popup;
  * ClientCommandHandler, this class can call Commands And can handle Server
  * requests
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-28
  */
 public final class SocketController extends CommandHandler {
@@ -53,7 +53,7 @@ public final class SocketController extends CommandHandler {
 				if (!popupOpen) {
 					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.OK);
 					popupOpen = true;
-					Main.switchScene(Main.SceneType.START);
+					// Main.switchScene(Main.SceneType.START);
 					// is this the way to go?? ^^
 				}
 			}
@@ -150,7 +150,13 @@ public final class SocketController extends CommandHandler {
 					System.out.println("Server timed-out: main-thread running again");
 				}
 			}
-			System.out.println(" ====== Server responce time: " + elapsedTime + "ms ======");
+			
+			if (timedOut) {
+				System.out.println(" ====== Server timed-out: " + elapsedTime + "ms ======");
+			} else {
+				System.out.println(" ====== Server responce time: " + elapsedTime + "ms ======");
+			}
+
 			if (skipOK && !timedOut && msgData.contains("OK")) {
 				waitForResponse(skipOK);
 			}
@@ -158,7 +164,7 @@ public final class SocketController extends CommandHandler {
 			msgReceived = true;
 			msgData = "";
 		}
-		
+
 		return timedOut;
 	}
 
@@ -182,7 +188,6 @@ public final class SocketController extends CommandHandler {
 			e.printStackTrace();
 		}
 		socket = null;
-
-		Main.QuitApp();
+		instance = null;
 	}
 }

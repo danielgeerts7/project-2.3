@@ -17,18 +17,19 @@ import javafx.scene.paint.Color;
  * SuperView contains all features that every scene needs In this case, a update
  * function and online label
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-28
  */
 public abstract class SuperView extends Pane {
 
-	private Label online_label = null;
-	private Label login_label = null;
-	private Label subscription = null;
-	protected Button backToStartView = null;
-	protected Button helpMeServer = null;
+	private static Label online_label = null;
+	private static Label login_label = null;
+	private static Label subscription = null;
 	private static String username = "";
 	private static String gamePlaying = "";
+	
+	protected static Button btn_back = null;
+	protected static Button btn_help = null;
 
 	public SuperView() {
 		this.setBackground(
@@ -49,32 +50,38 @@ public abstract class SuperView extends Pane {
 		};
 		animator.start();
 
+		this.addChildren();
+	}
+	
+	private void addChildren() {
+		clearChildren();
+		
 		online_label = new Label();
-		this.setOnlineLabel(false);
+		setOnlineLabel(false);
 		online_label.setTranslateX(Config.WIDTH * 0.85);
 		super.getChildren().add(online_label);
 
 		login_label = new Label();
-		this.setUsername(username);
+		setUsername(username);
 		login_label.setTranslateX(Config.WIDTH * 0.85);
 		login_label.setTranslateY(25);
 		super.getChildren().add(login_label);
 		
 		subscription = new Label();
-		this.setSubscription(gamePlaying);
+		setSubscription(gamePlaying);
 		subscription.setTranslateX(Config.WIDTH * 0.85);
 		subscription.setTranslateY(50);
 		super.getChildren().add(subscription);
 
-		backToStartView = new Button("Go back");
-		backToStartView.setTranslateX((Config.WIDTH / 2) - 50);
-		backToStartView.setTranslateY(25);
-		super.getChildren().add(backToStartView);
+		btn_back = new Button("Go back");
+		btn_back.setTranslateX((Config.WIDTH / 2) - 100);
+		btn_back.setTranslateY(25);
+		super.getChildren().add(btn_back);
 		
-		helpMeServer = new Button("Help");
-		helpMeServer.setTranslateX((Config.WIDTH / 2) + 50);
-		helpMeServer.setTranslateY(25);
-		super.getChildren().add(helpMeServer);
+		btn_help = new Button("Help");
+		btn_help.setTranslateX((Config.WIDTH / 2));
+		btn_help.setTranslateY(25);
+		super.getChildren().add(btn_help);
 	}
 	
 	protected void addChild(Node e) {
@@ -106,7 +113,7 @@ public abstract class SuperView extends Pane {
 		username = name;
 	}
 
-	protected void setSubscription(String name) {
+	protected static void setSubscription(String name) {
 		if (name.equals("")) {
 			subscription.setText(String.format("Not yet subscribed for a game"));
 			subscription.setTextFill(Color.DARKRED);
@@ -120,9 +127,9 @@ public abstract class SuperView extends Pane {
 	protected void showRemoteLabels(boolean doShow) {
 		online_label.setVisible(doShow);
 		login_label.setVisible(doShow);
-		backToStartView.setVisible(doShow);
 		subscription.setVisible(doShow);
-		helpMeServer.setVisible(doShow);
+		btn_back.setVisible(doShow);
+		btn_help.setVisible(doShow);
 	}
 	
 	protected String getUsername() {

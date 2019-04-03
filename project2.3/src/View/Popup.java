@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  * Popup is a Singleton class So a popup can occur throughout the project the
  * whole application
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-28
  */
 public final class Popup {
@@ -185,7 +185,6 @@ public final class Popup {
 
 	public interface PopupYesNo {
 		void clickedYes();
-
 		void clickedNo();
 	}
 }

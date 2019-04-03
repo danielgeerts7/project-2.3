@@ -3,14 +3,17 @@ package Controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import Main.Main;
+import View.GameView;
 import View.Popup;
 import View.Popup.PopupYesNo;
+import javafx.application.Platform;
 
 /**
  * ServerMessageHandler handles every incoming server request This needs to be a
  * very dynamic class (that means that the request can happen at any time)
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-31
  */
 abstract class ServerMessageHandler {
@@ -27,10 +30,7 @@ abstract class ServerMessageHandler {
 				&& !command.contains("SVR GAMELIST")) {
 			if (command.contains("SVR GAME")) {
 				if (command.contains("SVR GAME MATCH")) {
-					// Server send you a match with another player
-					// TODO: react on this
-					Main.Main.switchScene(Main.Main.SceneType.GAME);
-					Popup.getInstance().newPopup("START MATCH NOW! new GameView();", Popup.Type.DEBUG);
+					createMatch(command);
 				} else if (command.contains("SVR GAME YOURTURN")) {
 					// It is your turn in the game
 					// TODO: react on this
@@ -73,10 +73,19 @@ abstract class ServerMessageHandler {
 			}
 		}
 	}
+	
+	private void createMatch(String command) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Main.switchScene(Main.SceneType.GAME);
+				GameView.updateSuperView(svrMessageToMap(command));
+			}
+		});
+	}
 
 	private void gotChallenged(String msg) {
-		String server_msg = msg.substring(msg.indexOf('{'), msg.indexOf('}'));
-		HashMap<String, String> map = stringToMap(server_msg);
+		HashMap<String, String> map = svrMessageToMap(msg);
 
 		String challenger = map.get("CHALLENGER");
 		String gameType = map.get("GAMETYPE");
@@ -101,8 +110,7 @@ abstract class ServerMessageHandler {
 	}
 
 	private void challengeCancelled(String msg) {
-		String temp = msg.substring(msg.indexOf('{'), msg.indexOf('}'));
-		HashMap<String, String> map = stringToMap(temp);
+		HashMap<String, String> map = svrMessageToMap(msg);
 		String challengeNr = map.get("CHALLENGENUMBER");
 		Popup.getInstance().newPopup("Challenge(" + challengeNr + ") got cancelled", Popup.Type.YESNO);
 
@@ -112,9 +120,10 @@ abstract class ServerMessageHandler {
 		}
 	}
 
-	protected HashMap<String, String> stringToMap(String s) {
+	private HashMap<String, String> svrMessageToMap(String msg) {
+		String server_msg = msg.substring(msg.indexOf('{'), msg.indexOf('}'));
 		HashMap<String, String> map = new HashMap<String, String>();
-		String[] list = s.split(",");
+		String[] list = server_msg.split(",");
 		for (int i = 0; i < list.length; i++) {
 			list[i] = list[i].replace("\"", "").replace("{", "").replace("}", "").trim();
 			System.out.println("l: " + list[i]);

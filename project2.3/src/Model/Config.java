@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 /**
 * Config is a class with some default settings of the application
 *
-* @author  Daniël Geerts
+* @author  Daniel Geerts
 * @since   2019-03-28
 */
 public abstract class Config {

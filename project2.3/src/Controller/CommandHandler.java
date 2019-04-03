@@ -6,7 +6,7 @@ import View.Popup;
  * ClientCommandHandler handles every command this client can do The extension
  * handles every incoming server Message (server request)
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-31
  */
 public abstract class CommandHandler extends ServerMessageHandler {
@@ -26,7 +26,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		} else if (msg.contains("ERR Already logged in")) {
 			return 0;
 		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.OK);
+			Popup.getInstance().newPopup("Failed to login\n"+msg, Popup.Type.DEBUG);
 			return -1;
 		}
 	}
@@ -50,21 +50,18 @@ public abstract class CommandHandler extends ServerMessageHandler {
 			}
 			return availableGames;
 		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to get gamelist\n"+msg, Popup.Type.DEBUG);
 			return null;
 		}
 	}
 
-	public boolean selectGame(String gameName) {
+	public void selectGame(String gameName) {
 		this.sendMessageToServer("subscribe " + gameName);
 		this.waitForResponse(false);
 
 		String msg = getMsgData();
-		if (msg.contains("OK")) {
-			return true;
-		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
-			return false;
+		if (!msg.contains("OK") && !msg.contains("SVR GAMELIST")) {
+			Popup.getInstance().newPopup("Failed to select game\n"+msg, Popup.Type.DEBUG);
 		}
 	}
 
@@ -77,34 +74,29 @@ public abstract class CommandHandler extends ServerMessageHandler {
 			return true;
 		} else {
 			System.out.println("Invalid play from our Client");
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to move\n"+msg, Popup.Type.DEBUG);
 			return false;
 		}
 	}
 
-	public boolean challengeOpponent(String opponentName, String gameName) {
+	public void challengeOpponent(String opponentName, String gameName) {
 		this.sendMessageToServer("challenge " + "\"" + opponentName + "\" \"" + gameName + "\"");
 		this.waitForResponse(false);
 
 		String msg = getMsgData();
-		if (msg.contains("OK")) {
-			return true;
-		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
-			return false;
+		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
+			Popup.getInstance().newPopup("Failed to challenge opponent\n"+msg, Popup.Type.DEBUG);
 		}
 	}
 
-	public boolean acceptChallenge(String challengeNr) {
+	public void acceptChallenge(String challengeNr) {
 		this.sendMessageToServer("challenge accept " + challengeNr);
 		this.waitForResponse(false);
 
 		String msg = getMsgData();
-		if (msg.contains("OK")) {
-			return true;
-		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
-			return false;
+		System.out.println("acc" + msg );
+		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
+			Popup.getInstance().newPopup("Failed to accept challenge\n"+msg, Popup.Type.DEBUG);
 		}
 	}
 
@@ -127,7 +119,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 			}
 			return availablePlayers;
 		} else {
-			Popup.getInstance().newPopup(getMsgData(), Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to get playerlist\n"+msg, Popup.Type.DEBUG);
 			return new String[0];
 		}
 	}
@@ -141,11 +133,8 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		this.waitForResponse(false);
 
 		String msg = getMsgData();
-		if (msg.contains("OK")) {
-			// End game - u lose!
-			Popup.getInstance().newPopup("Clients forfeit not implemented", Popup.Type.OK);
-		} else {
-			Popup.getInstance().newPopup(msg, Popup.Type.DEBUG);
+		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
+			Popup.getInstance().newPopup("Failed to forfeit\n"+msg, Popup.Type.DEBUG);
 		}
 	}
 

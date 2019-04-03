@@ -12,7 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
- /* StartView is the first view when application is started
+/**
+ * StartView is the first view when application is started
  *
  * @author Daniel Geerts
  * @since 2019-03-28
@@ -77,6 +78,7 @@ public class StartView extends SuperView {
 	private void constructLoginPane() {
 		clearPane();
 
+		SocketController.getInstance(true);
 		showRemoteLabels(true);
 		TextField input_login = new TextField(super.getUsername());
 		input_login.setDisable(!super.getUsername().isEmpty());
@@ -102,14 +104,14 @@ public class StartView extends SuperView {
 		mainpane.add(input_login, 0, 0);
 		mainpane.add(btn_login, 1, 0);
 
-		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
+		btn_back.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseModesPane();
 			}
 		});
 
-		super.helpMeServer.setOnAction(new EventHandler<ActionEvent>() {
+		btn_help.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				if (SocketController.getInstance(false) != null) {
@@ -131,13 +133,11 @@ public class StartView extends SuperView {
 			btn_chooseGame.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent e) {
-					String gamename = txt_gameName.getText();
 					if (SocketController.getInstance(true) != null) {
-						boolean successfull = SocketController.getInstance(true).selectGame(gamename);
-						if (successfull) {
-							setSubscription(gamename);
-							constructChooseOpponentPane(playerName, gamename);
-						}
+						String gamename = txt_gameName.getText();
+						SocketController.getInstance(true).selectGame(gamename);
+						setSubscription(gamename);
+						constructChooseOpponentPane(playerName, gamename);
 					}
 				}
 			});
@@ -146,7 +146,7 @@ public class StartView extends SuperView {
 			counter++;
 		}
 
-		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
+		btn_back.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
@@ -169,15 +169,10 @@ public class StartView extends SuperView {
 				btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {
-						String opponent = txt_opponentsName.getText();
 						if (SocketController.getInstance(true) != null) {
-							boolean successfull = SocketController.getInstance(true).challengeOpponent(opponent,
-									game);
-							if (successfull) {
-								// constructChooseOpponentPane();
-								System.out.println("Come at me " + opponent + ", you pussy!");
-								//Main.switchScene(Main.SceneType.GAME);
-							}
+							String opponent = txt_opponentsName.getText();
+							SocketController.getInstance(true).challengeOpponent(opponent, game);
+							System.out.println("Come at me " + opponent + ", you pussy!");
 						}
 					}
 				});
@@ -188,7 +183,7 @@ public class StartView extends SuperView {
 			counter++;
 		}
 
-		super.backToStartView.setOnAction(new EventHandler<ActionEvent>() {
+		btn_back.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
