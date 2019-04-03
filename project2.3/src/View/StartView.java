@@ -1,6 +1,7 @@
 package View;
 
 import Controller.SocketController;
+import Main.Main;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,19 +13,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-/**
  * StartView is the first view when application is started
  *
- * @author Daniël Geerts
+ * @author Daniel Geerts
  * @since 2019-03-28
  */
+
 public class StartView extends SuperView {
 
 	private GridPane mainpane = null;
 
 	public StartView(Stage primaryStage) {
 		super();
-
 		mainpane = new GridPane();
 		mainpane.setAlignment(Pos.CENTER);
 		mainpane.setMinSize(Config.WIDTH, Config.HEIGHT);
@@ -178,6 +178,7 @@ public class StartView extends SuperView {
 							if (successfull) {
 								// constructChooseOpponentPane();
 								System.out.println("Come at me " + opponent + ", you pussy!");
+                Main.switchScene(Main.SceneType.GAME);
 							}
 						}
 					}

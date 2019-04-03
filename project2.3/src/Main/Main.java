@@ -3,6 +3,8 @@ package Main;
 import Controller.SocketController;
 import Model.Config;
 import View.StartView;
+import View.SuperView;
+import View.GameView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -11,11 +13,13 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	private static Stage primaryReference = null;
-	public enum SceneType { START, GAME }
-	
+
+	public enum SceneType { START, GAME };
+  
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
+		GameView game = new GameView(primaryStage);
 		Scene scene = new Scene(menu);
 		
 		primaryStage.setTitle(Config.APP_NAME); // Set the stage title
@@ -30,7 +34,6 @@ public class Main extends Application {
 	}
 	
 	public static void switchScene(SceneType scenetype) {
-		// TODO: switch from scene
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
@@ -39,7 +42,8 @@ public class Main extends Application {
 			break;
 		case GAME:
 			System.out.println("----> game view");
-
+			GameView game = new GameView(primaryReference);
+			primaryReference.getScene().setRoot(game);
 			break;
 		}
 	}
