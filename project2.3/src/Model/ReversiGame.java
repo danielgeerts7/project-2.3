@@ -84,10 +84,6 @@ public class ReversiGame {
 		
 	}
 	
-	public Board getBoard() {
-		return bord;
-	}
-	
 	public void printBoard(Board bord) {
 		int row = 0;
 		System.out.println(" 0  1 2 3  4 5 6 7");
@@ -98,6 +94,10 @@ public class ReversiGame {
 			}
 			System.out.print("\n");
 		}
+	}
+	
+	public Board getBord(Board bord) {
+		return bord;
 	}
 	
 	public void gameLoop(Board bord, char piece) {
@@ -117,7 +117,6 @@ public class ReversiGame {
 					List<String> coordinates = Arrays.asList(coordinate.split(","));
 					x = Integer.parseInt(coordinates.get(0));
 					y = Integer.parseInt(coordinates.get(1));
-					reader.close();
 				}
 				else {
 					int randomInt = new Random().nextInt(valid_moves.size());
