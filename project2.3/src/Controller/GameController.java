@@ -9,8 +9,7 @@ public class GameController {
 	private static Stage stage;
 		
 	public GameController() {
-		GameView game = new GameView(stage);
-		game.constructScorePane();
+
 	}
 
 }

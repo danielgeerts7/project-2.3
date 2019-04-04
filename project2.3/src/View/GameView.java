@@ -1,6 +1,8 @@
 package View;
 
 import Model.Config;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -51,6 +53,23 @@ public class GameView extends SuperView  {
 		player1.add(textPaneP1, 0, 1);
 		player2.add(textPaneP2, 0, 1);
 		
+		Button forfeitP1 = new Button("Forfeit");
+		Button forfeitP2 = new Button("Forfeit");
+		
+		forfeitP1.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				System.out.println("You lose!");
+			}
+		});
+		
+		forfeitP2.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				System.out.println("You lose!");
+			}
+		});
+		
 		textPaneP1.setStyle("-fx-border-color: red");
 		textPaneP1.setPadding(new Insets(20.5, 21.5, 22.5, 23.5));
 		textPaneP1.setHgap(25);
@@ -58,7 +77,7 @@ public class GameView extends SuperView  {
 		
 		textPaneP1.add(new Label("Player 1"), 0, 0);
 		textPaneP1.add(new Label("Score: "), 0, 3);
-		textPaneP1.add(new Button("Forfeit"), 0, 5);
+		textPaneP1.add(forfeitP1, 0, 5);
 		
 		textPaneP2.setStyle("-fx-border-color: red");
 		textPaneP2.setPadding(new Insets(20.5, 21.5, 22.5, 23.5));
@@ -67,6 +86,6 @@ public class GameView extends SuperView  {
 		
 		textPaneP2.add(new Label("Player 2"), 0, 0);
 		textPaneP2.add(new Label("Score: "), 0, 3);
-		textPaneP2.add(new Button("Forfeit"), 0, 5);
+		textPaneP2.add(forfeitP2, 0, 5);
 	}
 }
