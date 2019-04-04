@@ -69,7 +69,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
-	public boolean doMove(String pos) {
+	public boolean sendMove(String pos) {
 		this.sendMessageToServer("move " + pos);
 		this.waitForResponse(false);
 
@@ -98,7 +98,6 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		this.waitForResponse(false);
 
 		String msg = getMsgData();
-		System.out.println("acc" + msg );
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
 			Popup.getInstance().newPopup("Failed to accept challenge\n"+msg, Popup.Type.DEBUG);
 		}

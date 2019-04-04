@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import Main.Main;
 import Model.Config;
 import View.Popup;
 
@@ -118,7 +117,7 @@ public final class ClientSocket extends CommandHandler {
 			}
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("Read svr err: " + e);
 			// this.disconnect();
 		}
 	}

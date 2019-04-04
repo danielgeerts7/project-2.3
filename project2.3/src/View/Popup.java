@@ -118,7 +118,7 @@ public final class Popup {
 					break;
 				}
 				
-				Label message = new Label(addEnterInString(text, 40));
+				Label message = new Label(addEnterInString(text, 45));
 				message.setAlignment(Pos.CENTER);
 				moveItem(message, width * .3, height * 0.15);
 				pane.getChildren().add(message);
@@ -159,13 +159,17 @@ public final class Popup {
 		int line = 1;
 		int last_space = 0;
 		int begin_sub = 0;
+		int offset = 0;
 		String newText = "";
 
 		for (int i = 0; i < text.length(); i++) {
 			if (text.charAt(i) == ' ') {
 				last_space = i;
 			}
-			if ((line * maxLineLength) == i) {
+			if (text.charAt(i) == '\n') {
+				offset = i;
+			}
+			if (offset + (line * maxLineLength) == i) {
 				newText += text.substring(begin_sub, last_space);
 				newText += "\n";
 				begin_sub = last_space + 1;

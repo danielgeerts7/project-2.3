@@ -25,30 +25,24 @@ abstract class ServerMessageHandler {
 	}
 
 	protected void doCommand(String command) {
-		if (command.contains("SVR") 
-				&& !command.contains("SVR GAMELIST")
-				&& !command.contains("SVR GAMELIST")) {
+		if (command.contains("SVR") && !command.contains("SVR GAMELIST") && !command.contains("SVR GAMELIST")) {
 			if (command.contains("SVR GAME")) {
 				if (command.contains("SVR GAME MATCH")) {
 					createMatch(command);
 				} else if (command.contains("SVR GAME YOURTURN")) {
-					// It is your turn in the game
-					// TODO: react on this
-					Popup.getInstance().newPopup("Your turn! Send to the new GameView();", Popup.Type.DEBUG);
+					yourTurn(command);
 				} else if (command.contains("SVR GAME MOVE")) {
-					// You or your opponent has made its move
-					// TODO: react on this
-					Popup.getInstance().newPopup("Received move from you or your opponent!", Popup.Type.DEBUG);
+					receivedMove(command);
 				} else if (command.contains("SVR GAME CHALLENGE CANCELLED")) {
 					challengeCancelled(command);
 				} else if (command.contains("SVR GAME CHALLENGE")) {
 					gotChallenged(command);
 				} else if (command.contains("WIN")) {
-					Popup.getInstance().newPopup("You won, winner!", Popup.Type.WIN);
+					gameFinished(command, Popup.Type.WIN);
 				} else if (command.contains("LOSS")) {
-					Popup.getInstance().newPopup("You have lost, loser!", Popup.Type.LOSS);
+					gameFinished(command, Popup.Type.LOSS);
 				} else if (command.contains("DRAW")) {
-					Popup.getInstance().newPopup("You have played a draw!", Popup.Type.DRAW);
+					gameFinished(command, Popup.Type.DRAW);
 				} else {
 					Popup.getInstance().newPopup("Error! Sever command unknown", Popup.Type.DEBUG);
 				}
@@ -56,16 +50,16 @@ abstract class ServerMessageHandler {
 
 			if (command.contains("SVR HELP")) {
 				// Show all help information to client
-				if (!getMsgData().trim().equals("SVR HELP")
-						&& !getMsgData().contains("Available commands")
+				if (!getMsgData().trim().equals("SVR HELP") && !getMsgData().contains("Available commands")
 						&& !getMsgData().contains("Help information for Strategic Game Server Fixed")
 						&& !getMsgData().contains("For more information on a command")) {
-					Popup.getInstance().newPopup(getMsgData().replace("SVR HELP", "").replace("  ", "").trim(), Popup.Type.OK);
+					Popup.getInstance().newPopup(getMsgData().replace("SVR HELP", "").replace("  ", "").trim(),
+							Popup.Type.OK);
 				}
 			}
 		}
 	}
-	
+
 	private void createMatch(String command) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -74,6 +68,23 @@ abstract class ServerMessageHandler {
 				GameView.updateSuperView(svrMessageToMap(command));
 			}
 		});
+	}
+
+	private void yourTurn(String msg) {
+		HashMap<String, String> map = svrMessageToMap(msg);
+		String turnmsg = map.get("TURNMESSAGE");
+		String temp = "It is your turn\n" + turnmsg;
+		Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
+		ClientSocket.getInstance(true).sendMove("-1");
+	}
+
+	private void receivedMove(String msg) {
+		HashMap<String, String> map = svrMessageToMap(msg);
+		String player = map.get("PLAYER");
+		String move = map.get("MOVE");
+		String details = map.get("DETAILS");
+		String temp = "Received move from " + player + "\n move: " + move + "\n details: " + details;
+		Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
 	}
 
 	private void gotChallenged(String msg) {
@@ -107,20 +118,30 @@ abstract class ServerMessageHandler {
 		Popup.getInstance().newPopup("Challenge(" + challengeNr + ") got cancelled", Popup.Type.YESNO);
 
 		if (challenges.containsKey(challengeNr)) {
+			// TODO: make this work better and exit newPopup when cancelled
 			challenges.get(challengeNr).clickedNo();
 			challenges.remove(challengeNr);
 		}
 	}
 
+	private void gameFinished(String msg, Popup.Type result) {
+		HashMap<String, String> map = svrMessageToMap(msg);
+		String p1score = map.get("PLAYERONESCORE");
+		String p2score = map.get("PLAYERTWOSCORE");
+		String comment = map.get("COMMENT");
+		String temp = "You " + result.toString() + ", winner!" + "\n" + "score P1: " + p1score + "\n" + "score P2: "
+				+ p2score + "\n" + "Comment: " + comment;
+		Popup.getInstance().newPopup(temp, result);
+	}
+
 	private HashMap<String, String> svrMessageToMap(String msg) {
-		String server_msg = msg.substring(msg.indexOf('{'), msg.indexOf('}'));
+		String server_msg = msg.substring(msg.indexOf('{')+1, msg.indexOf('}'));
 		HashMap<String, String> map = new HashMap<String, String>();
 		String[] list = server_msg.split(",");
 		for (int i = 0; i < list.length; i++) {
-			list[i] = list[i].replace("\"", "").replace("{", "").replace("}", "").trim();
-			System.out.println("l: " + list[i]);
+			list[i] = list[i].trim();
 			String[] keyvalue = list[i].split(":");
-			map.put(keyvalue[0].trim(), keyvalue[1].trim());
+			map.put(keyvalue[0].trim(), keyvalue[1].replace("\"", "").trim());
 		}
 		return map;
 	}
