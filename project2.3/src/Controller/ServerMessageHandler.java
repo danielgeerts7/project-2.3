@@ -44,20 +44,12 @@ abstract class ServerMessageHandler {
 				} else if (command.contains("SVR GAME CHALLENGE")) {
 					gotChallenged(command);
 				} else if (command.contains("WIN")) {
-					// Match is over. Implement every outcome. There are 3
-					// if (command.contains("SVR GAME WIN"))
 					Popup.getInstance().newPopup("You won, winner!", Popup.Type.WIN);
 				} else if (command.contains("LOSS")) {
-					// Match is over. Implement every outcome. There are 3
-					// if (command.contains("SVR GAME WIN"))
 					Popup.getInstance().newPopup("You have lost, loser!", Popup.Type.LOSS);
 				} else if (command.contains("DRAW")) {
-					// Match is over. Implement every outcome. There are 3
-					// if (command.contains("SVR GAME WIN"))
 					Popup.getInstance().newPopup("You have played a draw!", Popup.Type.DRAW);
 				} else {
-					// Match is over. Implement every outcome. There are 3
-					// if (command.contains("SVR GAME WIN"))
 					Popup.getInstance().newPopup("Error! Sever command unknown", Popup.Type.DEBUG);
 				}
 			}
@@ -94,7 +86,7 @@ abstract class ServerMessageHandler {
 			@Override
 			public void clickedYes() {
 				// Our client has accepted the challenge
-				SocketController.getInstance(true).acceptChallenge(challengeNr);
+				ClientSocket.getInstance(true).acceptChallenge(challengeNr);
 				challenges.remove(challengeNr);
 			}
 

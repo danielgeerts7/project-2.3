@@ -1,6 +1,7 @@
 package View;
 
-import Controller.SocketController;
+import Controller.ClientSocket;
+import Model.Client;
 import Model.Config;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -64,7 +65,7 @@ public class StartView extends SuperView {
 		btn_remote.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (SocketController.getInstance(true) != null) {
+				if (ClientSocket.getInstance(true) != null) {
 					constructLoginPane();
 				}
 			}
@@ -78,10 +79,10 @@ public class StartView extends SuperView {
 	private void constructLoginPane() {
 		clearPane();
 
-		SocketController.getInstance(true);
+		ClientSocket.getInstance(true);
 		showRemoteLabels(true);
-		TextField input_login = new TextField(super.getUsername());
-		input_login.setDisable(!super.getUsername().isEmpty());
+		TextField input_login = new TextField(Client.getUsername());
+		input_login.setDisable(!Client.getUsername().isEmpty());
 
 		Button btn_login = new Button("Login");
 
@@ -89,12 +90,12 @@ public class StartView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				String loginname = input_login.getText();
-				if (SocketController.getInstance(true) != null) {
-					int successfull = SocketController.getInstance(true).loginOnServer(loginname);
+				if (ClientSocket.getInstance(true) != null) {
+					int successfull = ClientSocket.getInstance(true).loginOnServer(loginname);
 					if (successfull == 1) {
 						constructChooseGamePane(loginname);
 						setOnlineLabel(true); // Super -> (this)client is connected with server
-						setUsername(loginname); // Super -> set login label
+						setUsernameLabel(loginname); // Super -> set login(username) label
 					} else if (successfull == 0) {
 						constructChooseGamePane(loginname);
 					}
@@ -114,8 +115,8 @@ public class StartView extends SuperView {
 		btn_help.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (SocketController.getInstance(false) != null) {
-					SocketController.getInstance(false).help();
+				if (ClientSocket.getInstance(false) != null) {
+					ClientSocket.getInstance(false).help();
 				}
 			}
 		});
@@ -124,7 +125,7 @@ public class StartView extends SuperView {
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
 
-		String[] games = SocketController.getInstance(true).getGamelist();
+		String[] games = ClientSocket.getInstance(true).getGamelist();
 		int counter = 1;
 		for (String i : games) {
 			Label txt_gameName = new Label(i);
@@ -133,10 +134,10 @@ public class StartView extends SuperView {
 			btn_chooseGame.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent e) {
-					if (SocketController.getInstance(true) != null) {
+					if (ClientSocket.getInstance(true) != null) {
 						String gamename = txt_gameName.getText();
-						SocketController.getInstance(true).selectGame(gamename);
-						setSubscription(gamename);
+						ClientSocket.getInstance(true).selectGame(gamename);
+						setSubscriptionLabel(gamename); // super -> set Subscription Label
 						constructChooseOpponentPane(playerName, gamename);
 					}
 				}
@@ -159,7 +160,7 @@ public class StartView extends SuperView {
 	private void constructChooseOpponentPane(String playerName, String game) {
 		clearPane();
 
-		String[] opponents = SocketController.getInstance(true).getPlayerlist();
+		String[] opponents = ClientSocket.getInstance(true).getPlayerlist();
 		int counter = 1;
 		for (String enemie : opponents) {
 			if (!enemie.equals(playerName)) {
@@ -169,9 +170,9 @@ public class StartView extends SuperView {
 				btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {
-						if (SocketController.getInstance(true) != null) {
+						if (ClientSocket.getInstance(true) != null) {
 							String opponent = txt_opponentsName.getText();
-							SocketController.getInstance(true).challengeOpponent(opponent, game);
+							ClientSocket.getInstance(true).challengeOpponent(opponent, game);
 							System.out.println("Come at me " + opponent + ", you pussy!");
 						}
 					}

@@ -1,6 +1,6 @@
 package Main;
 
-import Controller.SocketController;
+import Controller.ClientSocket;
 import Model.Config;
 import View.StartView;
 import View.GameView;
@@ -28,7 +28,7 @@ public class Main extends Application {
 		
 		primaryReference = primaryStage;
 		
-		SocketController.getInstance(true);
+		ClientSocket.getInstance(true);
 	}
 	
 	public static void switchScene(SceneType scenetype) {

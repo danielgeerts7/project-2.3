@@ -2,7 +2,7 @@ package View;
 
 import java.util.HashMap;
 
-import Controller.SocketController;
+import Controller.ClientSocket;
 import Main.Main;
 import Model.Config;
 import View.Popup.PopupYesNo;
@@ -54,7 +54,7 @@ public class GameView extends SuperView {
 	public static void updateSuperView(HashMap<String, String> map) {
 		if (map != null) {
 			if (map.containsKey("GAMETYPE")) {
-				setSubscription(map.get("GAMETYPE"));
+				setSubscriptionLabel(map.get("GAMETYPE"));
 			}
 			if (map.containsKey("PLAYERTOMOVE")) {
 
@@ -70,7 +70,7 @@ public class GameView extends SuperView {
 				Popup.getInstance().newPopup("Wanna giveup and go back to menu?", Popup.Type.YESNO, new PopupYesNo() {
 					@Override
 					public void clickedYes() {
-						SocketController.getInstance(false).forfeit();
+						ClientSocket.getInstance(false).forfeit();
 						Main.switchScene(Main.SceneType.START);
 					}
 					
@@ -85,8 +85,8 @@ public class GameView extends SuperView {
 		btn_help.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (SocketController.getInstance(false) != null) {
-					SocketController.getInstance(false).help();
+				if (ClientSocket.getInstance(false) != null) {
+					ClientSocket.getInstance(false).help();
 				}
 			}
 		});

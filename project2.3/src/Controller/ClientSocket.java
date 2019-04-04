@@ -20,7 +20,7 @@ import View.Popup;
  * @author Daniel Geerts
  * @since 2019-03-28
  */
-public final class SocketController extends CommandHandler {
+public final class ClientSocket extends CommandHandler {
 
 	private Socket socket = null;
 
@@ -34,16 +34,16 @@ public final class SocketController extends CommandHandler {
 
 	private boolean stayConnected = true;
 
-	private static SocketController instance = null;
+	private static ClientSocket instance = null;
 	private static boolean popupOpen = false;
 
 	/*
 	 * getInstance(), else create a error popup
 	 */
-	public static SocketController getInstance(boolean trySetInstance) {
+	public static ClientSocket getInstance(boolean trySetInstance) {
 		if (instance == null && trySetInstance) {
 			try {
-				instance = new SocketController(Config.REMOTE_IP, Config.REMOTE_PORT);
+				instance = new ClientSocket(Config.REMOTE_IP, Config.REMOTE_PORT);
 			} catch (UnknownHostException e) {
 				if (!popupOpen) {
 					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.OK);
@@ -66,7 +66,7 @@ public final class SocketController extends CommandHandler {
 	/*
 	 * Constructor
 	 */
-	public SocketController(String remoteIp, int serverPort) throws Exception {
+	public ClientSocket(String remoteIp, int serverPort) throws Exception {
 		this.socket = new Socket(remoteIp, serverPort);
 
 		// New Thread for receiving input coming from the Server
