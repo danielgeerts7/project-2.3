@@ -75,7 +75,6 @@ abstract class ServerMessageHandler {
 		String turnmsg = map.get("TURNMESSAGE");
 		String temp = "It is your turn\n" + turnmsg;
 		Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
-		ClientSocket.getInstance(true).sendMove("-1");
 	}
 
 	private void receivedMove(String msg) {

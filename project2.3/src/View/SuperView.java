@@ -30,8 +30,8 @@ public abstract class SuperView extends Pane {
 	private static Label subscription = null;
 	
 	protected static Button btn_back = null;
-	protected static Button btn_help = null;
-	protected static Button btn_exit = null;
+	private Button btn_help = null;
+	private Button btn_exit = null;
 
 	public SuperView() {
 		this.setBackground(
@@ -41,13 +41,6 @@ public abstract class SuperView extends Pane {
 			@Override
 			public void handle(long now) {
 				update();
-				/*if (ClientSocket.getInstance(false) != null
-						&& ClientSocket.getInstance(false).getSocket() != null
-						&& ClientSocket.getInstance(false).getSocket().isConnected()) {
-					setOnlineLabel(true);
-				} else {
-					setOnlineLabel(false);
-				}*/
 			}
 		};
 		animator.start();
@@ -116,7 +109,7 @@ public abstract class SuperView extends Pane {
 		super.getChildren().clear();
 	}
 
-	protected void setOnlineLabel(boolean isOnline) {
+	protected static void setOnlineLabel(boolean isOnline) {
 		if (isOnline) {
 			online_label.setText(String.format("Server is connected"));
 			online_label.setTextFill(Color.GREEN);

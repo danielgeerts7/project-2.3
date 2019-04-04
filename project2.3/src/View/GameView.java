@@ -52,6 +52,9 @@ public class GameView extends SuperView {
 	}
 
 	public static void updateSuperView(HashMap<String, String> map) {
+		if (ClientSocket.getInstance(false) != null) {
+			setOnlineLabel(true);
+		}
 		if (map != null) {
 			if (map.containsKey("GAMETYPE")) {
 				setSubscriptionLabel(map.get("GAMETYPE"));
@@ -79,15 +82,6 @@ public class GameView extends SuperView {
 						
 					}
 				});
-			}
-		});
-
-		btn_help.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				if (ClientSocket.getInstance(false) != null) {
-					ClientSocket.getInstance(false).help();
-				}
 			}
 		});
 	}
