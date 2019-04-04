@@ -179,6 +179,7 @@ public class StartView extends SuperView {
 								// constructChooseOpponentPane();
 								System.out.println("Come at me " + opponent + ", you pussy!");
                 Main.switchScene(Main.SceneType.GAME);
+                Main.switchGame(Main.GameType.REVERSI);
 							}
 						}
 					}

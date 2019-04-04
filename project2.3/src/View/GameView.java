@@ -34,11 +34,6 @@ public class GameView extends SuperView  {
 		player2.setHgap(5);
 		player2.setVgap(5);
 		
-		
-		
-		
-//		constructGamePane();
-		
 		constructScorePane();
 		
 		super.getChildren().add(player1);
@@ -50,7 +45,7 @@ public class GameView extends SuperView  {
 	
 	}
 	
-	private void constructScorePane() {
+	public void constructScorePane() {
 		GridPane textPaneP1 = new GridPane();
 		GridPane textPaneP2 = new GridPane();
 		player1.add(textPaneP1, 0, 1);
@@ -74,21 +69,4 @@ public class GameView extends SuperView  {
 		textPaneP2.add(new Label("Score: "), 0, 3);
 		textPaneP2.add(new Button("Forfeit"), 0, 5);
 	}
-	
-	
-	
-	private void constructGamePane() {
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				player1.add(new ImageView(new Image("green_tile.png", 70, 70, false, false)), i, j);
-			}
-		}
-		
-//		for (int i = 0; i < 8; i++) {
-//			for (char alphabet = 'A'; alphabet < 'H'; alphabet++) {
-//				pane.add(new Label(alphabet), i, 9);
-//			}
-//		}
-	}
-
 }

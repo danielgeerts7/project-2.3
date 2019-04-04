@@ -1,10 +1,12 @@
 package Main;
 
 import Controller.SocketController;
+import Controller.GameController;
 import Model.Config;
 import View.StartView;
 import View.SuperView;
 import View.GameView;
+import View.ReversiView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -15,11 +17,13 @@ public class Main extends Application {
 	private static Stage primaryReference = null;
 
 	public enum SceneType { START, GAME };
+	public enum GameType {REVERSI, TICTACTOE};
   
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
 		StartView menu = new StartView(primaryStage);
 		GameView game = new GameView(primaryStage);
+		ReversiView reversi = new ReversiView(primaryStage);
 		Scene scene = new Scene(menu);
 		
 		primaryStage.setTitle(Config.APP_NAME); // Set the stage title
@@ -44,6 +48,16 @@ public class Main extends Application {
 			System.out.println("----> game view");
 			GameView game = new GameView(primaryReference);
 			primaryReference.getScene().setRoot(game);
+			break;
+		}
+	}
+	
+	public static void switchGame(GameType gametype) {
+		switch(gametype) {
+		case REVERSI:
+			System.out.println("----> reversi game");
+			ReversiView reversi = new ReversiView(primaryReference);
+			primaryReference.getScene().setRoot(reversi);
 			break;
 		}
 	}
