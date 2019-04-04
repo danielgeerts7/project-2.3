@@ -4,6 +4,8 @@ import Controller.ClientSocket;
 import Model.Client;
 import Model.Config;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -29,6 +31,7 @@ public abstract class SuperView extends Pane {
 	
 	protected static Button btn_back = null;
 	protected static Button btn_help = null;
+	protected static Button btn_exit = null;
 
 	public SuperView() {
 		this.setBackground(
@@ -38,13 +41,13 @@ public abstract class SuperView extends Pane {
 			@Override
 			public void handle(long now) {
 				update();
-				if (ClientSocket.getInstance(false) != null
-						&& ClientSocket.getInstance(true).getSocket() != null
-						&& ClientSocket.getInstance(true).getSocket().isConnected()) {
+				/*if (ClientSocket.getInstance(false) != null
+						&& ClientSocket.getInstance(false).getSocket() != null
+						&& ClientSocket.getInstance(false).getSocket().isConnected()) {
 					setOnlineLabel(true);
 				} else {
 					setOnlineLabel(false);
-				}
+				}*/
 			}
 		};
 		animator.start();
@@ -80,7 +83,29 @@ public abstract class SuperView extends Pane {
 		btn_help = new Button("Help");
 		btn_help.setTranslateX((Config.WIDTH / 2));
 		btn_help.setTranslateY(25);
+		btn_help.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (ClientSocket.getInstance(false) != null) {
+					ClientSocket.getInstance(false).help();
+				}
+			}
+		});
 		super.getChildren().add(btn_help);
+		
+		btn_exit = new Button("Exit");
+		btn_exit.setTranslateX((Config.WIDTH / 2) + 100);
+		btn_exit.setTranslateY(25);		
+		btn_exit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if (ClientSocket.getInstance(false) != null) {
+					ClientSocket.getInstance(false).disconnect();
+				}
+				Config.QuitApp();
+			}
+		});
+		super.getChildren().add(btn_exit);
 	}
 	
 	protected void addChild(Node e) {
@@ -127,8 +152,13 @@ public abstract class SuperView extends Pane {
 		online_label.setVisible(doShow);
 		login_label.setVisible(doShow);
 		subscription.setVisible(doShow);
+		showButtons(doShow);
+	}
+	
+	protected void showButtons(boolean doShow) {
 		btn_back.setVisible(doShow);
 		btn_help.setVisible(doShow);
+		btn_exit.setVisible(doShow);
 	}
 
 	/*

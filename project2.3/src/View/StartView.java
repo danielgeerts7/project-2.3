@@ -45,6 +45,7 @@ public class StartView extends SuperView {
 
 	private void clearPane() {
 		mainpane.getChildren().clear();
+		ClientSocket.getInstance(true);
 	}
 
 	private void constructChooseModesPane() {
@@ -60,6 +61,13 @@ public class StartView extends SuperView {
 			public void handle(ActionEvent e) {
 				// Do something
 				clearPane();
+				showButtons(true);
+				btn_back.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						constructChooseModesPane();
+					}
+				});
 			}
 		});
 		btn_remote.setOnAction(new EventHandler<ActionEvent>() {
@@ -67,6 +75,7 @@ public class StartView extends SuperView {
 			public void handle(ActionEvent e) {
 				if (ClientSocket.getInstance(true) != null) {
 					constructLoginPane();
+					setOnlineLabel(true);
 				}
 			}
 		});
@@ -109,15 +118,6 @@ public class StartView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseModesPane();
-			}
-		});
-
-		btn_help.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				if (ClientSocket.getInstance(false) != null) {
-					ClientSocket.getInstance(false).help();
-				}
 			}
 		});
 	}

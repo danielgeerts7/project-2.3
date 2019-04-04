@@ -5,7 +5,6 @@ import Model.Config;
 import View.StartView;
 import View.GameView;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -48,11 +47,5 @@ public class Main extends Application {
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
-	}
-	
-	public static void QuitApp() {
-		System.out.println("Quiting application. Bye...");
-		Platform.exit();
-		System.exit(0);
 	}
 }

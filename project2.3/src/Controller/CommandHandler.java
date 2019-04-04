@@ -34,6 +34,10 @@ public abstract class CommandHandler extends ServerMessageHandler {
 	public void logoutFromServer() {
 		this.sendMessageToServer("logout");
 	}
+	
+	public void disconnectFromServer() {
+		this.sendMessageToServer("disconnect");
+	}
 
 	public String[] getGamelist() {
 		this.sendMessageToServer("get gamelist");

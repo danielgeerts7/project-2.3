@@ -174,7 +174,7 @@ public final class ClientSocket extends CommandHandler {
 	}
 
 	public void disconnect() {
-		super.logoutFromServer();
+		super.disconnectFromServer();
 
 		stayConnected = false;
 		if (runningThread != null) {
