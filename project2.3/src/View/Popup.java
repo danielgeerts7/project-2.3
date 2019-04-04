@@ -1,5 +1,6 @@
 package View;
 
+import Main.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -131,6 +132,14 @@ public final class Popup {
 						@Override
 						public void handle(ActionEvent e) {
 							newStage.close();
+							if (type.equals(Type.WIN) || type.equals(Type.LOSS) || type.equals(Type.DRAW)) {
+								Platform.runLater(new Runnable() {
+									@Override
+									public void run() {
+										Main.switchScene(Main.SceneType.START);
+									}
+								});
+							}
 						}
 					});
 				}
