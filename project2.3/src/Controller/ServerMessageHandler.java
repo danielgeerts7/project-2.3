@@ -37,11 +37,11 @@ abstract class ServerMessageHandler {
 					challengeCancelled(command);
 				} else if (command.contains("SVR GAME CHALLENGE")) {
 					gotChallenged(command);
-				} else if (command.contains("WIN")) {
+				} else if (command.contains("SVR GAME WIN")) {
 					gameFinished(command, Popup.Type.WIN);
-				} else if (command.contains("LOSS")) {
+				} else if (command.contains("SVR GAME LOSS")) {
 					gameFinished(command, Popup.Type.LOSS);
-				} else if (command.contains("DRAW")) {
+				} else if (command.contains("SVR GAME DRAW")) {
 					gameFinished(command, Popup.Type.DRAW);
 				} else {
 					Popup.getInstance().newPopup("Error! Sever command unknown", Popup.Type.DEBUG);
