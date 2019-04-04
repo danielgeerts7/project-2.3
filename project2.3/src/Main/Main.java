@@ -16,8 +16,8 @@ public class Main extends Application {
 	
 	private static Stage primaryReference = null;
 
-	public enum SceneType { START, GAME };
-	public enum GameType {REVERSI, TICTACTOE};
+	public enum SceneType { START, REVERSI, TICTACTOE };
+//	public enum GameType {REVERSI, TICTACTOE};
   
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
@@ -44,23 +44,27 @@ public class Main extends Application {
 			StartView start = new StartView(primaryReference);
 			primaryReference.getScene().setRoot(start);
 			break;
-		case GAME:
-			System.out.println("----> game view");
+		case REVERSI:
+			System.out.println("----> reversi view");
 			GameView game = new GameView(primaryReference);
+			ReversiView reversi = new ReversiView(primaryReference);
 			primaryReference.getScene().setRoot(game);
+			primaryReference.getScene().setRoot(reversi);
 			break;
+//		case TICTACTOE:
+//			//TODO: Tictactoe view maken
 		}
 	}
 	
-	public static void switchGame(GameType gametype) {
-		switch(gametype) {
-		case REVERSI:
-			System.out.println("----> reversi game");
-			ReversiView reversi = new ReversiView(primaryReference);
-			primaryReference.getScene().setRoot(reversi);
-			break;
-		}
-	}
+//	public static void switchGame(GameType gametype) {
+//		switch(gametype) {
+//		case REVERSI:
+//			System.out.println("----> reversi game");
+//			ReversiView reversi = new ReversiView(primaryReference);
+//			primaryReference.getScene().setRoot(reversi);
+//			break;
+//		}
+//	}
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
