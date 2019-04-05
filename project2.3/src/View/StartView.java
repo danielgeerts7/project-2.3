@@ -45,7 +45,6 @@ public class StartView extends SuperView {
 
 	private void clearPane() {
 		mainpane.getChildren().clear();
-		ClientSocket.getInstance(true);
 	}
 
 	private void constructChooseModesPane() {
@@ -62,7 +61,7 @@ public class StartView extends SuperView {
 				// Do something
 				clearPane();
 				showButtons(true);
-				btn_back.setOnAction(new EventHandler<ActionEvent>() {
+				menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {
 						constructChooseModesPane();
@@ -88,7 +87,6 @@ public class StartView extends SuperView {
 	private void constructLoginPane() {
 		clearPane();
 
-		ClientSocket.getInstance(true);
 		showRemoteLabels(true);
 		TextField input_login = new TextField(Client.getUsername());
 		input_login.setDisable(!Client.getUsername().isEmpty());
@@ -100,7 +98,7 @@ public class StartView extends SuperView {
 			public void handle(ActionEvent e) {
 				String loginname = input_login.getText();
 				if (ClientSocket.getInstance(true) != null) {
-					int successfull = ClientSocket.getInstance(true).loginOnServer(loginname);
+					int successfull = ClientSocket.getInstance(false).loginOnServer(loginname);
 					if (successfull == 1) {
 						constructChooseGamePane(loginname);
 						setUsernameLabel(loginname); // Super -> set login(username) label
@@ -113,7 +111,7 @@ public class StartView extends SuperView {
 		mainpane.add(input_login, 0, 0);
 		mainpane.add(btn_login, 1, 0);
 
-		btn_back.setOnAction(new EventHandler<ActionEvent>() {
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseModesPane();
@@ -135,7 +133,7 @@ public class StartView extends SuperView {
 				public void handle(ActionEvent e) {
 					if (ClientSocket.getInstance(true) != null) {
 						String gamename = txt_gameName.getText();
-						ClientSocket.getInstance(true).selectGame(gamename);
+						ClientSocket.getInstance(false).selectGame(gamename);
 						setSubscriptionLabel(gamename); // super -> set Subscription Label
 						constructChooseOpponentPane(playerName, gamename);
 					}
@@ -146,8 +144,7 @@ public class StartView extends SuperView {
 			counter++;
 		}
 
-		btn_back.setOnAction(new EventHandler<ActionEvent>() {
-
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructLoginPane();
@@ -171,7 +168,7 @@ public class StartView extends SuperView {
 					public void handle(ActionEvent e) {
 						if (ClientSocket.getInstance(true) != null) {
 							String opponent = txt_opponentsName.getText();
-							ClientSocket.getInstance(true).challengeOpponent(opponent, game);
+							ClientSocket.getInstance(false).challengeOpponent(opponent, game);
 							System.out.println("Come at me " + opponent + ", you pussy!");
 						}
 					}
@@ -183,7 +180,7 @@ public class StartView extends SuperView {
 			counter++;
 		}
 
-		btn_back.setOnAction(new EventHandler<ActionEvent>() {
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {

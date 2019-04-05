@@ -65,7 +65,7 @@ public class GameView extends SuperView {
 			pane.add(opp, 10, 2);
 		}
 
-		btn_back.setOnAction(new EventHandler<ActionEvent>() {
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				Popup.getInstance().newPopup("Wanna giveup and go back to menu?", Popup.Type.YESNO, new PopupYesNo() {

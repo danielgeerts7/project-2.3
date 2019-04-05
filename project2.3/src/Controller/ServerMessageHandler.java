@@ -96,7 +96,7 @@ public abstract class ServerMessageHandler {
 			@Override
 			public void clickedYes() {
 				// Our client has accepted the challenge
-				ClientSocket.getInstance(true).acceptChallenge(challengeNr);
+				ClientSocket.getInstance(false).acceptChallenge(challengeNr);
 				challenges.remove(challengeNr);
 			}
 

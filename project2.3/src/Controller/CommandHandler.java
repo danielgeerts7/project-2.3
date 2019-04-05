@@ -31,11 +31,11 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
-	public void logoutFromServer() {
+	protected void logoutFromServer() {
 		this.sendMessageToServer("logout");
 	}
 	
-	public void disconnectFromServer() {
+	protected void disconnectFromServer() {
 		this.sendMessageToServer("disconnect");
 	}
 
@@ -69,7 +69,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
-	public boolean sendMove(String pos) {
+	protected boolean sendMove(String pos) {
 		this.sendMessageToServer("move " + pos);
 		this.waitForResponse(false);
 
@@ -93,7 +93,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
-	public void acceptChallenge(String challengeNr) {
+	protected void acceptChallenge(String challengeNr) {
 		this.sendMessageToServer("challenge accept " + challengeNr);
 		this.waitForResponse(false);
 

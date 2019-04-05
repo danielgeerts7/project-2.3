@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import Model.Client;
 import Model.Config;
 import View.Popup;
 
@@ -43,17 +44,18 @@ public final class ClientSocket extends CommandHandler {
 		if (instance == null && trySetInstance) {
 			try {
 				instance = new ClientSocket(Config.REMOTE_IP, Config.REMOTE_PORT);
+				Client.setConnected(true);
 			} catch (UnknownHostException e) {
 				if (!popupOpen) {
 					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.OK);
 					popupOpen = true;
+					Client.setConnected(false);
 				}
 			} catch (Exception e) {
 				if (!popupOpen) {
 					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.OK);
 					popupOpen = true;
-					// Main.switchScene(Main.SceneType.START);
-					// is this the way to go?? ^^
+					Client.setConnected(false);
 				}
 			}
 			return instance;
@@ -174,18 +176,29 @@ public final class ClientSocket extends CommandHandler {
 
 	public void disconnect() {
 		super.disconnectFromServer();
-
+		
+		resetSocket();
+	}
+	
+	public void logout() {
+		super.logoutFromServer();
+		
+		resetSocket();
+	}
+	
+	private void resetSocket() {
 		stayConnected = false;
 		if (runningThread != null) {
 			runningThread.interrupt();
 		}
-		runningThread = null;
 
 		try {
 			this.socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		runningThread = null;
 		socket = null;
 		instance = null;
 	}

@@ -1,8 +1,10 @@
 package View;
 
 import Controller.ClientSocket;
+import Main.Main;
 import Model.Client;
 import Model.Config;
+import Model.Menu;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,6 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
@@ -29,9 +32,7 @@ public abstract class SuperView extends Pane {
 	private static Label login_label = null;
 	private static Label subscription = null;
 	
-	protected static Button btn_back = null;
-	private Button btn_help = null;
-	private Button btn_exit = null;
+	protected static Menu menu = null;
 
 	public SuperView() {
 		this.setBackground(
@@ -41,16 +42,26 @@ public abstract class SuperView extends Pane {
 			@Override
 			public void handle(long now) {
 				update();
+				if (menu != null) {
+					menu.update();
+				}
 			}
 		};
 		animator.start();
 
 		this.addChildren();
 	}
-	
+
 	private void addChildren() {
 		clearChildren();
+
+		this.addLabels();
 		
+		menu = new Menu();
+		super.getChildren().add(menu.getChildren());
+	}
+
+	private void addLabels() {
 		online_label = new Label();
 		setOnlineLabel(Client.isConnected());
 		online_label.setTranslateX(Config.WIDTH * 0.85);
@@ -61,50 +72,18 @@ public abstract class SuperView extends Pane {
 		login_label.setTranslateX(Config.WIDTH * 0.85);
 		login_label.setTranslateY(25);
 		super.getChildren().add(login_label);
-		
+
 		subscription = new Label();
 		setSubscriptionLabel(Client.getGame());
 		subscription.setTranslateX(Config.WIDTH * 0.85);
 		subscription.setTranslateY(50);
 		super.getChildren().add(subscription);
-
-		btn_back = new Button("Go back");
-		btn_back.setTranslateX((Config.WIDTH / 2) - 100);
-		btn_back.setTranslateY(25);
-		super.getChildren().add(btn_back);
-		
-		btn_help = new Button("Help");
-		btn_help.setTranslateX((Config.WIDTH / 2));
-		btn_help.setTranslateY(25);
-		btn_help.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				if (ClientSocket.getInstance(false) != null) {
-					ClientSocket.getInstance(false).help();
-				}
-			}
-		});
-		super.getChildren().add(btn_help);
-		
-		btn_exit = new Button("Exit");
-		btn_exit.setTranslateX((Config.WIDTH / 2) + 100);
-		btn_exit.setTranslateY(25);		
-		btn_exit.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (ClientSocket.getInstance(false) != null) {
-					ClientSocket.getInstance(false).disconnect();
-				}
-				Config.QuitApp();
-			}
-		});
-		super.getChildren().add(btn_exit);
 	}
-	
+
 	protected void addChild(Node e) {
 		super.getChildren().add(1, e);
 	}
-	
+
 	protected void clearChildren() {
 		super.getChildren().clear();
 	}
@@ -146,15 +125,13 @@ public abstract class SuperView extends Pane {
 		online_label.setVisible(doShow);
 		login_label.setVisible(doShow);
 		subscription.setVisible(doShow);
-		showButtons(doShow);
-	}
-	
-	protected void showButtons(boolean doShow) {
-		btn_back.setVisible(doShow);
-		btn_help.setVisible(doShow);
-		btn_exit.setVisible(doShow);
+		menu.showOnlineButtons(doShow);
 	}
 
+	protected void showButtons(boolean doShow) {
+		menu.showOfflineButtons(doShow);
+	}
+	
 	/*
 	 * This method is called every available frame
 	 */
