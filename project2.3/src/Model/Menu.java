@@ -1,19 +1,11 @@
 package Model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import Controller.ClientSocket;
 import Main.Main;
 import View.Popup;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class Menu {
@@ -43,6 +35,7 @@ public class Menu {
 		});
 
 		btn_logout = new Button("Logout");
+		btn_logout.setDisable(true);
 		setPosition(btn_logout);
 		btn_logout.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
