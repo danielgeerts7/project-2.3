@@ -16,7 +16,7 @@ import javafx.application.Platform;
  * @author Daniel Geerts
  * @since 2019-03-31
  */
-abstract class ServerMessageHandler {
+public abstract class ServerMessageHandler {
 
 	private Map<String, PopupYesNo> challenges = null;
 
@@ -60,12 +60,12 @@ abstract class ServerMessageHandler {
 		}
 	}
 
-	private void createMatch(String command) {
+	private void createMatch(String msg) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				Main.switchScene(Main.SceneType.GAME);
-				GameView.updateSuperView(svrMessageToMap(command));
+				GameView.updateSuperView(svrMessageToMap(msg));
 			}
 		});
 	}

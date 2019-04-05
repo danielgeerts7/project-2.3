@@ -9,6 +9,7 @@ import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
 
 public class GameView extends SuperView {
 
-	private GridPane pane = null;
+	private static GridPane pane = null;
 
 	public GameView(Stage stage) {
 		super();
@@ -56,15 +57,14 @@ public class GameView extends SuperView {
 			setOnlineLabel(true);
 		}
 		if (map != null) {
-			if (map.containsKey("GAMETYPE")) {
-				setSubscriptionLabel(map.get("GAMETYPE"));
-			}
-			if (map.containsKey("PLAYERTOMOVE")) {
+			String player = map.get("PLAYERTOMOVE");
+			String game = map.get("GAMETYPE");
+			String opponent = map.get("OPPONENT");
+			
+			setSubscriptionLabel(game);
 
-			}
-			if (map.containsKey("OPPONENT")) {
-
-			}
+			Label opp = new Label("You are playing against: " + opponent);
+			pane.add(opp, 10, 2);
 		}
 
 		btn_back.setOnAction(new EventHandler<ActionEvent>() {
