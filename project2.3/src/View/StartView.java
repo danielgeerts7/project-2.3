@@ -75,7 +75,7 @@ public class StartView extends SuperView {
 			public void handle(ActionEvent e) {
 				if (ClientSocket.getInstance(true) != null) {
 					constructLoginPane();
-					setOnlineLabel(true);
+					setOnlineLabel(true); // Super -> (this)client is connected with server
 				}
 			}
 		});
@@ -103,7 +103,6 @@ public class StartView extends SuperView {
 					int successfull = ClientSocket.getInstance(true).loginOnServer(loginname);
 					if (successfull == 1) {
 						constructChooseGamePane(loginname);
-						setOnlineLabel(true); // Super -> (this)client is connected with server
 						setUsernameLabel(loginname); // Super -> set login(username) label
 					} else if (successfull == 0) {
 						constructChooseGamePane(loginname);

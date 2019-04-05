@@ -53,9 +53,7 @@ public class GameView extends SuperView {
 	}
 
 	public static void updateSuperView(HashMap<String, String> map) {
-		if (ClientSocket.getInstance(false) != null) {
-			setOnlineLabel(true);
-		}
+		
 		if (map != null) {
 			String player = map.get("PLAYERTOMOVE");
 			String game = map.get("GAMETYPE");

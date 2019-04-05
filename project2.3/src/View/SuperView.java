@@ -52,7 +52,7 @@ public abstract class SuperView extends Pane {
 		clearChildren();
 		
 		online_label = new Label();
-		setOnlineLabel(false);
+		setOnlineLabel(Client.isConnected());
 		online_label.setTranslateX(Config.WIDTH * 0.85);
 		super.getChildren().add(online_label);
 
@@ -117,6 +117,7 @@ public abstract class SuperView extends Pane {
 			online_label.setText(String.format("Server not connected"));
 			online_label.setTextFill(Color.DARKRED);
 		}
+		Client.setConnected(isOnline);
 	}
 
 	protected void setUsernameLabel(String name) {
