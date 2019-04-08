@@ -13,18 +13,27 @@ public class ReversiGame {
 	final static char WHITE = '\u26AA';
 	final static char EMPTY = '\u2B1c';
 	public ArrayList<Tuple> valid_moves = new ArrayList<>();
+	public ArrayList<Integer> weight = new ArrayList<>(); 
 	public Tuple[] offsets = new Tuple[8];
+	private Board bord;
+	public Ai ai;
+	public ReversiGame rg;
 	
 	public static void main(String[] args) {
-		new ReversiGame();
+		for(int i = 0; i < 1; i++) {
+			ReversiGame rg = new ReversiGame();
+		}
 	}
 	
 	public ReversiGame() {
+		ai = new Ai();
 		addOffsets();
 		Board bord = startGame();
 		char piece = BLACK;
 		while(hasValidMove(bord, piece)) {
-			gameLoop(bord, piece);
+			//System.out.println(ai.calcMove(bord, piece));
+			doMove(bord, piece, ai.calcMove(rg, bord, piece));
+			//gameLoop(bord, piece);
 			if(hasValidMove(bord, inverse(piece))) {
 				piece = inverse(piece);
 			}
@@ -83,6 +92,10 @@ public class ReversiGame {
 		
 	}
 	
+	public Board getBoard() {
+		return bord;
+	}
+	
 	public void printBoard(Board bord) {
 		int row = 0;
 		System.out.println(" 0  1 2 3  4 5 6 7");
@@ -95,31 +108,60 @@ public class ReversiGame {
 		}
 	}
 	
+	public void doMove(Board bord, char piece, int move) {
+		int x = move/8;
+		int y = move%8;
+//		printBoard(bord);
+//		if(isValidMove(bord, piece, y, x)) {
+//			placePiece(bord, piece, y ,x, true);
+//			return;
+//		}
+//		else {
+//			System.out.println("oei oei hij doet het niet!");
+//		}
+		if(isValidMove(bord, piece, y, x)) {
+			placePiece(bord, piece, y ,x, true);
+			return;
+		}
+	}
+	
 	public void gameLoop(Board bord, char piece) {
 		int x;
 		int y;
-		printBoard(bord);
 		while(true){
 			try {
-				if(piece == BLACK) {
-					for(Tuple v : valid_moves) {
-						System.out.print("["+v.x+","+v.y+"]");
-					}
-					System.out.print("\n");
-					Scanner reader = new Scanner(System.in);
-					System.out.println(piece + ", Enter a coordinate: ");
-					String coordinate = reader.nextLine();
-					List<String> coordinates = Arrays.asList(coordinate.split(","));
-					x = Integer.parseInt(coordinates.get(0));
-					y = Integer.parseInt(coordinates.get(1));
-				}
-				else {
+			if(piece == BLACK) {
+//					printBoard(bord);
+//					for(Tuple v : valid_moves) {
+//						System.out.print("["+v.x+","+v.y+"]");
+//						placePiece(bord, piece, v.y, v.x, false);
+//					}
+//					System.out.print("\n");
+//					Scanner reader = new Scanner(System.in);
+//					System.out.println(piece + ", Enter a coordinate: ");
+//					String coordinate = reader.nextLine();
+//					List<String> coordinates = Arrays.asList(coordinate.split(","));
+//					x = Integer.parseInt(coordinates.get(0));
+//					y = Integer.parseInt(coordinates.get(1));
 					int randomInt = new Random().nextInt(valid_moves.size());
+					//int biggest = getBiggest(weight);
 					x = valid_moves.get(randomInt).x;
 					y = valid_moves.get(randomInt).y;
 				}
+				else {
+					printBoard(bord);
+					for(Tuple v : valid_moves) {
+						System.out.print("["+v.x+","+v.y+"]");
+						placePiece(bord, piece, v.y, v.x, false);
+					}
+					//int randomInt = new Random().nextInt(valid_moves.size());
+					int biggest = getBiggest(weight);
+					x = valid_moves.get(biggest).x;
+					y = valid_moves.get(biggest).y;
+					System.out.println(Collections.max(weight));
+				}
 				if(isValidMove(bord, piece, y, x)) {
-					placePiece(bord, piece, y ,x);
+					placePiece(bord, piece, y ,x, true);
 					return;
 				}
 				else {
@@ -155,33 +197,52 @@ public class ReversiGame {
 		return false;
 	}
 	
-	public void placePiece(Board bord, char piece, int x, int y) {
-		bord.bord[x][y] = piece;
+	public void placePiece(Board bord, char piece, int x, int y, boolean place) {
+		int aantal = 0;
+		if(place) { bord.bord[x][y] = piece; }
+		else { } 
+		
 		for(Tuple offset: offsets) {
 			Tuple check = new Tuple(x+offset.x, y+offset.y);
 			while(0 <= check.x && check.x < BOARD_SIZE && 0 <= check.y && check.y < BOARD_SIZE) {
 				if(bord.bord[check.x][check.y] == EMPTY) { break; }
 				if(bord.bord[check.x][check.y] == piece) {
-					flip(bord, piece, x , y, offset);
+					if(place) {
+						flip(bord, piece, x , y, offset, place);
+					}
+					else {
+						aantal += flip(bord, piece, x , y, offset, place);
+					}
 					break;
 				}
 				check.x += offset.x;
 				check.y += offset.y;
 			}
 		}
+		if(!place) {
+			System.out.println(" : " + aantal);
+			weight.add(aantal);
+		}
 	}
 	
-	public void flip(Board bord, char piece, int x, int y, Tuple offset) {
+	public int flip(Board bord, char piece, int x, int y, Tuple offset, boolean place) {
+		int aantal = 0;
 		Tuple check = new Tuple(x+offset.x, y+offset.y);
 		while(bord.bord[check.x][check.y] == inverse(piece)) {
-			bord.bord[check.x][check.y] = piece;
+			if(place) {
+				bord.bord[check.x][check.y] = piece;
+			} else {
+				aantal++;
+			}
 			check.x += offset.x;
 			check.y += offset.y;
 		}
+		return aantal;
 	}
 	
 	public boolean hasValidMove(Board bord, char piece) {
 		valid_moves.clear();
+		weight.clear();
 		for(int y = 0; y < BOARD_SIZE; y++) {
 			for(int x = 0; x < BOARD_SIZE; x++) {
 				if(isValidMove(bord, piece, y, x)) {
@@ -194,6 +255,25 @@ public class ReversiGame {
 		} else {
 			return false;
 		}
+	}
+	
+	public int getBiggest(ArrayList<Integer> a) {
+		int biggestIndex = 0;
+		if(a.size() < 1) {
+			return 0;
+		} else {
+			int big = Collections.max(a);
+			for(int i = 0; i < a.size(); i++) {
+//				if(a.get(i) < a.indexOf(biggestIndex)) {
+//					biggestIndex = i;
+//					System.out.println(a.get(i) + " is groter dan " + a.indexOf(biggestIndex));
+//				}
+				if(a.get(i) == big) {
+					biggestIndex = i;
+				}
+			}
+		}
+		return biggestIndex;
 	}
 }
 
