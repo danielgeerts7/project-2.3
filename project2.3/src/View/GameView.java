@@ -8,29 +8,41 @@ import Model.Config;
 import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class GameView extends SuperView {
+	//TODO: ReversiView maken en TicTacToeView
 
-	private static GridPane pane = null;
+	private GridPane player1 = null;
+	private GridPane player2 = null;
 
 	public GameView(Stage stage) {
 		super();
 
-		pane = new GridPane();
-		pane.setAlignment(Pos.CENTER);
-		pane.setMinSize(Config.WIDTH, Config.HEIGHT);
-		pane.setHgap(5);
-		pane.setVgap(5);
-
-		constructGamePane();
-
-		super.addChild(pane);
+		player1 = new GridPane();
+		player1.setMinSize(200, 300);
+		player1.setTranslateX(100);
+		player1.setTranslateY(200);
+		
+		player2 = new GridPane();
+		player2.setMinSize(200, 300);
+		player2.setTranslateX(100);
+		player2.setTranslateY(400);
+		
+		super.addChild(2, player1);
+		super.addChild(2, player2);
+		
+		constructScorePane();
 	}
 
 	@Override
@@ -38,20 +50,24 @@ public class GameView extends SuperView {
 
 	}
 
-	private void constructGamePane() {
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 8; j++) {
-				pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
+	public void constructScorePane() {
+		Button forfeitP1 = new Button("Forfeit");		
+		forfeitP1.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				System.out.println("You lose!");
 			}
-		}
-
-//		for (int i = 0; i < 8; i++) {
-//			for (char alphabet = 'A'; alphabet < 'H'; alphabet++) {
-//				pane.add(new Label(alphabet), i, 9);
-//			}
-//		}
+		});
+		Label name = new Label("Player 1");
+		player1.add(name, 0, 0);
+		player1.add(new Label("Score: "), 0, 1);
+		player1.add(forfeitP1, 0, 2);
+		
+		Label opp_name = new Label("Player 2");
+		player2.add(opp_name, 0, 1);
+		player2.add(new Label("Score: "), 0, 2);
 	}
-
+	
 	public static void updateSuperView(HashMap<String, String> map) {
 		
 		if (map != null) {
@@ -62,7 +78,7 @@ public class GameView extends SuperView {
 			setSubscriptionLabel(game);
 
 			Label opp = new Label("You are playing against: " + opponent);
-			pane.add(opp, 10, 2);
+			//player1.add(opp, 10, 2);
 		}
 
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {

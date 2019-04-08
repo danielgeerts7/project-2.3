@@ -74,8 +74,8 @@ public abstract class SuperView extends Pane {
 		super.getChildren().add(subscription);
 	}
 
-	protected void addChild(Node e) {
-		super.getChildren().add(1, e);
+	protected void addChild(int index, Node e) {
+		super.getChildren().add(index, e);
 	}
 
 	protected void clearChildren() {

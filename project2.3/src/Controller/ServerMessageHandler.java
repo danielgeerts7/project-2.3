@@ -64,7 +64,17 @@ public abstract class ServerMessageHandler {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				Main.switchScene(Main.SceneType.GAME);
+				HashMap<String, String> map = svrMessageToMap(msg);
+				String gametype = map.get("GAMETYPE");
+				String player = map.get("PLAYERTOMOVE");
+				String opponent = map.get("OPPONENT");
+				String temp = "It is your turn\n" + gametype;
+				
+				if (gametype.toLowerCase().contains("reversi")) {
+					Main.switchScene(Main.SceneType.REVERSI);
+				} else if (gametype.toLowerCase().contains("tictactoe")) {
+					Main.switchScene(Main.SceneType.TICTACTOE);
+				}
 				GameView.updateSuperView(svrMessageToMap(msg));
 			}
 		});

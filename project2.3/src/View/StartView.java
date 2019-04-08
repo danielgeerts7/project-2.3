@@ -1,6 +1,7 @@
 package View;
 
 import Controller.ClientSocket;
+import Main.Main;
 import Model.Client;
 import Model.Config;
 import javafx.event.ActionEvent;
@@ -35,7 +36,7 @@ public class StartView extends SuperView {
 
 		constructChooseModesPane();
 
-		super.addChild(mainpane);
+		super.addChild(1, mainpane);
 	}
 
 	@Override
@@ -169,8 +170,7 @@ public class StartView extends SuperView {
 						if (ClientSocket.getInstance(true) != null) {
 							String opponent = txt_opponentsName.getText();
 							ClientSocket.getInstance(false).challengeOpponent(opponent, game);
-							System.out.println("Come at me " + opponent + ", you pussy!");
-						}
+							System.out.println("Come at me " + opponent + ", you pussy!");						}
 					}
 				});
 

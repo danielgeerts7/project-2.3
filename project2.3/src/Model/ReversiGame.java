@@ -14,6 +14,7 @@ public class ReversiGame {
 	final static char EMPTY = '\u2B1c';
 	public ArrayList<Tuple> valid_moves = new ArrayList<>();
 	public Tuple[] offsets = new Tuple[8];
+	private Board bord;
 	
 	public static void main(String[] args) {
 		new ReversiGame();
@@ -93,6 +94,10 @@ public class ReversiGame {
 			}
 			System.out.print("\n");
 		}
+	}
+	
+	public Board getBord(Board bord) {
+		return bord;
 	}
 	
 	public void gameLoop(Board bord, char piece) {
