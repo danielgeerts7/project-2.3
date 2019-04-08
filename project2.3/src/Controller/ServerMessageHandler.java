@@ -96,9 +96,7 @@ public abstract class ServerMessageHandler {
 				}
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String turnmsg = map.get("TURNMESSAGE");
-				//String temp = "It is your turn\n" + turnmsg;
-				//Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
-				ReversiGame.doMove(GameView.getPlayer1().getColor());
+				GameController.doMove();
 			}
 		});
 	}
@@ -113,12 +111,7 @@ public abstract class ServerMessageHandler {
 				String details = map.get("DETAILS");
 				//String temp = "Received move from " + player + "\n move: " + move + "\n details: " + details;
 				//Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
-				if (player.equals(Client.getUsername())) {
-					ReversiGame.receivedMove(GameView.getPlayer1().getColor(), Integer.parseInt(move));
-				} else {
-					ReversiGame.receivedMove(GameView.getPlayer2().getColor(), Integer.parseInt(move));
-				}
-				ReversiView.updateBoardView();
+				GameController.receivedMove(player, move);
 			}
 		});
 	}

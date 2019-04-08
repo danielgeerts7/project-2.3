@@ -11,14 +11,14 @@ import View.GameView;
 import java.util.Random;
 import java.util.*;
 
-public class ReversiGame {
+public class ReversiGame extends SuperGame {
 	private final static int BOARD_SIZE = 8;
 	public final static char BLACK = 'B';
 	public final static char WHITE = 'W';
 	public final static char EMPTY = 'o';
-	private static ArrayList<Tuple> valid_moves = new ArrayList<>();
-	private static Tuple[] offsets = new Tuple[8];
-	private static Board bord;
+	private ArrayList<Tuple> valid_moves = new ArrayList<>();
+	private Tuple[] offsets = new Tuple[8];
+	private Board bord;
 
 	public ReversiGame() {
 		addOffsets();
@@ -76,7 +76,7 @@ public class ReversiGame {
 		return bord;
 	}
 
-	public static void doMove(char piece) {
+	public void doMove(char piece) {
 		hasValidMove(piece);
 		for (Tuple v : valid_moves) {
 			System.out.print("[" + v.x + "," + v.y + "]");
@@ -96,7 +96,7 @@ public class ReversiGame {
 		}
 	}
 
-	public static void receivedMove(char piece, int pos) {
+	public void receivedMove(char piece, int pos) {
 		int x;
 		int y;
 		x = pos % BOARD_SIZE;
@@ -109,7 +109,7 @@ public class ReversiGame {
 		}
 	}
 
-	public static boolean isValidMove(Board bord, char piece, int x, int y) {
+	public boolean isValidMove(Board bord, char piece, int x, int y) {
 		if (bord.bord[x][y] != EMPTY) {
 			return false;
 		}
@@ -134,7 +134,7 @@ public class ReversiGame {
 		return false;
 	}
 
-	public static void placePiece(Board bord, char piece, int x, int y) {
+	public void placePiece(Board bord, char piece, int x, int y) {
 		bord.bord[x][y] = piece;
 		for (Tuple offset : offsets) {
 			Tuple check = new Tuple(x + offset.x, y + offset.y);
@@ -161,7 +161,7 @@ public class ReversiGame {
 		}
 	}
 
-	public static boolean hasValidMove(char piece) {
+	public boolean hasValidMove(char piece) {
 		System.out.println("do: hasValidMove!");
 		valid_moves.clear();
 		for (int y = 0; y < BOARD_SIZE; y++) {

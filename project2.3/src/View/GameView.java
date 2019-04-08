@@ -7,13 +7,14 @@ import Main.Main;
 import Model.Client;
 import Model.Player;
 import Model.ReversiGame;
+import Model.SuperGame;
 import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Polygon;
 
-public class GameView extends SuperView {
+public abstract class GameView extends SuperView {
 
 	private static Player player1 = null;
 	private static Player player2 = null;
@@ -135,4 +136,6 @@ public class GameView extends SuperView {
 	public static boolean isCreated() {
 		return matchInit;
 	}
+	
+	public abstract void updateBoardView(SuperGame game);
 }

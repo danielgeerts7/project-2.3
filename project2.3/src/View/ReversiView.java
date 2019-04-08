@@ -3,6 +3,7 @@ package View;
 import Model.Board;
 import Model.Config;
 import Model.ReversiGame;
+import Model.SuperGame;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,8 +11,7 @@ import javafx.scene.layout.GridPane;
 
 public class ReversiView extends GameView {
 
-	private static GridPane pane = null;
-	private static ReversiGame game = null;
+	private GridPane pane = null;
 
 	public ReversiView() {
 		super();
@@ -25,9 +25,6 @@ public class ReversiView extends GameView {
 		constructGamePane();
 
 		super.addChild(1, pane);
-
-		game = new ReversiGame();
-		ReversiView.updateBoardView();
 	}
 
 	@Override
@@ -35,7 +32,8 @@ public class ReversiView extends GameView {
 		
 	}
 	
-	public static void updateBoardView() {
+	@Override
+	public void updateBoardView(SuperGame game) {
 		pane.getChildren().clear();
 		if (game != null) {
 			Board b = game.getBord();
