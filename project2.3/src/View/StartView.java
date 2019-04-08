@@ -1,7 +1,6 @@
 package View;
 
 import Controller.ClientSocket;
-import Main.Main;
 import Model.Client;
 import Model.Config;
 import javafx.event.ActionEvent;
@@ -12,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 /**
  * StartView is the first view when application is started
@@ -25,7 +23,7 @@ public class StartView extends SuperView {
 
 	private GridPane mainpane = null;
 
-	public StartView(Stage primaryStage) {
+	public StartView() {
 		super();
 		mainpane = new GridPane();
 		mainpane.setAlignment(Pos.CENTER);

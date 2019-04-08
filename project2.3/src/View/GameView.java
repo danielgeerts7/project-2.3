@@ -4,29 +4,19 @@ import java.util.HashMap;
 
 import Controller.ClientSocket;
 import Main.Main;
-import Model.Config;
 import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 public class GameView extends SuperView {
-	//TODO: ReversiView maken en TicTacToeView
-
+	
 	private GridPane player1 = null;
 	private GridPane player2 = null;
 
-	public GameView(Stage stage) {
+	public GameView() {
 		super();
 
 		player1 = new GridPane();

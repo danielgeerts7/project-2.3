@@ -5,14 +5,13 @@ import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 public class ReversiView extends GameView {
 	
 	private GridPane pane = null;
 	
-	public ReversiView(Stage stage) {
-		super(stage);
+	public ReversiView() {
+		super();
 		
 		pane = new GridPane();
 		pane.setAlignment(Pos.CENTER);

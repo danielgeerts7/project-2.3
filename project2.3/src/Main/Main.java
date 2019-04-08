@@ -1,10 +1,8 @@
 package Main;
 
 import Controller.ClientSocket;
-import Controller.GameController;
 import Model.Config;
 import View.StartView;
-import View.GameView;
 import View.ReversiView;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -18,7 +16,7 @@ public class Main extends Application {
   
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
-		StartView menu = new StartView(primaryStage);
+		StartView menu = new StartView();
 		Scene scene = new Scene(menu);
 		
 		primaryStage.setTitle(Config.APP_NAME); // Set the stage title
@@ -36,12 +34,12 @@ public class Main extends Application {
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
-			StartView start = new StartView(primaryReference);
+			StartView start = new StartView();
 			primaryReference.getScene().setRoot(start);
 			break;
 		case REVERSI:
 			System.out.println("----> reversi view");
-			ReversiView reversi = new ReversiView(primaryReference);
+			ReversiView reversi = new ReversiView();
 			primaryReference.getScene().setRoot(reversi);
 			break;
 		case TICTACTOE:
