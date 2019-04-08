@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Main.Main;
+import Model.Client;
+import Model.ReversiGame;
 import View.GameView;
 import View.Popup;
+import View.ReversiView;
 import View.Popup.PopupYesNo;
 import javafx.application.Platform;
 
@@ -68,32 +71,56 @@ public abstract class ServerMessageHandler {
 				String gametype = map.get("GAMETYPE");
 				String player = map.get("PLAYERTOMOVE");
 				String opponent = map.get("OPPONENT");
-				String temp = "It is your turn\n" + gametype;
-				
+
 				if (gametype.toLowerCase().contains("reversi")) {
 					Main.switchScene(Main.SceneType.REVERSI);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
 					Main.switchScene(Main.SceneType.TICTACTOE);
 				}
 				GameView.updateSuperView(svrMessageToMap(msg));
+				System.out.println("Match is created!");
 			}
 		});
 	}
 
 	private void yourTurn(String msg) {
-		HashMap<String, String> map = svrMessageToMap(msg);
-		String turnmsg = map.get("TURNMESSAGE");
-		String temp = "It is your turn\n" + turnmsg;
-		Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				while (!GameView.isCreated()) {
+					try {
+						Thread.sleep(2);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				HashMap<String, String> map = svrMessageToMap(msg);
+				String turnmsg = map.get("TURNMESSAGE");
+				//String temp = "It is your turn\n" + turnmsg;
+				//Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
+				ReversiGame.doMove(GameView.getPlayer1().getColor());
+			}
+		});
 	}
 
 	private void receivedMove(String msg) {
-		HashMap<String, String> map = svrMessageToMap(msg);
-		String player = map.get("PLAYER");
-		String move = map.get("MOVE");
-		String details = map.get("DETAILS");
-		String temp = "Received move from " + player + "\n move: " + move + "\n details: " + details;
-		Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				HashMap<String, String> map = svrMessageToMap(msg);
+				String player = map.get("PLAYER");
+				String move = map.get("MOVE");
+				String details = map.get("DETAILS");
+				//String temp = "Received move from " + player + "\n move: " + move + "\n details: " + details;
+				//Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
+				if (player.equals(Client.getUsername())) {
+					ReversiGame.receivedMove(GameView.getPlayer1().getColor(), Integer.parseInt(move));
+				} else {
+					ReversiGame.receivedMove(GameView.getPlayer2().getColor(), Integer.parseInt(move));
+				}
+				ReversiView.updateBoardView();
+			}
+		});
 	}
 
 	private void gotChallenged(String msg) {
@@ -144,7 +171,7 @@ public abstract class ServerMessageHandler {
 	}
 
 	private HashMap<String, String> svrMessageToMap(String msg) {
-		String server_msg = msg.substring(msg.indexOf('{')+1, msg.indexOf('}'));
+		String server_msg = msg.substring(msg.indexOf('{') + 1, msg.indexOf('}'));
 		HashMap<String, String> map = new HashMap<String, String>();
 		String[] list = server_msg.split(",");
 		for (int i = 0; i < list.length; i++) {

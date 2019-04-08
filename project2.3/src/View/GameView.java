@@ -6,6 +6,7 @@ import Controller.ClientSocket;
 import Main.Main;
 import Model.Client;
 import Model.Player;
+import Model.ReversiGame;
 import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +19,7 @@ public class GameView extends SuperView {
 	private static Player player2 = null;
 	
 	private static Polygon playersTurn = null;
+	private static boolean matchInit = false;
 
 	public GameView() {
 		super();
@@ -66,16 +68,18 @@ public class GameView extends SuperView {
 
 			setSubscriptionLabel(game);
 
+			player1.setName(Client.getUsername());
+			player2.setName(opponent);			
 			if (Client.getUsername().equals(player)) {
-				player1.setName(player);
-				player2.setName(opponent);
 				playersTurn.setTranslateX(25);
 				playersTurn.setTranslateY(player1.getTranslateY());
-			} else if (Client.getUsername().equals(opponent)) {
-				player1.setName(opponent);
-				player2.setName(player);
+				player1.setColor(ReversiGame.BLACK);
+				player2.setColor(ReversiGame.WHITE);
+			} else {
 				playersTurn.setTranslateX(25);
 				playersTurn.setTranslateY(player2.getTranslateY());
+				player1.setColor(ReversiGame.WHITE);
+				player2.setColor(ReversiGame.BLACK);
 			}
 		}
 
@@ -96,6 +100,8 @@ public class GameView extends SuperView {
 				});
 			}
 		});
+		
+		matchInit = true;
 	}
 
 	protected void updatePlayersScore(String name, int score) {
@@ -114,5 +120,17 @@ public class GameView extends SuperView {
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player2.getTranslateY());
 		}
+	}
+	
+	public static Player getPlayer1() {
+		return player1;
+	}
+	
+	public static Player getPlayer2() {
+		return player2;
+	}
+	
+	public static boolean isCreated() {
+		return matchInit;
 	}
 }

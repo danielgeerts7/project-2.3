@@ -10,8 +10,8 @@ import javafx.scene.layout.GridPane;
 
 public class ReversiView extends GameView {
 
-	private GridPane pane = null;
-	private ReversiGame game = null;
+	private static GridPane pane = null;
+	private static ReversiGame game = null;
 
 	public ReversiView() {
 		super();
@@ -27,10 +27,16 @@ public class ReversiView extends GameView {
 		super.addChild(1, pane);
 
 		game = new ReversiGame();
+		ReversiView.updateBoardView();
 	}
 
 	@Override
 	protected void update() {
+		
+	}
+	
+	public static void updateBoardView() {
+		pane.getChildren().clear();
 		if (game != null) {
 			Board b = game.getBord();
 			for (int i = 0; i < b.bord.length; i++) {
@@ -42,7 +48,7 @@ public class ReversiView extends GameView {
 						pane.add(new ImageView(new Image("File:img/white_stone.png", 70, 70, false, false)), i, j);
 					}
 					if (b.bord[i][j] == ReversiGame.EMPTY) {
-
+						pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
 					}
 				}
 			}
@@ -50,11 +56,11 @@ public class ReversiView extends GameView {
 	}
 
 	private void constructGamePane() {
-		for (int i = 0; i < 8; i++) {
+		/*for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
 			}
-		}
+		}*/
 
 //		for (int i = 0; i < 8; i++) {
 //			for (char alphabet = 'A'; alphabet < 'H'; alphabet++) {
