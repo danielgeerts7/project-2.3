@@ -16,7 +16,7 @@ public class Ai {
 		Board new_bord = bord;
 		if(rg.hasValidMove(new_bord, piece)) {
 			for(Tuple v : rg.valid_moves) {
-				rg.doMove(new_bord, piece, (v.x*8+v.y));
+				//rg.doMove(new_bord, piece, (v.x*8+v.y));
 			}
 		}
 		return 19;
