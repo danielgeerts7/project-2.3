@@ -52,6 +52,8 @@ public class GameView extends SuperView {
 				ClientSocket.getInstance(true).forfeit();
 			}
 		});
+		btn_forfeit.setTranslateX(100);
+		btn_forfeit.setTranslateY(600);
 		super.addChild(2, btn_forfeit);
 	}
 

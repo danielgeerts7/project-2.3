@@ -88,8 +88,6 @@ public class ReversiGame {
 		int x = valid_moves.get(rand).x;
 		int y = valid_moves.get(rand).y;
 		if (isValidMove(bord, piece, y, x)) {
-			// placePiece(bord, piece, y, x);
-			System.out.println("x: " + x + ", y: " + y);
 			int pos = (BOARD_SIZE * y) + x;
 			ClientSocket.getInstance(true).sendMove(pos);
 			return;
@@ -105,7 +103,6 @@ public class ReversiGame {
 		y = pos / BOARD_SIZE;
 		if (isValidMove(bord, piece, y, x)) {
 			placePiece(bord, piece, y, x);
-			// ClientSocket.getInstance(true).sendMove(pos);
 			return;
 		} else {
 			System.out.println("oei oei hij doet het niet!");
