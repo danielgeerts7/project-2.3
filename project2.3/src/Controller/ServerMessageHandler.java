@@ -72,7 +72,7 @@ public abstract class ServerMessageHandler {
 				
 				if (gametype.toLowerCase().contains("reversi")) {
 					Main.switchScene(Main.SceneType.REVERSI);
-				} else if (gametype.toLowerCase().contains("tictactoe")) {
+				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
 					Main.switchScene(Main.SceneType.TICTACTOE);
 				}
 				GameView.updateSuperView(svrMessageToMap(msg));

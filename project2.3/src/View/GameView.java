@@ -4,35 +4,43 @@ import java.util.HashMap;
 
 import Controller.ClientSocket;
 import Main.Main;
+import Model.Client;
+import Model.Player;
 import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 
 public class GameView extends SuperView {
-	
-	private GridPane player1 = null;
-	private GridPane player2 = null;
+
+	private static Player player1 = null;
+	private static Player player2 = null;
 
 	public GameView() {
 		super();
 
-		player1 = new GridPane();
+		player1 = new Player();
 		player1.setMinSize(200, 300);
 		player1.setTranslateX(100);
 		player1.setTranslateY(200);
-		
-		player2 = new GridPane();
+
+		player2 = new Player();
 		player2.setMinSize(200, 300);
 		player2.setTranslateX(100);
 		player2.setTranslateY(400);
-		
+
 		super.addChild(2, player1);
 		super.addChild(2, player2);
-		
-		constructScorePane();
+
+		Button btn_forfeit = new Button("Forfeit");
+		btn_forfeit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				System.out.println("You lose!");
+				ClientSocket.getInstance(true).forfeit();
+			}
+		});
+		super.addChild(2, btn_forfeit);
 	}
 
 	@Override
@@ -40,35 +48,21 @@ public class GameView extends SuperView {
 
 	}
 
-	public void constructScorePane() {
-		Button forfeitP1 = new Button("Forfeit");		
-		forfeitP1.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				System.out.println("You lose!");
-			}
-		});
-		Label name = new Label("Player 1");
-		player1.add(name, 0, 0);
-		player1.add(new Label("Score: "), 0, 1);
-		player1.add(forfeitP1, 0, 2);
-		
-		Label opp_name = new Label("Player 2");
-		player2.add(opp_name, 0, 1);
-		player2.add(new Label("Score: "), 0, 2);
-	}
-	
 	public static void updateSuperView(HashMap<String, String> map) {
-		
 		if (map != null) {
 			String player = map.get("PLAYERTOMOVE");
 			String game = map.get("GAMETYPE");
 			String opponent = map.get("OPPONENT");
-			
+
 			setSubscriptionLabel(game);
 
-			Label opp = new Label("You are playing against: " + opponent);
-			//player1.add(opp, 10, 2);
+			if (Client.getUsername().equals(player)) {
+				player1.setName(player);
+				player2.setName(opponent);
+			} else if (Client.getUsername().equals(opponent)) {
+				player1.setName(opponent);
+				player2.setName(player);
+			}
 		}
 
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
@@ -80,13 +74,21 @@ public class GameView extends SuperView {
 						ClientSocket.getInstance(false).forfeit();
 						Main.switchScene(Main.SceneType.START);
 					}
-					
+
 					@Override
 					public void clickedNo() {
-						
+
 					}
 				});
 			}
 		});
+	}
+
+	protected static void updatePlayer(String name, int score) {
+		if (player1.getName().equals(name)) {
+			player1.addScore(score);
+		} else if (player2.getName().equals(name)) {
+			player2.addScore(score);
+		}
 	}
 }
