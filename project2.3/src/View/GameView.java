@@ -10,11 +10,14 @@ import View.Popup.PopupYesNo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.shape.Polygon;
 
 public class GameView extends SuperView {
 
 	private static Player player1 = null;
 	private static Player player2 = null;
+	
+	private static Polygon playersTurn = null;
 
 	public GameView() {
 		super();
@@ -28,9 +31,16 @@ public class GameView extends SuperView {
 		player2.setMinSize(200, 300);
 		player2.setTranslateX(100);
 		player2.setTranslateY(400);
+		
+		playersTurn = new Polygon();
+		playersTurn.getPoints().addAll(new Double[]{
+            0.0, 0.0,
+            0.0, 30.0,
+            30.0, 15.0 });
 
 		super.addChild(2, player1);
 		super.addChild(2, player2);
+		super.addChild(2, playersTurn);
 
 		Button btn_forfeit = new Button("Forfeit");
 		btn_forfeit.setOnAction(new EventHandler<ActionEvent>() {
@@ -59,9 +69,13 @@ public class GameView extends SuperView {
 			if (Client.getUsername().equals(player)) {
 				player1.setName(player);
 				player2.setName(opponent);
+				playersTurn.setTranslateX(25);
+				playersTurn.setTranslateY(player1.getTranslateY());
 			} else if (Client.getUsername().equals(opponent)) {
 				player1.setName(opponent);
 				player2.setName(player);
+				playersTurn.setTranslateX(25);
+				playersTurn.setTranslateY(player2.getTranslateY());
 			}
 		}
 
@@ -84,11 +98,21 @@ public class GameView extends SuperView {
 		});
 	}
 
-	protected static void updatePlayer(String name, int score) {
+	protected void updatePlayersScore(String name, int score) {
 		if (player1.getName().equals(name)) {
 			player1.addScore(score);
 		} else if (player2.getName().equals(name)) {
 			player2.addScore(score);
+		}
+	}
+	
+	protected void updatePlayersTurn(String name) {
+		if (player1.getName().equals(name)) {
+			playersTurn.setTranslateX(25);
+			playersTurn.setTranslateY(player1.getTranslateY());
+		} else if (player2.getName().equals(name)) {
+			playersTurn.setTranslateX(25);
+			playersTurn.setTranslateY(player2.getTranslateY());
 		}
 	}
 }

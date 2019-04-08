@@ -8,22 +8,18 @@ import java.util.Random;
 import java.util.*;
 
 public class ReversiGame {
-	final static int BOARD_SIZE = 8;
-	final static char BLACK = '\u26AB';
-	final static char WHITE = '\u26AA';
-	final static char EMPTY = '\u2B1c';
+	private final static int BOARD_SIZE = 8;
+	public final static char BLACK = '\u26AB';
+	public final static char WHITE = '\u26AA';
+	public final static char EMPTY = '\u2B1c';
 	public ArrayList<Tuple> valid_moves = new ArrayList<>();
 	public Tuple[] offsets = new Tuple[8];
 	private Board bord;
 	
-	public static void main(String[] args) {
-		new ReversiGame();
-	}
-	
 	public ReversiGame() {
 		addOffsets();
-		Board bord = startGame();
-		char piece = BLACK;
+		bord = startGame();
+		/*char piece = BLACK;
 		while(hasValidMove(bord, piece)) {
 			gameLoop(bord, piece);
 			if(hasValidMove(bord, inverse(piece))) {
@@ -49,7 +45,7 @@ public class ReversiGame {
 			if(black > white) { winner = BLACK; }
 			else { winner = WHITE; }
 			System.out.println(winner + "is the winner");
-		}
+		}*/
 	}
 	
 	public char inverse(char piece) {
@@ -96,7 +92,7 @@ public class ReversiGame {
 		}
 	}
 	
-	public Board getBord(Board bord) {
+	public Board getBord() {
 		return bord;
 	}
 	

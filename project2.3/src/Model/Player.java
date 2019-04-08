@@ -17,11 +17,11 @@ public class Player extends GridPane {
 	}
 	
 	public void setName(String newName) {
-		label_score.setText(newName);
+		label_name.setText("Player: " + newName);
 	}
 	
 	public String getName() {
-		return label_score.getText();
+		return label_name.getText();
 	}
 	
 	public void setScore(int score) {
