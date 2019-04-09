@@ -71,7 +71,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 	public void sendMove(int pos) {
 		this.sendMessageToServer("move " + pos);
-		this.waitForResponse(false);
+		//this.waitForResponse(false);
 
 		/*String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {

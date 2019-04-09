@@ -82,7 +82,7 @@ public class ReversiGame extends SuperGame {
 			System.out.print("[" + v.x + "," + v.y + "]");
 		}
 		if (valid_moves.size() <= 0) {
-			// Sla beurt over -> stuur naar server
+			// TODO: sla beurt over -> stuur naar server
 		}
 		int rand = (int )(Math.random() * valid_moves.size());
 		int x = valid_moves.get(rand).x;
@@ -162,7 +162,6 @@ public class ReversiGame extends SuperGame {
 	}
 
 	public boolean hasValidMove(char piece) {
-		System.out.println("do: hasValidMove!");
 		valid_moves.clear();
 		for (int y = 0; y < BOARD_SIZE; y++) {
 			for (int x = 0; x < BOARD_SIZE; x++) {

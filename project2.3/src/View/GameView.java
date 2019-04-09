@@ -49,7 +49,7 @@ public abstract class GameView extends SuperView {
 		btn_forfeit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				System.out.println("You lose!");
+				System.out.println("Player has forfeit!");
 				ClientSocket.getInstance(true).forfeit();
 			}
 		});

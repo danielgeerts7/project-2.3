@@ -168,7 +168,7 @@ public class StartView extends SuperView {
 						if (ClientSocket.getInstance(true) != null) {
 							String opponent = txt_opponentsName.getText();
 							ClientSocket.getInstance(false).challengeOpponent(opponent, game);
-							System.out.println("Come at me " + opponent + ", you pussy!");						}
+						}
 					}
 				});
 
