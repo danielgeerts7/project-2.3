@@ -2,14 +2,22 @@ package Controller;
 
 import Model.Client;
 import Model.ReversiGame;
+import Model.SuperGame;
+import Model.TicTacToeGame;
 import View.GameView;
 
 public class GameController {
-	private static ReversiGame game = null;
+	private static SuperGame game = null;
 	private static GameView viewRef = null;
+	public String gametype = "";
 	
-	public GameController(GameView view) {
-		game = new ReversiGame();
+	public GameController(GameView view, String gametype) {
+		if (gametype.toLowerCase().contains("reversi")) {
+			game = new ReversiGame();
+		}
+		else if (gametype.toLowerCase().contains("tic-tac-toe")) {
+			game = new TicTacToeGame();
+		}
 		viewRef = view;
 		viewRef.updateBoardView(game);
 	}
