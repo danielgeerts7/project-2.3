@@ -3,12 +3,17 @@ package View;
 import Controller.ClientSocket;
 import Model.Client;
 import Model.Config;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -22,6 +27,7 @@ import javafx.scene.layout.GridPane;
 public class StartView extends SuperView {
 
 	private GridPane mainpane = null;
+	private ListView<String> list = null;
 
 	public StartView() {
 		super();
@@ -142,6 +148,17 @@ public class StartView extends SuperView {
 			mainpane.add(btn_chooseGame, 1, counter);
 			counter++;
 		}
+		if (Client.getGame().equals("")) {
+			Button btn_skipThisView = new Button("Skip view");
+			btn_skipThisView.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					constructChooseOpponentPane(playerName, "");
+				}
+			});
+
+			mainpane.add(btn_skipThisView, 0, 0);
+		}
 
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -154,32 +171,54 @@ public class StartView extends SuperView {
 
 	private void constructChooseOpponentPane(String playerName, String game) {
 		clearPane();
-
 		String[] opponents = ClientSocket.getInstance(true).getPlayerlist();
-		int counter = 1;
-		for (String enemie : opponents) {
-			if (!enemie.equals(playerName)) {
-				Label txt_opponentsName = new Label(enemie);
-				Button btn_chooseOpponent = new Button("Choose " + enemie);
+		list = new ListView<String>();
+		ObservableList<String> items = FXCollections.observableArrayList(opponents);
+		list.setItems(items);
+		list.setPrefWidth(300);
+		list.setPrefHeight(500);
+		Button btn_chooseOpponent = new Button("Select a player");
+		btn_chooseOpponent.setDisable(true);
+		btn_chooseOpponent.minWidth(100);
 
-				btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent e) {
-						if (ClientSocket.getInstance(true) != null) {
-							String opponent = txt_opponentsName.getText();
-							ClientSocket.getInstance(false).challengeOpponent(opponent, game);
+		if (!game.isEmpty()) {
+			list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+				public void changed(ObservableValue<? extends String> ov, String old_val, String new_val) {
+					btn_chooseOpponent.setText("Select " + new_val);
+					btn_chooseOpponent.setDisable(false);
+					btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							if (ClientSocket.getInstance(true) != null) {
+								ClientSocket.getInstance(false).challengeOpponent(new_val, game);
+							}
 						}
-					}
-				});
-
-				mainpane.add(txt_opponentsName, 0, counter);
-				mainpane.add(btn_chooseOpponent, 1, counter);
-			}
-			counter++;
+					});
+				}
+			});
+		} else {
+			btn_chooseOpponent.setText("Go back and select a game first");
 		}
 
-		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
+		Button btn_refresh = new Button("Refresh player lobby");
+		btn_refresh.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				String[] opponents = ClientSocket.getInstance(true).getPlayerlist();
+				ObservableList<String> items = FXCollections.observableArrayList(opponents);
+				list.setItems(items);
+				if (!game.isEmpty()) {
+					btn_chooseOpponent.setText("Select a player");
+				}
+				btn_chooseOpponent.setDisable(true);
+			}
+		});
 
+		mainpane.add(list, 0, 0);
+		mainpane.add(btn_chooseOpponent, 0, 1);
+		mainpane.add(btn_refresh, 0, 2);
+
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseGamePane(playerName);

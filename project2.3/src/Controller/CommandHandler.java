@@ -1,5 +1,10 @@
 package Controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import Model.Client;
 import View.Popup;
 
 /**
@@ -61,19 +66,19 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 	public void selectGame(String gameName) {
 		this.sendMessageToServer("subscribe " + gameName);
-		this.waitForResponse(false);
-
+		/*this.waitForResponse(false);
+		
 		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAMELIST")) {
 			Popup.getInstance().newPopup("Failed to select game\n" + msg, Popup.Type.DEBUG);
-		}
+		}*/
 	}
 
 	public void sendMove(int pos) {
 		this.sendMessageToServer("move " + pos);
-		//this.waitForResponse(false);
+		/*this.waitForResponse(false);
 
-		/*String msg = getMsgData();
+		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
 			System.out.println("Invalid play from our Client");
 			Popup.getInstance().newPopup("Failed to move\n" + msg, Popup.Type.DEBUG);
@@ -108,16 +113,17 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		if (msg.contains("SVR PLAYERLIST")) {
 			String players = msg.substring(msg.indexOf('['), msg.indexOf(']'));
 			String[] availablePlayers = players.split(",");
+			List<String> list = new ArrayList<String>();
 			int i = 0;
-			for (String game : availablePlayers) {
-				availablePlayers[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
+			for (String player : availablePlayers) {
+				String temp = player.replace("\"", "").replace("]", "").replace("[", "").trim();
+				list.add(temp);
 				i++;
 			}
-			if (availablePlayers.length <= 1) {
-				// Only our client is connected
-				return new String[0];
-			}
-			return availablePlayers;
+			list.remove(Client.getUsername());
+			String[] result = new String[list.size()];
+			list.toArray(result);
+			return result;
 		} else {
 			Popup.getInstance().newPopup("Failed to get playerlist\n" + msg, Popup.Type.DEBUG);
 			return new String[0];
