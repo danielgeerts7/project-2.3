@@ -26,7 +26,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		} else if (msg.contains("ERR Already logged in")) {
 			return 0;
 		} else {
-			Popup.getInstance().newPopup("Failed to login\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to login\n" + msg, Popup.Type.DEBUG);
 			return -1;
 		}
 	}
@@ -34,7 +34,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 	protected void logoutFromServer() {
 		this.sendMessageToServer("logout");
 	}
-	
+
 	protected void disconnectFromServer() {
 		this.sendMessageToServer("disconnect");
 	}
@@ -54,7 +54,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 			}
 			return availableGames;
 		} else {
-			Popup.getInstance().newPopup("Failed to get gamelist\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to get gamelist\n" + msg, Popup.Type.DEBUG);
 			return null;
 		}
 	}
@@ -65,22 +65,19 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAMELIST")) {
-			Popup.getInstance().newPopup("Failed to select game\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to select game\n" + msg, Popup.Type.DEBUG);
 		}
 	}
 
-	protected boolean sendMove(String pos) {
+	public void sendMove(int pos) {
 		this.sendMessageToServer("move " + pos);
 		this.waitForResponse(false);
 
-		String msg = getMsgData();
-		if (msg.contains("OK")) {
-			return true;
-		} else {
+		/*String msg = getMsgData();
+		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
 			System.out.println("Invalid play from our Client");
-			Popup.getInstance().newPopup("Failed to move\n"+msg, Popup.Type.DEBUG);
-			return false;
-		}
+			Popup.getInstance().newPopup("Failed to move\n" + msg, Popup.Type.DEBUG);
+		}*/
 	}
 
 	public void challengeOpponent(String opponentName, String gameName) {
@@ -89,7 +86,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
-			Popup.getInstance().newPopup("Failed to challenge opponent\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to challenge opponent\n" + msg, Popup.Type.DEBUG);
 		}
 	}
 
@@ -99,7 +96,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
-			Popup.getInstance().newPopup("Failed to accept challenge\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to accept challenge\n" + msg, Popup.Type.DEBUG);
 		}
 	}
 
@@ -122,7 +119,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 			}
 			return availablePlayers;
 		} else {
-			Popup.getInstance().newPopup("Failed to get playerlist\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to get playerlist\n" + msg, Popup.Type.DEBUG);
 			return new String[0];
 		}
 	}
@@ -137,7 +134,7 @@ public abstract class CommandHandler extends ServerMessageHandler {
 
 		String msg = getMsgData();
 		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
-			Popup.getInstance().newPopup("Failed to forfeit\n"+msg, Popup.Type.DEBUG);
+			Popup.getInstance().newPopup("Failed to forfeit\n" + msg, Popup.Type.DEBUG);
 		}
 	}
 

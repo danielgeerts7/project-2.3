@@ -1,6 +1,7 @@
 package Main;
 
 import Controller.ClientSocket;
+import Controller.GameController;
 import Model.Config;
 import View.StartView;
 import View.ReversiView;
@@ -40,6 +41,7 @@ public class Main extends Application {
 		case REVERSI:
 			System.out.println("----> reversi view");
 			ReversiView reversi = new ReversiView();
+			GameController controller = new GameController(reversi);
 			primaryReference.getScene().setRoot(reversi);
 			break;
 		case TICTACTOE:

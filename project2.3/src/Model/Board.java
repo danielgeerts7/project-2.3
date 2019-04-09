@@ -1,6 +1,6 @@
 package Model;
 
-class Board {
+public class Board {
 	
 	public char[][] bord;
 	
