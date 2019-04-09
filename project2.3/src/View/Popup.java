@@ -1,5 +1,7 @@
 package View;
 
+import java.util.HashMap;
+
 import Main.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,6 +37,8 @@ public final class Popup {
 	private String img_winPath = "File:img/WIN.png";
 	private String img_losePath = "File:img/LOSE.png";
 	private String img_drawPath = "File:img/DRAW.png";
+	
+	public HashMap<String, Stage> popups = null;
 
 	private static Popup instance = null;
 
@@ -46,14 +50,14 @@ public final class Popup {
 	}
 
 	private Popup() {
-
+		popups = new HashMap<String, Stage>();
 	}
 
 	public void newPopup(String text, Type type) {
-		newPopup(text, type, null);
+		newPopup(text, type, null, "");
 	}
 
-	public void newPopup(String text, Type type, PopupYesNo yesno) {
+	public void newPopup(String text, Type type, PopupYesNo yesno, String hash) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -151,6 +155,10 @@ public final class Popup {
 				Scene stageScene = new Scene(pane, width, height);
 				newStage.setScene(stageScene);
 				newStage.show();
+				
+				if (!hash.isEmpty()) {
+					popups.put(hash, newStage);
+				}
 			}
 		});
 	}

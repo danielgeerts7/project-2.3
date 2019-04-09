@@ -100,7 +100,7 @@ public abstract class GameView extends SuperView {
 					public void clickedNo() {
 
 					}
-				});
+				}, "");
 			}
 		});
 		

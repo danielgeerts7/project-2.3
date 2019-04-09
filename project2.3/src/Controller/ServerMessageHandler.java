@@ -69,15 +69,13 @@ public abstract class ServerMessageHandler {
 			public void run() {
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String gametype = map.get("GAMETYPE");
-				String player = map.get("PLAYERTOMOVE");
-				String opponent = map.get("OPPONENT");
 
 				if (gametype.toLowerCase().contains("reversi")) {
 					Main.switchScene(Main.SceneType.REVERSI);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
 					Main.switchScene(Main.SceneType.TICTACTOE);
 				}
-				GameView.updateSuperView(svrMessageToMap(msg));
+				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
 			}
 		});
@@ -133,21 +131,25 @@ public abstract class ServerMessageHandler {
 			@Override
 			public void clickedNo() {
 				// Our client declined the challenge
-				challenges.remove(challengeNr);
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Popup.getInstance().popups.get(challengeNr).close();
+						Popup.getInstance().popups.remove(challengeNr);
+						challenges.remove(challengeNr);
+					}
+				});
 			}
 		};
 		String popup_msg = "You got challenged(" + challengeNr + ") for " + gameType + ", by : " + challenger;
-		Popup.getInstance().newPopup(popup_msg, Popup.Type.YESNO, popup);
+		Popup.getInstance().newPopup(popup_msg, Popup.Type.YESNO, popup, challengeNr);
 		challenges.put(challengeNr, popup);
 	}
 
 	private void challengeCancelled(String msg) {
 		HashMap<String, String> map = svrMessageToMap(msg);
 		String challengeNr = map.get("CHALLENGENUMBER");
-		Popup.getInstance().newPopup("Challenge(" + challengeNr + ") got cancelled", Popup.Type.YESNO);
-
 		if (challenges.containsKey(challengeNr)) {
-			// TODO: make this work better and exit newPopup when cancelled
 			challenges.get(challengeNr).clickedNo();
 			challenges.remove(challengeNr);
 		}
