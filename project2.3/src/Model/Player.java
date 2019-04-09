@@ -34,8 +34,8 @@ public class Player extends GridPane {
 		label_name.setText("Player: " + name);
 	}
 	
-	public void addScore(int score) {
-		this.score += score;
+	public void setScore(int score) {
+		this.score = score;
 		updateScore();
 	}
 	
