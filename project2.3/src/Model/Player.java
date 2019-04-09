@@ -8,6 +8,7 @@ public class Player extends GridPane {
 	private Label label_name = null;
 	private Label label_score = null;
 	private Label label_color = null;
+	private String name = "";
 	private int score = 0;
 	private char color = 0;
 	
@@ -21,16 +22,16 @@ public class Player extends GridPane {
 	}
 	
 	public void setName(String newName) {
-		label_name.setText("Player: " + newName);
+		name = newName;
+		updateName();
 	}
 	
 	public String getName() {
-		return label_name.getText();
+		return name;
 	}
 	
-	public void setScore(int score) {
-		this.score = score;
-		updateScore();
+	private void updateName() {
+		label_name.setText("Player: " + name);
 	}
 	
 	public void addScore(int score) {

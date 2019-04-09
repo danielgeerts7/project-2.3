@@ -106,16 +106,8 @@ public abstract class GameView extends SuperView {
 		
 		matchInit = true;
 	}
-
-	protected void updatePlayersScore(String name, int score) {
-		if (player1.getName().equals(name)) {
-			player1.addScore(score);
-		} else if (player2.getName().equals(name)) {
-			player2.addScore(score);
-		}
-	}
 	
-	protected void updatePlayersTurn(String name) {
+	public void updatePlayersTurn(String name) {
 		if (player1.getName().equals(name)) {
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player1.getTranslateY());
