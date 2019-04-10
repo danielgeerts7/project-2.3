@@ -17,6 +17,7 @@ import javafx.application.Platform;
  * @since 2019-03-31
  */
 public abstract class ServerMessageHandler {
+	
 
 	private Map<String, PopupYesNo> challenges = null;
 
@@ -70,6 +71,12 @@ public abstract class ServerMessageHandler {
 	 */
 	private void createMatch(String msg) {
 		Platform.runLater(new Runnable() {
+			
+			HashMap<String, String> map = svrMessageToMap(msg);
+			String gametype = map.get("GAMETYPE");
+			String player = map.get("PLAYERTOMOVE");
+			String opponent = map.get("OPPONENT");
+			
 			@Override
 			public void run() {
 				HashMap<String, String> map = svrMessageToMap(msg);
@@ -82,6 +89,10 @@ public abstract class ServerMessageHandler {
 				}
 				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
+			}
+			
+			public String getGametype() {
+				return gametype;
 			}
 		});
 	}

@@ -68,5 +68,10 @@ public class Player extends GridPane {
 		} else if (color == ReversiGame.WHITE) {
 			label_color.setText("Color: WHITE");
 		}
+//		if (color == TicTacToeGame.CROSS) {
+//			label_color.setText("Color: CROSS");
+//		} else if (color == TicTacToeGame.CIRCLE) {
+//			label_color.setText("Color: CIRCLE");
+//		}
 	}
 }

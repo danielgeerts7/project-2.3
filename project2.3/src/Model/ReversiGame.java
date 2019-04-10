@@ -75,7 +75,8 @@ public class ReversiGame extends SuperGame {
 	public Board getBord() {
 		return bord;
 	}
-
+	
+	@Override
 	public void doMove(char piece) {
 		hasValidMove(piece);
 		/*for (Tuple v : valid_moves) {

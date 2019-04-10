@@ -1,15 +1,17 @@
 package Controller;
 
+import Controller.ServerMessageHandler;
+import Main.Main;
 import Model.Client;
 import Model.ReversiGame;
 import Model.SuperGame;
 import Model.TicTacToeGame;
+//import Model.TicTacToeGame;
 import View.GameView;
 
 public class GameController {
 	private static SuperGame game = null;
 	private static GameView viewRef = null;
-	public String gametype = "";
 	
 	public GameController(GameView view, String gametype) {
 		if (gametype.toLowerCase().contains("reversi")) {
