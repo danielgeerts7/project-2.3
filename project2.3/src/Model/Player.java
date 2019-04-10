@@ -3,6 +3,12 @@ package Model;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Player stores information of every current player playing a game
+ *
+ * @author Daniel Geerts
+ * @since 2019-04-06
+ */
 public class Player extends GridPane {
 
 	private Label label_name = null;

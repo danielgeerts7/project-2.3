@@ -43,15 +43,25 @@ public class StartView extends SuperView {
 		super.addChild(1, mainpane);
 	}
 
+	/**
+	 * This method is called every available frame
+	 */
 	@Override
 	protected void update() {
 
 	}
 
+	/**
+	 * Clear pane
+	 */
 	private void clearPane() {
 		mainpane.getChildren().clear();
 	}
-
+	
+	/**
+	 * Constructs first view -> Choose a modes of the application
+	 * Offline or online (local or remote)
+	 */
 	private void constructChooseModesPane() {
 		clearPane();
 
@@ -89,6 +99,9 @@ public class StartView extends SuperView {
 		mainpane.add(btn_remote, 1, 1);
 	}
 
+	/**
+	 * Constructs loginPane where user can login onto the server
+	 */
 	private void constructLoginPane() {
 		clearPane();
 
@@ -124,6 +137,9 @@ public class StartView extends SuperView {
 		});
 	}
 
+	/**
+	 * Constructs GamePane where user can select a game to play
+	 */
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
 
@@ -169,6 +185,10 @@ public class StartView extends SuperView {
 		});
 	}
 
+	/**
+	 * Constructs OpponentPane, where a player lobby will be shown
+	 * The user can select a player to play against
+	 */
 	private void constructChooseOpponentPane(String playerName, String game) {
 		clearPane();
 		String[] opponents = ClientSocket.getInstance(true).getPlayerlist();

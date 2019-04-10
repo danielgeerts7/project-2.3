@@ -27,6 +27,9 @@ public class ReversiView extends GameView {
 		super.addChild(1, pane);
 	}
 
+	/**
+	 * This method is called every available frame
+	 */
 	@Override
 	protected void update() {
 		

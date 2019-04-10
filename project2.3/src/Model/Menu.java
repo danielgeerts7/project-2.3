@@ -8,6 +8,12 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
+/**
+ * Menu holds the menu, that can be found in every Scene (superscene)
+ *
+ * @author Daniel Geerts
+ * @since 2019-04-06
+ */
 public class Menu {
 
 	VBox menuButtons = null;
@@ -102,6 +108,9 @@ public class Menu {
 		b.setMinWidth(btnWidth);
 	}
 
+	/**
+	 * Checks if the user wants to open or close the menu
+	 */
 	public void update() {
 		if (openMenu) {
 			btn_openMenu.setDisable(true);
@@ -135,6 +144,9 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Show or hide remote(online) Buttons
+	 */
 	public void showOnlineButtons(boolean doShow) {
 		btn_openMenu.setVisible(doShow);
 		btn_back.setVisible(doShow);
@@ -148,6 +160,9 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Show or hide local(offline) Buttons
+	 */
 	public void showOfflineButtons(boolean doShow) {
 		btn_openMenu.setVisible(doShow);
 		btn_back.setVisible(doShow);
@@ -159,10 +174,16 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * @return button back
+	 */
 	public Button getBackBtn() {
 		return btn_back;
 	}
 
+	/**
+	 * @return VBox within that every child of the menu
+	 */
 	public VBox getChildren() {
 		return menuButtons;
 	}

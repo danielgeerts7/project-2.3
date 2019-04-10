@@ -14,6 +14,12 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Polygon;
 
+/**
+ * GameView views the current game that is playing
+ *
+ * @author Daniel Geerts
+ * @since 2019-04-06
+ */
 public abstract class GameView extends SuperView {
 
 	private static Player player1 = null;
@@ -63,6 +69,10 @@ public abstract class GameView extends SuperView {
 
 	}
 
+	/**
+	 * Update all information that is stored in SuperView
+	 * @param map contains the message received by the server at the begin of a match
+	 */
 	public static void updateSuperView(HashMap<String, String> map) {
 		if (map != null) {
 			String player = map.get("PLAYERTOMOVE");
@@ -107,6 +117,10 @@ public abstract class GameView extends SuperView {
 		matchInit = true;
 	}
 	
+	/**
+	 * Updates the triangle that points to the current player thats needs to make a move
+	 * @param name of Player that needs to send a move
+	 */
 	public void updatePlayersTurn(String name) {
 		if (player1.getName().equals(name)) {
 			playersTurn.setTranslateX(25);
