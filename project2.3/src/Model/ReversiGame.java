@@ -125,6 +125,12 @@ public class ReversiGame extends SuperGame {
 		int y = greedy_moves.get(rand).y;
 		if (isValidMove(bord, piece, y, x)) {
 			int pos = (BOARD_SIZE * y) + x;
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ClientSocket.getInstance(true).sendMove(pos);
 			return;
 		} else {
@@ -209,6 +215,62 @@ public class ReversiGame extends SuperGame {
 			}
 		}
 		if(!place) {
+//			if(x == 0 || x == 7 || y == 0 || y == 7) {
+//				aantal +=10;
+//			}
+//			if(x == 0 && y == 1) { aantal -= 15; } else if(x == 1 && y == 0) {  aantal -= 15; } 
+//			else if(x == 1 && y == 1) { aantal -= 20; } else if(x == 6 && y == 0) { aantal -= 15; }
+//			else if(x == 7 && y == 1) { aantal -= 15; } else if(x == 6 && y == 1) { aantal -= 20; }
+//			else if(x == 0 && y == 6) { aantal -= 15; } else if(x == 1 && y == 7) { aantal -= 15; }
+//			else if(x == 1 && y == 6) { aantal -= 20; } else if(x == 6 && y == 6) { aantal -= 20; }
+//			else if(x == 6 && y == 7) { aantal -= 15; } else if(x == 7 && y == 6) { aantal -= 15; } 
+//			
+//			else if(x == 0 && y == 0) { aantal += 30; } else if(x == 0 && y == 7) { aantal += 30; }
+//			else if(x == 7 && y == 0) { aantal += 30; } else if(x == 7 && y == 7) { aantal += 30; }
+//			else { }
+			
+			
+			if(x == 0 && y == 0) { aantal += 100; } else if(x == 1 && y == 0) { aantal -= 20; }
+			else if(x == 2 && y == 0) { aantal += 10; } else if(x == 3 && y == 0) { aantal += 5; }
+			else if(x == 4 && y == 0) { aantal += 5; } else if(x == 5 && y == 0) { aantal += 10; }
+			else if(x == 6 && y == 0) { aantal -= 20; } else if(x == 7 && y == 0) { aantal += 100; }
+			
+			else if(x == 0 && y == 1) { aantal -= 20; } else if(x == 1 && y == 1) { aantal -= 50; }
+			else if(x == 2 && y == 1) { aantal -= 2; } else if(x == 3 && y == 1) { aantal -= 2; }
+			else if(x == 4 && y == 1) { aantal -= 2; } else if(x == 5 && y == 1) { aantal -= 2; }
+			else if(x == 6 && y == 1) { aantal -= 50; } else if(x == 7 && y == 1) { aantal -= 20; }
+			
+			else if(x == 0 && y == 2) { aantal += 10; } else if(x == 1 && y == 2) { aantal -= 2; }
+			else if(x == 2 && y == 2) { aantal -= 1; } else if(x == 3 && y == 2) { aantal -= 1; }
+			else if(x == 4 && y == 2) { aantal -= 1; } else if(x == 5 && y == 2) { aantal -= 1; }
+			else if(x == 6 && y == 2) { aantal -= 2; } else if(x == 7 && y == 2) { aantal += 10; }
+			
+			else if(x == 0 && y == 3) { aantal += 5; } else if(x == 1 && y == 3) { aantal -= 2; }
+			else if(x == 2 && y == 3) { aantal -= 1; } else if(x == 3 && y == 3) { aantal -= 1; }
+			else if(x == 4 && y == 3) { aantal -= 1; } else if(x == 5 && y == 3) { aantal -= 1; }
+			else if(x == 6 && y == 3) { aantal -= 2; } else if(x == 7 && y == 3) { aantal += 5; }
+			
+			else if(x == 0 && y == 4) { aantal += 5; } else if(x == 1 && y == 4) { aantal -= 2; }
+			else if(x == 2 && y == 4) { aantal -= 1; } else if(x == 3 && y == 4) { aantal -= 1; }
+			else if(x == 4 && y == 4) { aantal -= 1; } else if(x == 5 && y == 4) { aantal -= 1; }
+			else if(x == 6 && y == 4) { aantal -= 2; } else if(x == 7 && y == 4) { aantal += 5; }
+			
+			else if(x == 0 && y == 5) { aantal += 10; } else if(x == 1 && y == 5) { aantal -= 2; }
+			else if(x == 2 && y == 5) { aantal -= 2; } else if(x == 3 && y == 5) { aantal -= 1; }
+			else if(x == 4 && y == 5) { aantal -= 1; } else if(x == 5 && y == 5) { aantal -= 1; }
+			else if(x == 6 && y == 5) { aantal -= 2; } else if(x == 7 && y == 5) { aantal += 10; }
+			
+			else if(x == 0 && y == 6) { aantal -= 20; } else if(x == 1 && y == 6) { aantal -= 50; }
+			else if(x == 2 && y == 6) { aantal -= 2; } else if(x == 3 && y == 6) { aantal -= 2; }
+			else if(x == 4 && y == 6) { aantal -= 2; } else if(x == 5 && y == 6) { aantal -= 2; }
+			else if(x == 6 && y == 6) { aantal -= 50; } else if(x == 7 && y == 6) { aantal -= 20; }
+			
+			else if(x == 0 && y == 7) { aantal += 100; } else if(x == 1 && y == 7) { aantal -= 20; }
+			else if(x == 2 && y == 7) { aantal += 10; } else if(x == 3 && y == 7) { aantal += 5; }
+			else if(x == 4 && y == 7) { aantal += 5; } else if(x == 5 && y == 7) { aantal += 10; }
+			else if(x == 6 && y == 7) { aantal -= 20; } else if(x == 7 && y == 7) { aantal += 100; }
+			else { }
+			
 			System.out.println(" : " + aantal);
 			weight.add(aantal);
 		}
@@ -246,7 +308,7 @@ public class ReversiGame extends SuperGame {
 	 * @return true if has valid move, false if not
 	 */
 	public boolean hasValidMove(char piece) {
-		System.out.println("do: hasValidMove!");
+		//System.out.println("do: hasValidMove!");
 		valid_moves.clear();
 		for (int y = 0; y < BOARD_SIZE; y++) {
 			for (int x = 0; x < BOARD_SIZE; x++) {
