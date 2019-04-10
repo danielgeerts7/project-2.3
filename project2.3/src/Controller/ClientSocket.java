@@ -37,8 +37,9 @@ public final class ClientSocket extends CommandHandler {
 	private static ClientSocket instance = null;
 	private static boolean popupOpen = false;
 
-	/*
-	 * getInstance(), else create a error popup
+	/**
+	 * getInstance(), else create an error popup
+	 * @author Daniel Geerts
 	 */
 	public static ClientSocket getInstance(boolean trySetInstance) {
 		if (instance == null && trySetInstance) {
@@ -64,8 +65,11 @@ public final class ClientSocket extends CommandHandler {
 		return instance;
 	}
 
-	/*
-	 * Constructor
+	/**
+	 * setup connection with remote game server
+	 * @param remoteIP ip of the server you want to connect with
+	 * @param serverPort port of the server
+	 * @throws Exception if socket could not connect with server
 	 */
 	public ClientSocket(String remoteIp, int serverPort) throws Exception {
 		this.socket = new Socket(remoteIp, serverPort);
@@ -84,6 +88,12 @@ public final class ClientSocket extends CommandHandler {
 		System.out.println("Connected to Server: " + this.socket.getInetAddress());
 	}
 
+	/**
+	 * sends a message to the server
+	 * 
+	 * @param msg the message you want to send
+	 * @throws IOException if socket cannot get output stream
+	 */
 	@Override
 	protected void sendMessageToServer(String msg) {
 		PrintWriter out = null;
@@ -97,6 +107,9 @@ public final class ClientSocket extends CommandHandler {
 		System.out.println("Client send: " + msg);
 	}
 
+	/**
+	 * Reads input from server from another Thread (so main thread will not be blocked)
+	 */
 	protected void readServerInput() {
 		msgReceived = false;
 		String data = null;
@@ -124,10 +137,10 @@ public final class ClientSocket extends CommandHandler {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see Controller.ClientCommandHandler#waitForResponse(boolean)
+	/**
+	  * Wait until the server has send a response, this with a timeout of 3 seconds
+	 * @param skipOK when received message is OK, then wait again for the next received message
+	 * @return timedOut is a boolean that returns a true when the 3 seconds are over
 	 */
 	@Override
 	protected boolean waitForResponse(boolean skipOK) {
@@ -169,23 +182,35 @@ public final class ClientSocket extends CommandHandler {
 		return timedOut;
 	}
 
+	/**
+	 * @return msgData returns latest message received from the server
+	 */
 	@Override
 	protected String getMsgData() {
 		return msgData;
 	}
 
+	/**
+	 * disconnects from server and resets all that is needed
+	 */
 	public void disconnect() {
 		super.disconnectFromServer();
 		
 		resetSocket();
 	}
 	
+	/**
+	 * logs out from server and resets all that is needed
+	 */
 	public void logout() {
 		super.logoutFromServer();
 		
 		resetSocket();
 	}
 	
+	/**
+	 * Reset every available variable and closes socket
+	 */
 	private void resetSocket() {
 		stayConnected = false;
 		if (runningThread != null) {

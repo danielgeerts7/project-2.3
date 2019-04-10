@@ -59,8 +59,8 @@ public class ReversiGame extends SuperGame {
 		return bord;
 
 	}
-
-	public void printBoard(Board bord) {
+/*
+	private void printBoard(Board bord) {
 		int row = 0;
 		System.out.println(" 0  1 2 3  4 5 6 7");
 		for (char[] b : bord.bord) {
@@ -71,18 +71,18 @@ public class ReversiGame extends SuperGame {
 			System.out.print("\n");
 		}
 	}
-
+*/
 	public Board getBord() {
 		return bord;
 	}
 
 	public void doMove(char piece) {
 		hasValidMove(piece);
-		for (Tuple v : valid_moves) {
+		/*for (Tuple v : valid_moves) {
 			System.out.print("[" + v.x + "," + v.y + "]");
-		}
+		}*/
 		if (valid_moves.size() <= 0) {
-			// Sla beurt over -> stuur naar server
+			// TODO: sla beurt over -> stuur naar server
 		}
 		int rand = (int )(Math.random() * valid_moves.size());
 		int x = valid_moves.get(rand).x;
@@ -115,7 +115,7 @@ public class ReversiGame extends SuperGame {
 		}
 		for (int offset = 0; offset < offsets.length; offset++) {
 			Tuple check = new Tuple(x + offsets[offset].x, y + offsets[offset].y);
-			while (0 <= check.x && check.x < BOARD_SIZE - 1 && 0 <= check.y && check.y < BOARD_SIZE - 1
+			while (0 <= check.x && check.x < BOARD_SIZE && 0 <= check.y && check.y < BOARD_SIZE
 					&& bord.bord[check.x][check.y] == inverse(piece)) {
 				check.x += offsets[offset].x;
 				check.y += offsets[offset].y;
@@ -162,7 +162,6 @@ public class ReversiGame extends SuperGame {
 	}
 
 	public boolean hasValidMove(char piece) {
-		System.out.println("do: hasValidMove!");
 		valid_moves.clear();
 		for (int y = 0; y < BOARD_SIZE; y++) {
 			for (int x = 0; x < BOARD_SIZE; x++) {

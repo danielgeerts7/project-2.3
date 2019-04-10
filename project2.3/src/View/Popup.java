@@ -1,5 +1,7 @@
 package View;
 
+import java.util.HashMap;
+
 import Main.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,6 +37,8 @@ public final class Popup {
 	private String img_winPath = "File:img/WIN.png";
 	private String img_losePath = "File:img/LOSE.png";
 	private String img_drawPath = "File:img/DRAW.png";
+	
+	public HashMap<String, Stage> popups = null;
 
 	private static Popup instance = null;
 
@@ -46,14 +50,26 @@ public final class Popup {
 	}
 
 	private Popup() {
-
+		popups = new HashMap<String, Stage>();
 	}
 
+	/**
+	 * Open new Popup
+	 * @param text that will be showed in the popup
+	 * @param type which kind of popup it needs to be
+	 */
 	public void newPopup(String text, Type type) {
-		newPopup(text, type, null);
+		newPopup(text, type, null, "");
 	}
 
-	public void newPopup(String text, Type type, PopupYesNo yesno) {
+	/**
+	 * Open new Popup
+	 * @param text that will be showed in the popup
+	 * @param type which kind of popup it needs to be
+	 * @param yesno interface of Yes and No button
+	 * @param hash this can identify the new popup (stage)
+	 */
+	public void newPopup(String text, Type type, PopupYesNo yesno, String hash) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -151,10 +167,20 @@ public final class Popup {
 				Scene stageScene = new Scene(pane, width, height);
 				newStage.setScene(stageScene);
 				newStage.show();
+				
+				if (!hash.isEmpty()) {
+					popups.put(hash, newStage);
+				}
 			}
 		});
 	}
-
+	
+	/**
+	 * This method will split one long line of text, into a multiple line text 
+	 * @param text Text that need to be converted
+	 * @param maxLineLength Maximal characters that can be in one line
+	 * @return newText is the new text that has been converted with multi lines
+	 */
 	private String addEnterInString(String text, int maxLineLength) {
 		int line = 1;
 		int last_space = 0;
@@ -181,7 +207,12 @@ public final class Popup {
 		}
 		return newText;
 	}
-
+	
+	/**
+	 * Converts a path to ImageView
+	 * @param path Path to image
+	 * @return picture Found picture from path
+	 */
 	private ImageView getImageView(String path) {
 		Image image = new Image(path);
 		ImageView pic = new ImageView();
@@ -191,11 +222,21 @@ public final class Popup {
 		return pic;
 	}
 
+	/**
+	 * Set node at postion
+	 * @param n Node you want to move
+	 * @param x X position
+	 * @param y Y position
+	 */
 	private void moveItem(Node n, double x, double y) {
 		n.setTranslateX(x);
 		n.setTranslateY(y);
 	}
 
+	/**
+	 * Interface of PopupYesNo
+	 * With functions for definition of the Yes-button and No-button
+	 */
 	public interface PopupYesNo {
 		void clickedYes();
 		void clickedNo();
