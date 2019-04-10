@@ -21,6 +21,8 @@ public class TicTacToeView extends GameView {
 		pane.setHgap(0);
 		pane.setVgap(0);
 		
+//		constructGamePane();
+		
 		super.addChild(1, pane);
 	}
 	
@@ -38,6 +40,14 @@ public class TicTacToeView extends GameView {
 				for (int j = 0; j < b.bord[i].length; j++) {
 					pane.add(new ImageView(new Image("File:img/white_tile.png", 70, 70, false, false)), i, j);
 				}
+			}
+		}
+	}
+	
+	private void constructGamePane() {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				pane.add(new ImageView(new Image("File:img/white_tile.png", 70, 70, false, false)), i, j);
 			}
 		}
 	}

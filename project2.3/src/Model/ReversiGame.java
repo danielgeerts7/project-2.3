@@ -75,7 +75,8 @@ public class ReversiGame extends SuperGame {
 	public Board getBord() {
 		return bord;
 	}
-
+	
+	@Override
 	public void doMove(char piece) {
 		hasValidMove(piece);
 		for (Tuple v : valid_moves) {
@@ -115,7 +116,7 @@ public class ReversiGame extends SuperGame {
 		}
 		for (int offset = 0; offset < offsets.length; offset++) {
 			Tuple check = new Tuple(x + offsets[offset].x, y + offsets[offset].y);
-			while (0 <= check.x && check.x < BOARD_SIZE - 1 && 0 <= check.y && check.y < BOARD_SIZE - 1
+			while (0 <= check.x && check.x < BOARD_SIZE && 0 <= check.y && check.y < BOARD_SIZE
 					&& bord.bord[check.x][check.y] == inverse(piece)) {
 				check.x += offsets[offset].x;
 				check.y += offsets[offset].y;

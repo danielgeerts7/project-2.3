@@ -6,6 +6,7 @@ import Controller.ClientSocket;
 import Main.Main;
 import Model.Client;
 import Model.Player;
+import Model.TicTacToeGame;
 import Model.ReversiGame;
 import Model.SuperGame;
 import View.Popup.PopupYesNo;
