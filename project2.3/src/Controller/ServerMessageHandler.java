@@ -18,6 +18,7 @@ import javafx.application.Platform;
  */
 public abstract class ServerMessageHandler {
 	
+	public String getgame = "";
 
 	private Map<String, PopupYesNo> challenges = null;
 
@@ -81,6 +82,7 @@ public abstract class ServerMessageHandler {
 			public void run() {
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String gametype = map.get("GAMETYPE");
+				getgame = gametype;
 
 				if (gametype.toLowerCase().contains("reversi")) {
 					Main.switchScene(Main.SceneType.REVERSI);
@@ -89,10 +91,6 @@ public abstract class ServerMessageHandler {
 				}
 				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
-			}
-			
-			public String getGametype() {
-				return gametype;
 			}
 		});
 	}
@@ -114,7 +112,8 @@ public abstract class ServerMessageHandler {
 				}
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String turnmsg = map.get("TURNMESSAGE");
-				GameController.doMove();
+				System.out.println(getgame);
+				GameController.doMove(getgame);
 			}
 		});
 	}

@@ -31,4 +31,9 @@ public class TicTacToeGame extends SuperGame {
 		return bord;
 	}
 	
+	@Override
+	public void doMove(char piece) {
+		
+	}
+	
 }

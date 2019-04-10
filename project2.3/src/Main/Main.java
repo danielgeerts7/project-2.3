@@ -59,7 +59,7 @@ public class Main extends Application {
 			System.out.println("----> tic-tac-toe view");
 			TicTacToeView tictactoe = new TicTacToeView();
 			gametype = "tic-tac-toe";
-//			controller = new GameController(tictactoe, gametype);
+			controller = new GameController(tictactoe, gametype);
 			primaryReference.getScene().setRoot(tictactoe);
 			break;
 		}

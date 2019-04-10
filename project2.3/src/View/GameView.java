@@ -83,18 +83,36 @@ public abstract class GameView extends SuperView {
 			setSubscriptionLabel(game);
 
 			player1.setName(Client.getUsername());
-			player2.setName(opponent);			
-			if (Client.getUsername().equals(player)) {
-				playersTurn.setTranslateX(25);
-				playersTurn.setTranslateY(player1.getTranslateY());
-				player1.setColor(ReversiGame.BLACK);
-				player2.setColor(ReversiGame.WHITE);
-			} else {
-				playersTurn.setTranslateX(25);
-				playersTurn.setTranslateY(player2.getTranslateY());
-				player1.setColor(ReversiGame.WHITE);
-				player2.setColor(ReversiGame.BLACK);
+			player2.setName(opponent);
+			
+			if (game.toLowerCase().contains("reversi")) {
+				if (Client.getUsername().equals(player)) {
+					playersTurn.setTranslateX(25);
+					playersTurn.setTranslateY(player1.getTranslateY());
+					player1.setColor(ReversiGame.BLACK);
+					player2.setColor(ReversiGame.WHITE);
+				} else {
+					playersTurn.setTranslateX(25);
+					playersTurn.setTranslateY(player2.getTranslateY());
+					player1.setColor(ReversiGame.WHITE);
+					player2.setColor(ReversiGame.BLACK);
+				}
 			}
+			
+			else if (game.toLowerCase().contains("tic-tac-toe")) {
+				if (Client.getUsername().equals(player)) {
+					playersTurn.setTranslateX(25);
+					playersTurn.setTranslateY(player1.getTranslateY());
+					player1.setColor(TicTacToeGame.CROSS);
+					player2.setColor(TicTacToeGame.CIRCLE);
+				} else {
+					playersTurn.setTranslateX(25);
+					playersTurn.setTranslateY(player2.getTranslateY());
+					player1.setColor(TicTacToeGame.CIRCLE);
+					player2.setColor(TicTacToeGame.CROSS);
+				}
+			}
+			
 		}
 
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {

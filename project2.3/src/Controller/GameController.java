@@ -15,17 +15,25 @@ public class GameController {
 	
 	public GameController(GameView view, String gametype) {
 		if (gametype.toLowerCase().contains("reversi")) {
+			System.out.println("Reversicontroller");
 			game = new ReversiGame();
 		}
 		else if (gametype.toLowerCase().contains("tic-tac-toe")) {
+			System.out.println("TTTController");
 			game = new TicTacToeGame();
 		}
 		viewRef = view;
 		viewRef.updateBoardView(game);
 	}
 	
-	public static void doMove() {
-		game.doMove(GameView.getPlayer1().getColor());
+	public static void doMove(String gametype) {
+		if (gametype.toLowerCase().contains("reversi")) {
+			game.doMove(GameView.getPlayer1().getColor());
+		}
+		
+		else if (gametype.toLowerCase().contains("tic-tac-toe")) {
+			//TODO: iets
+		}
 	}
 	
 	public static void receivedMove(String player, String move) {
