@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Main.Main;
-import Model.Client;
-import Model.ReversiGame;
 import View.GameView;
 import View.Popup;
-import View.ReversiView;
 import View.Popup.PopupYesNo;
 import javafx.application.Platform;
 
@@ -28,6 +25,10 @@ public abstract class ServerMessageHandler {
 		challenges = new HashMap<String, PopupYesNo>();
 	}
 
+	/**
+	 * Handles every command that the server has send
+	 * @param command is the message received from the server
+	 */
 	protected void doCommand(String command) {
 		if (command.contains("SVR") && !command.contains("SVR GAMELIST") && !command.contains("SVR GAMELIST")) {
 			if (command.contains("SVR GAME")) {
@@ -64,7 +65,11 @@ public abstract class ServerMessageHandler {
 		}
 	}
 
-	public void createMatch(String msg) {
+	/**
+	 * Create a new match -> load new Scene for a game
+	 * @param message from server "SVR GAME MATCh"
+	 */
+	private void createMatch(String msg) {
 		Platform.runLater(new Runnable() {
 			
 			HashMap<String, String> map = svrMessageToMap(msg);
@@ -74,13 +79,15 @@ public abstract class ServerMessageHandler {
 			
 			@Override
 			public void run() {
-				
+				HashMap<String, String> map = svrMessageToMap(msg);
+				String gametype = map.get("GAMETYPE");
+
 				if (gametype.toLowerCase().contains("reversi")) {
 					Main.switchScene(Main.SceneType.REVERSI);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
 					Main.switchScene(Main.SceneType.TICTACTOE);
 				}
-				GameView.updateSuperView(svrMessageToMap(msg));
+				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
 			}
 			
@@ -90,6 +97,10 @@ public abstract class ServerMessageHandler {
 		});
 	}
 
+	/**
+	 * Your turn, first wait until the game is created then it is time to do a move
+	 * @param message from server "SVR GAME YOURTURN"
+	 */
 	private void yourTurn(String msg) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -108,6 +119,10 @@ public abstract class ServerMessageHandler {
 		});
 	}
 
+	/**
+	 * Received move from server (this can be from you or your opponent)
+	 * @param message from server "SVR GAME MOVE"
+	 */
 	private void receivedMove(String msg) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -115,14 +130,16 @@ public abstract class ServerMessageHandler {
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String player = map.get("PLAYER");
 				String move = map.get("MOVE");
-				String details = map.get("DETAILS");
-				//String temp = "Received move from " + player + "\n move: " + move + "\n details: " + details;
-				//Popup.getInstance().newPopup(temp, Popup.Type.DEBUG);
 				GameController.receivedMove(player, move);
 			}
 		});
 	}
 
+	/**
+	 * You got challenged by a player
+	 * Open a popup with YES and NO. So you can accept of ignore
+	 * @param message from server "SVR GAME CHALLENGE"
+	 */
 	private void gotChallenged(String msg) {
 		HashMap<String, String> map = svrMessageToMap(msg);
 
@@ -140,26 +157,39 @@ public abstract class ServerMessageHandler {
 			@Override
 			public void clickedNo() {
 				// Our client declined the challenge
-				challenges.remove(challengeNr);
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Popup.getInstance().popups.get(challengeNr).close();
+						Popup.getInstance().popups.remove(challengeNr);
+						challenges.remove(challengeNr);
+					}
+				});
 			}
 		};
 		String popup_msg = "You got challenged(" + challengeNr + ") for " + gameType + ", by : " + challenger;
-		Popup.getInstance().newPopup(popup_msg, Popup.Type.YESNO, popup);
+		Popup.getInstance().newPopup(popup_msg, Popup.Type.YESNO, popup, challengeNr);
 		challenges.put(challengeNr, popup);
 	}
 
+	/**
+	 * Challenge got cancelled by player. Close the right popup
+	 * @param message from server "SVR GAME CHALLENGE CANCELLED"
+	 */
 	private void challengeCancelled(String msg) {
 		HashMap<String, String> map = svrMessageToMap(msg);
 		String challengeNr = map.get("CHALLENGENUMBER");
-		Popup.getInstance().newPopup("Challenge(" + challengeNr + ") got cancelled", Popup.Type.YESNO);
-
 		if (challenges.containsKey(challengeNr)) {
-			// TODO: make this work better and exit newPopup when cancelled
 			challenges.get(challengeNr).clickedNo();
 			challenges.remove(challengeNr);
 		}
 	}
 
+	/**
+	 * Game is finished, open popup with result
+	 * @param message from server with game details
+	 * @param result type of result of game
+	 */
 	private void gameFinished(String msg, Popup.Type result) {
 		HashMap<String, String> map = svrMessageToMap(msg);
 		String p1score = map.get("PLAYERONESCORE");
@@ -170,6 +200,11 @@ public abstract class ServerMessageHandler {
 		Popup.getInstance().newPopup(temp, result);
 	}
 
+	/**
+	 * Converts a server message to a HashMap
+	 * @param message the message you want to convert
+	 * @return the result map of the converted string
+	 */
 	private HashMap<String, String> svrMessageToMap(String msg) {
 		String server_msg = msg.substring(msg.indexOf('{') + 1, msg.indexOf('}'));
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -181,13 +216,7 @@ public abstract class ServerMessageHandler {
 		}
 		return map;
 	}
-
-	/*
-	 * Wait for server to send response
-	 * 
-	 * @param skipOK when message from Server contains OK, then wait for next
-	 * message
-	 */
+	
 	protected abstract boolean waitForResponse(boolean skipOK);
 
 	protected abstract String getMsgData();

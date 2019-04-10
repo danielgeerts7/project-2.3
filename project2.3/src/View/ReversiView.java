@@ -27,6 +27,9 @@ public class ReversiView extends GameView {
 		super.addChild(1, pane);
 	}
 
+	/**
+	 * This method is called every available frame
+	 */
 	@Override
 	protected void update() {
 		
@@ -37,18 +40,29 @@ public class ReversiView extends GameView {
 		pane.getChildren().clear();
 		if (game != null) {
 			Board b = game.getBord();
+			int black = 0;
+			int white = 0;
 			for (int i = 0; i < b.bord.length; i++) {
 				for (int j = 0; j < b.bord[i].length; j++) {
 					if (b.bord[i][j] == ReversiGame.BLACK) {
 						pane.add(new ImageView(new Image("File:img/black_stone.png", 70, 70, false, false)), i, j);
+						black++;
 					}
 					if (b.bord[i][j] == ReversiGame.WHITE) {
 						pane.add(new ImageView(new Image("File:img/white_stone.png", 70, 70, false, false)), i, j);
+						white++;
 					}
 					if (b.bord[i][j] == ReversiGame.EMPTY) {
 						pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
 					}
 				}
+			}
+			if (getPlayer1().getColor() == ReversiGame.BLACK) {
+				getPlayer1().setScore(black);
+				getPlayer2().setScore(white);
+			} else {
+				getPlayer1().setScore(white);
+				getPlayer2().setScore(black);
 			}
 		}
 	}

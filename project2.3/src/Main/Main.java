@@ -37,6 +37,10 @@ public class Main extends Application {
 		ClientSocket.getInstance(true);
 	}
 	
+	/**
+	 * Handles every command that the server has send
+	 * @param command is the message received from the server
+	 */
 	public static void switchScene(SceneType scenetype) {
 		switch (scenetype) {
 		case START:

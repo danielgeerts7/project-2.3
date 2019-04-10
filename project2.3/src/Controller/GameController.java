@@ -35,5 +35,6 @@ public class GameController {
 			game.receivedMove(GameView.getPlayer2().getColor(), Integer.parseInt(move));
 		}
 		viewRef.updateBoardView(game);
+		viewRef.updatePlayersTurn(player);
 	}
 }

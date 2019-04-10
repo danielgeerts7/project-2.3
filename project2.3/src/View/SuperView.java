@@ -46,6 +46,10 @@ public abstract class SuperView extends Pane {
 		this.addChildren();
 	}
 
+	/**
+	 * addChildren of the SuperView
+	 * This does happen to every sub-view
+	 */
 	private void addChildren() {
 		clearChildren();
 
@@ -55,6 +59,9 @@ public abstract class SuperView extends Pane {
 		super.getChildren().add(menu.getChildren());
 	}
 
+	/**
+	 * Adds all labels to every sub-view
+	 */
 	private void addLabels() {
 		online_label = new Label();
 		setOnlineLabel(Client.isConnected());
@@ -74,14 +81,26 @@ public abstract class SuperView extends Pane {
 		super.getChildren().add(subscription);
 	}
 
+	/**
+	 * Add a new Child on a specifiek index
+	 * @param index is the layer that the Node needs to be on
+	 * @param e Node to be added to the children
+	 */
 	protected void addChild(int index, Node e) {
 		super.getChildren().add(index, e);
 	}
 
+	/**
+	 * Clear scene
+	 */
 	protected void clearChildren() {
 		super.getChildren().clear();
 	}
 
+	/**
+	 * SetOnlineLabel -> set the online label to connected or not connected
+	 * @param isOnline boolean of the Client is connected with the server or not
+	 */
 	protected static void setOnlineLabel(boolean isOnline) {
 		if (isOnline) {
 			online_label.setText(String.format("Server is connected"));
@@ -93,6 +112,10 @@ public abstract class SuperView extends Pane {
 		Client.setConnected(isOnline);
 	}
 
+	/**
+	 * SetUsernameLabel -> set the username label
+	 * @param name The name of the logged in user
+	 */
 	protected void setUsernameLabel(String name) {
 		if (name.equals("")) {
 			login_label.setText(String.format("User is not logged in yet"));
@@ -104,6 +127,10 @@ public abstract class SuperView extends Pane {
 		Client.setUsername(name);
 	}
 
+	/**
+	 * SetSubscirptionLabel -> set which game you want or is playing
+	 * @param name Name of the game
+	 */
 	protected static void setSubscriptionLabel(String name) {
 		if (name.equals("")) {
 			subscription.setText(String.format("Not yet subscribed for a game"));
@@ -115,6 +142,10 @@ public abstract class SuperView extends Pane {
 		Client.setGame(name);
 	}
 
+	/**
+	 * Show remoteLabels or hide
+	 * @param doShow states if the labels need to be hidden of showing
+	 */
 	protected void showRemoteLabels(boolean doShow) {
 		online_label.setVisible(doShow);
 		login_label.setVisible(doShow);
@@ -122,11 +153,15 @@ public abstract class SuperView extends Pane {
 		menu.showOnlineButtons(doShow);
 	}
 
+	/**
+	 * Show or hide menu buttons
+	 * @param doShow do show menu buttons or hide them
+	 */
 	protected void showButtons(boolean doShow) {
 		menu.showOfflineButtons(doShow);
 	}
 	
-	/*
+	/**
 	 * This method is called every available frame
 	 */
 	protected abstract void update();
