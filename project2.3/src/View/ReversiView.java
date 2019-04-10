@@ -13,8 +13,8 @@ public class ReversiView extends GameView {
 
 	private GridPane pane = null;
 
-	public ReversiView() {
-		super();
+	public ReversiView(boolean playRemote) {
+		super(playRemote);
 
 		pane = new GridPane();
 		pane.setAlignment(Pos.CENTER);

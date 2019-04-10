@@ -157,7 +157,7 @@ public abstract class SuperView extends Pane {
 	 * Show or hide menu buttons
 	 * @param doShow do show menu buttons or hide them
 	 */
-	protected void showButtons(boolean doShow) {
+	protected void showOfflineButtons(boolean doShow) {
 		menu.showOfflineButtons(doShow);
 	}
 	

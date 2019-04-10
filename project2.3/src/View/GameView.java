@@ -24,11 +24,11 @@ public abstract class GameView extends SuperView {
 
 	private static Player player1 = null;
 	private static Player player2 = null;
-	
+
 	private static Polygon playersTurn = null;
 	private static boolean matchInit = false;
 
-	public GameView() {
+	public GameView(boolean playRemote) {
 		super();
 
 		player1 = new Player();
@@ -40,12 +40,9 @@ public abstract class GameView extends SuperView {
 		player2.setMinSize(200, 300);
 		player2.setTranslateX(100);
 		player2.setTranslateY(400);
-		
+
 		playersTurn = new Polygon();
-		playersTurn.getPoints().addAll(new Double[]{
-            0.0, 0.0,
-            0.0, 30.0,
-            30.0, 15.0 });
+		playersTurn.getPoints().addAll(new Double[] { 0.0, 0.0, 0.0, 30.0, 30.0, 15.0 });
 
 		super.addChild(2, player1);
 		super.addChild(2, player2);
@@ -56,12 +53,22 @@ public abstract class GameView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				System.out.println("Player has forfeit!");
-				ClientSocket.getInstance(true).forfeit();
+				if (playRemote) {
+					ClientSocket.getInstance(true).forfeit();
+				} else {
+					Popup.getInstance().newPopup("You gave up!", Popup.Type.OK);
+					Main.switchScene(Main.SceneType.START, false);
+				}
 			}
 		});
 		btn_forfeit.setTranslateX(100);
 		btn_forfeit.setTranslateY(600);
-		super.addChild(2, btn_forfeit);
+		super.addChild(5, btn_forfeit);
+		
+		if (!playRemote) {
+			showRemoteLabels(false);
+			showOfflineButtons(true);
+		}
 	}
 
 	@Override
@@ -71,7 +78,9 @@ public abstract class GameView extends SuperView {
 
 	/**
 	 * Update all information that is stored in SuperView
-	 * @param map contains the message received by the server at the begin of a match
+	 * 
+	 * @param map contains the message received by the server at the begin of a
+	 *            match
 	 */
 	public static void updateSuperView(HashMap<String, String> map) {
 		if (map != null) {
@@ -82,7 +91,7 @@ public abstract class GameView extends SuperView {
 			setSubscriptionLabel(game);
 
 			player1.setName(Client.getUsername());
-			player2.setName(opponent);			
+			player2.setName(opponent);
 			if (Client.getUsername().equals(player)) {
 				playersTurn.setTranslateX(25);
 				playersTurn.setTranslateY(player1.getTranslateY());
@@ -102,8 +111,10 @@ public abstract class GameView extends SuperView {
 				Popup.getInstance().newPopup("Wanna giveup and go back to menu?", Popup.Type.YESNO, new PopupYesNo() {
 					@Override
 					public void clickedYes() {
-						ClientSocket.getInstance(false).forfeit();
-						Main.switchScene(Main.SceneType.START);
+						if (ClientSocket.getInstance(false) != null) {
+							ClientSocket.getInstance(false).forfeit();
+						}
+						Main.switchScene(Main.SceneType.START, false);
 					}
 
 					@Override
@@ -113,12 +124,14 @@ public abstract class GameView extends SuperView {
 				}, "");
 			}
 		});
-		
+
 		matchInit = true;
 	}
-	
+
 	/**
-	 * Updates the triangle that points to the current player thats needs to make a move
+	 * Updates the triangle that points to the current player thats needs to make a
+	 * move
+	 * 
 	 * @param name of Player that needs to send a move
 	 */
 	public void updatePlayersTurn(String name) {
@@ -130,18 +143,18 @@ public abstract class GameView extends SuperView {
 			playersTurn.setTranslateY(player2.getTranslateY());
 		}
 	}
-	
+
 	public static Player getPlayer1() {
 		return player1;
 	}
-	
+
 	public static Player getPlayer2() {
 		return player2;
 	}
-	
+
 	public static boolean isCreated() {
 		return matchInit;
 	}
-	
+
 	public abstract void updateBoardView(SuperGame game);
 }

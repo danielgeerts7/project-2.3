@@ -35,10 +35,10 @@ public final class ClientSocket extends CommandHandler {
 	private boolean stayConnected = true;
 
 	private static ClientSocket instance = null;
-	private static boolean popupOpen = false;
 
 	/**
 	 * getInstance(), else create an error popup
+	 * 
 	 * @author Daniel Geerts
 	 */
 	public static ClientSocket getInstance(boolean trySetInstance) {
@@ -47,27 +47,20 @@ public final class ClientSocket extends CommandHandler {
 				instance = new ClientSocket(Config.REMOTE_IP, Config.REMOTE_PORT);
 				Client.setConnected(true);
 			} catch (UnknownHostException e) {
-				if (!popupOpen) {
-					Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.OK);
-					popupOpen = true;
-					Client.setConnected(false);
-				}
+				Popup.getInstance().newPopup("Ongeldig IP adres", Popup.Type.OK);
+				Client.setConnected(false);
 			} catch (Exception e) {
-				if (!popupOpen) {
-					Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.OK);
-					popupOpen = true;
-					Client.setConnected(false);
-				}
+				Popup.getInstance().newPopup("Kan geen verbinding met Server maken", Popup.Type.OK);
+				Client.setConnected(false);
 			}
-			return instance;
 		}
-		popupOpen = false;
 		return instance;
 	}
 
 	/**
 	 * setup connection with remote game server
-	 * @param remoteIP ip of the server you want to connect with
+	 * 
+	 * @param remoteIP   ip of the server you want to connect with
 	 * @param serverPort port of the server
 	 * @throws Exception if socket could not connect with server
 	 */
@@ -108,7 +101,8 @@ public final class ClientSocket extends CommandHandler {
 	}
 
 	/**
-	 * Reads input from server from another Thread (so main thread will not be blocked)
+	 * Reads input from server from another Thread (so main thread will not be
+	 * blocked)
 	 */
 	protected void readServerInput() {
 		msgReceived = false;
@@ -124,9 +118,10 @@ public final class ClientSocket extends CommandHandler {
 				System.out.println("Message from server: " + data);
 				msgReceived = true;
 				msgData = data;
-				if (popupOpen && data.contains("ERR")) {
-					Popup.getInstance().newPopup(data, Popup.Type.OK);
-				}
+				/*
+				 * if (data.contains("ERR")) { Popup.getInstance().newPopup(data,
+				 * Popup.Type.OK); }
+				 */
 
 				super.doCommand(data);
 			}
@@ -138,8 +133,10 @@ public final class ClientSocket extends CommandHandler {
 	}
 
 	/**
-	  * Wait until the server has send a response, this with a timeout of 3 seconds
-	 * @param skipOK when received message is OK, then wait again for the next received message
+	 * Wait until the server has send a response, this with a timeout of 3 seconds
+	 * 
+	 * @param skipOK when received message is OK, then wait again for the next
+	 *               received message
 	 * @return timedOut is a boolean that returns a true when the 3 seconds are over
 	 */
 	@Override
@@ -164,7 +161,7 @@ public final class ClientSocket extends CommandHandler {
 					System.out.println("Server timed-out: main-thread running again");
 				}
 			}
-			
+
 			if (timedOut) {
 				System.out.println(" ====== Server timed-out: " + elapsedTime + "ms ======");
 			} else {
@@ -195,19 +192,19 @@ public final class ClientSocket extends CommandHandler {
 	 */
 	public void disconnect() {
 		super.disconnectFromServer();
-		
+
 		resetSocket();
 	}
-	
+
 	/**
 	 * logs out from server and resets all that is needed
 	 */
 	public void logout() {
 		super.logoutFromServer();
-		
+
 		resetSocket();
 	}
-	
+
 	/**
 	 * Reset every available variable and closes socket
 	 */
@@ -222,7 +219,7 @@ public final class ClientSocket extends CommandHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		runningThread = null;
 		socket = null;
 		instance = null;

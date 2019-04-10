@@ -76,9 +76,9 @@ public abstract class ServerMessageHandler {
 				String gametype = map.get("GAMETYPE");
 
 				if (gametype.toLowerCase().contains("reversi")) {
-					Main.switchScene(Main.SceneType.REVERSI);
+					Main.switchScene(Main.SceneType.REVERSI, true);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
-					Main.switchScene(Main.SceneType.TICTACTOE);
+					Main.switchScene(Main.SceneType.TICTACTOE, true);
 				}
 				GameView.updateSuperView(map);
 				System.out.println("Match is created!");

@@ -1,6 +1,5 @@
 package Main;
 
-import Controller.ClientSocket;
 import Controller.GameController;
 import Model.Config;
 import View.StartView;
@@ -27,15 +26,13 @@ public class Main extends Application {
 		primaryStage.show(); // Display the stage
 		
 		primaryReference = primaryStage;
-		
-		ClientSocket.getInstance(true);
 	}
 	
 	/**
 	 * Handles every command that the server has send
 	 * @param command is the message received from the server
 	 */
-	public static void switchScene(SceneType scenetype) {
+	public static void switchScene(SceneType scenetype, boolean playRemote) {
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
@@ -44,8 +41,8 @@ public class Main extends Application {
 			break;
 		case REVERSI:
 			System.out.println("----> reversi view");
-			ReversiView reversi = new ReversiView();
-			GameController controller = new GameController(reversi);
+			ReversiView reversi = new ReversiView(playRemote);
+			new GameController(reversi, playRemote);
 			primaryReference.getScene().setRoot(reversi);
 			break;
 		case TICTACTOE:

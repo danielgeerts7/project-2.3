@@ -152,7 +152,7 @@ public final class Popup {
 								Platform.runLater(new Runnable() {
 									@Override
 									public void run() {
-										Main.switchScene(Main.SceneType.START);
+										Main.switchScene(Main.SceneType.START, false);
 									}
 								});
 							}
