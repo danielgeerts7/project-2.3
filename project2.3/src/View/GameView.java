@@ -27,9 +27,12 @@ public abstract class GameView extends SuperView {
 
 	private static Polygon playersTurn = null;
 	private static boolean matchInit = false;
+	
+	protected boolean playRemote = false;
 
 	public GameView(boolean playRemote) {
 		super();
+		this.playRemote = playRemote;
 
 		player1 = new Player();
 		player1.setMinSize(200, 300);
@@ -68,6 +71,13 @@ public abstract class GameView extends SuperView {
 		if (!playRemote) {
 			showRemoteLabels(false);
 			showOfflineButtons(true);
+			
+			menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent e) {
+					Main.switchScene(Main.SceneType.START, false);
+				}
+			});
 		}
 	}
 

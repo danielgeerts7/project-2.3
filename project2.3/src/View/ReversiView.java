@@ -32,9 +32,11 @@ public class ReversiView extends GameView {
 	 */
 	@Override
 	protected void update() {
-		
+		if (playRemote) {
+			// TODO: check if is your turn -> then if mouse is over valid place -> click -> place piece -> Computer is aan de beurt
+		}
 	}
-	
+
 	@Override
 	public void updateBoardView(SuperGame game) {
 		pane.getChildren().clear();
@@ -44,16 +46,20 @@ public class ReversiView extends GameView {
 			int white = 0;
 			for (int i = 0; i < b.bord.length; i++) {
 				for (int j = 0; j < b.bord[i].length; j++) {
-					if (b.bord[i][j] == ReversiGame.BLACK) {
-						pane.add(new ImageView(new Image("File:img/black_stone.png", 70, 70, false, false)), i, j);
-						black++;
-					}
-					if (b.bord[i][j] == ReversiGame.WHITE) {
-						pane.add(new ImageView(new Image("File:img/white_stone.png", 70, 70, false, false)), i, j);
-						white++;
-					}
-					if (b.bord[i][j] == ReversiGame.EMPTY) {
-						pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
+					if (!playRemote && game.containsValidMove(i, j)) {
+						pane.add(new ImageView(new Image("File:img/place_stone.png", 70, 70, false, false)), i, j);
+					} else {
+						if (b.bord[i][j] == ReversiGame.BLACK) {
+							pane.add(new ImageView(new Image("File:img/black_stone.png", 70, 70, false, false)), i, j);
+							black++;
+						}
+						if (b.bord[i][j] == ReversiGame.WHITE) {
+							pane.add(new ImageView(new Image("File:img/white_stone.png", 70, 70, false, false)), i, j);
+							white++;
+						}
+						if (b.bord[i][j] == ReversiGame.EMPTY) {
+							pane.add(new ImageView(new Image("File:img/green_tile.png", 70, 70, false, false)), i, j);
+						}
 					}
 				}
 			}

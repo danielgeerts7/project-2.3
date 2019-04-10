@@ -176,4 +176,16 @@ public class ReversiGame extends SuperGame {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean containsValidMove(int x, int y) {
+		hasValidMove(BLACK);
+		for (int i = 0; i < valid_moves.size(); i++) {
+			Tuple move = valid_moves.get(i);
+			if (move.x == x && move.y == y) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
