@@ -74,13 +74,11 @@ public abstract class ServerMessageHandler {
 			public void run() {
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String gametype = map.get("GAMETYPE");
-
 				if (gametype.toLowerCase().contains("reversi")) {
-					Main.switchScene(Main.SceneType.REVERSI, true);
+					Main.switchScene(Main.SceneType.REVERSI, true).updateSuperView(map);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
-					Main.switchScene(Main.SceneType.TICTACTOE, true);
+					Main.switchScene(Main.SceneType.TICTACTOE, true).updateSuperView(map);
 				}
-				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
 			}
 		});
@@ -101,8 +99,8 @@ public abstract class ServerMessageHandler {
 						e.printStackTrace();
 					}
 				}
-				HashMap<String, String> map = svrMessageToMap(msg);
-				String turnmsg = map.get("TURNMESSAGE");
+				//HashMap<String, String> map = svrMessageToMap(msg);
+				//String turnmsg = map.get("TURNMESSAGE");
 				GameController.doMove();
 			}
 		});

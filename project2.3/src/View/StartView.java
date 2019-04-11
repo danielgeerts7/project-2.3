@@ -4,7 +4,6 @@ import Controller.ClientSocket;
 import Main.Main;
 import Model.Client;
 import Model.Config;
-import Model.ReversiGame;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -198,17 +197,11 @@ public class StartView extends SuperView {
 				@Override
 				public void handle(ActionEvent e) {
 					Client.setConnected(false);
-					
 					if (i.equals(Main.SceneType.REVERSI.toString())) {
 						Main.switchScene(Main.SceneType.REVERSI, false);
-						GameView.getPlayer1().setColor(ReversiGame.BLACK);
-						GameView.getPlayer2().setColor(ReversiGame.WHITE);
 					}	else if (i.equals(Main.SceneType.TICTACTOE.toString())) {
 						Main.switchScene(Main.SceneType.TICTACTOE, false);
 					}
-					
-					GameView.getPlayer1().setName("Player 1");
-					GameView.getPlayer2().setName("Player 2");
 				}
 			});
 			mainpane.add(txt_gameName, 0, counter);

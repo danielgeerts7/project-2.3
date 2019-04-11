@@ -1,17 +1,11 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 import Controller.ClientSocket;
 import Controller.GameController;
 import View.GameView;
 import View.Popup;
-
-import java.util.Random;
-import java.util.*;
 
 public class ReversiGame extends SuperGame {
 	private final static int BOARD_SIZE = 8;
@@ -22,14 +16,19 @@ public class ReversiGame extends SuperGame {
 	private Tuple[] offsets = new Tuple[8];
 	private Board bord;
 
+	private GameView viewRef = null;
 	private boolean playRemote = false;
 	private static boolean playerCanMove = true;
 	private static boolean tileIsClicked = false;
 	private static int tileX, tileY = 0;
-	private static boolean popupAlreadyOpen = false;
+	private boolean gameFinished = false;
+	private boolean popupAlreadyOpen = false;
+	private boolean player1outOfMoves = false;
+	private boolean player2outOfMoves = false;
 
-	public ReversiGame(boolean playRemote) {
+	public ReversiGame(GameView view, boolean playRemote) {
 		super();
+		this.viewRef = view;
 		this.playRemote = playRemote;
 		addOffsets();
 		bord = startGame();
@@ -40,31 +39,65 @@ public class ReversiGame extends SuperGame {
 	 */
 	@Override
 	protected void update() {
-		if (!playRemote) {
-			if (playerCanMove) {
-				hasValidMove(GameView.getPlayer1().getColor());
-				if (tileIsClicked) {
-					if (valid_moves.size() > 0) {
+		if (!playRemote && !gameFinished) {
+			if (getPieces(viewRef.getPlayer1().getColor()) + getPieces(viewRef.getPlayer2().getColor()) == 64) {
+				gameFinished = player1outOfMoves = player2outOfMoves = true;
+			} else if (playerCanMove) {
+				hasValidMove(viewRef.getPlayer1().getColor());
+				if (valid_moves.size() > 0) {
+					player1outOfMoves = false;
+					player2outOfMoves = false;
+					if (tileIsClicked) {
 						int move = (BOARD_SIZE * tileX) + tileY;
 						playerCanMove = false;
 						tileIsClicked = false;
-						GameController.receivedMove(GameView.getPlayer1().getName(), Integer.toString(move));
-					} else if (!popupAlreadyOpen) {
-						Popup.getInstance().newPopup("You are out of moves! You lose", Popup.Type.LOSS);
-						popupAlreadyOpen = true;
+						GameController.receivedMove(viewRef.getPlayer1().getName(), Integer.toString(move));
 					}
+				} else {
+					System.out.println("Player1: Out of moves");
+					player1outOfMoves = true;
+					playerCanMove = false;
 				}
 			} else {
-				hasValidMove(GameView.getPlayer2().getColor());
+				hasValidMove(viewRef.getPlayer2().getColor());
 				if (valid_moves.size() > 0) {
-					int move = (BOARD_SIZE * valid_moves.get(0).x) + valid_moves.get(0).y;
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					};
+					player1outOfMoves = false;
+					player2outOfMoves = false;
+					int move = (BOARD_SIZE * valid_moves.get(0).y) + valid_moves.get(0).x;
 					playerCanMove = true;
-					GameController.receivedMove(GameView.getPlayer2().getName(), Integer.toString(move));
-				} else if (!popupAlreadyOpen) {
-					Popup.getInstance().newPopup("Computer out of moves! You won", Popup.Type.WIN);
-					popupAlreadyOpen = true;
+					GameController.receivedMove(viewRef.getPlayer2().getName(), Integer.toString(move));
+				} else {
+					System.out.println("Computer: Out of moves");
+					player2outOfMoves = true;
+					playerCanMove = true;
 				}
 			}
+		}
+
+		if (!popupAlreadyOpen && player1outOfMoves && player2outOfMoves) {
+			gameFinished = true;
+			String text = "";
+			if (getPieces(viewRef.getPlayer1().getColor()) + getPieces(viewRef.getPlayer2().getColor()) == 64) {
+				text = "Game is over!";
+			} else if (player1outOfMoves) {
+				text = "You are out of moves, but";
+			} else if (player2outOfMoves) {
+				text = "Computer is out of moves!";
+			} 
+			
+			if (getPieces(viewRef.getPlayer1().getColor()) > getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " You win", Popup.Type.WIN);
+			} else if (getPieces(viewRef.getPlayer1().getColor()) < getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " You lose", Popup.Type.LOSS);
+			} else if (getPieces(viewRef.getPlayer1().getColor()) == getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " Draw", Popup.Type.DRAW);
+			}
+			popupAlreadyOpen = true;
 		}
 	}
 
@@ -73,7 +106,7 @@ public class ReversiGame extends SuperGame {
 		tileX = x;
 		tileY = y;
 	}
-	
+
 	public static boolean isPlayersTurn() {
 		return playerCanMove;
 	}
@@ -112,7 +145,7 @@ public class ReversiGame extends SuperGame {
 		return bord;
 
 	}
-/*
+
 	private void printBoard(Board bord) {
 		int row = 0;
 		System.out.println(" 0  1 2 3  4 5 6 7");
@@ -124,7 +157,7 @@ public class ReversiGame extends SuperGame {
 			System.out.print("\n");
 		}
 	}
-*/
+
 	public Board getBord() {
 		return bord;
 	}
@@ -150,10 +183,8 @@ public class ReversiGame extends SuperGame {
 	}
 
 	public void receivedMove(char piece, int pos) {
-		int x;
-		int y;
-		x = pos % BOARD_SIZE;
-		y = pos / BOARD_SIZE;
+		int x = pos % BOARD_SIZE;
+		int y = pos / BOARD_SIZE;
 		if (isValidMove(bord, piece, y, x)) {
 			placePiece(bord, piece, y, x);
 			return;
@@ -234,11 +265,22 @@ public class ReversiGame extends SuperGame {
 	public boolean containsValidMove(int x, int y) {
 		hasValidMove(BLACK);
 		for (int i = 0; i < valid_moves.size(); i++) {
-			Tuple move = valid_moves.get(i);
-			if (move.x == x && move.y == y) {
+			if (valid_moves.get(i).x == x && valid_moves.get(i).y == y) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private int getPieces(char piece) {
+		int amount = 0;
+		for (int y = 0; y < BOARD_SIZE; y++) {
+			for (int x = 0; x < BOARD_SIZE; x++) {
+				if (bord.getBord()[x][y] == piece) {
+					amount++;
+				}
+			}
+		}
+		return amount;
 	}
 }

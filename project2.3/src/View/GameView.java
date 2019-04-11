@@ -22,10 +22,10 @@ import javafx.scene.shape.Polygon;
  */
 public abstract class GameView extends SuperView {
 
-	private static Player player1 = null;
-	private static Player player2 = null;
+	private Player player1 = null;
+	private Player player2 = null;
 
-	private static Polygon playersTurn = null;
+	private Polygon playersTurn = null;
 	private static boolean matchInit = false;
 	
 	protected boolean playRemote = false;
@@ -88,7 +88,7 @@ public abstract class GameView extends SuperView {
 	 * @param map contains the message received by the server at the begin of a
 	 *            match
 	 */
-	public static void updateSuperView(HashMap<String, String> map) {
+	public void updateSuperView(HashMap<String, String> map) {
 		if (map != null) {
 			String player = map.get("PLAYERTOMOVE");
 			String game = map.get("GAMETYPE");
@@ -144,17 +144,17 @@ public abstract class GameView extends SuperView {
 		if (!player1.getName().equals(name)) {
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player1.getTranslateY());
-		} else {
+		} else if (!player2.getName().equals(name)){
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player2.getTranslateY());
 		}
 	}
 
-	public static Player getPlayer1() {
+	public Player getPlayer1() {
 		return player1;
 	}
 
-	public static Player getPlayer2() {
+	public Player getPlayer2() {
 		return player2;
 	}
 
