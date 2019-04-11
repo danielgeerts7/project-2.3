@@ -29,6 +29,7 @@ public abstract class GameView extends SuperView {
 	private static boolean matchInit = false;
 	
 	protected boolean playRemote = false;
+	protected boolean playerCanMove = true;
 
 	public GameView(boolean playRemote) {
 		super();
@@ -79,11 +80,6 @@ public abstract class GameView extends SuperView {
 				}
 			});
 		}
-	}
-
-	@Override
-	protected void update() {
-
 	}
 
 	/**
@@ -145,10 +141,10 @@ public abstract class GameView extends SuperView {
 	 * @param name of Player that needs to send a move
 	 */
 	public void updatePlayersTurn(String name) {
-		if (player1.getName().equals(name)) {
+		if (!player1.getName().equals(name)) {
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player1.getTranslateY());
-		} else if (player2.getName().equals(name)) {
+		} else {
 			playersTurn.setTranslateX(25);
 			playersTurn.setTranslateY(player2.getTranslateY());
 		}

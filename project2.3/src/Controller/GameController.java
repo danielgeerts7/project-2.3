@@ -1,6 +1,5 @@
 package Controller;
 
-import Model.Client;
 import Model.ReversiGame;
 import View.GameView;
 
@@ -9,7 +8,7 @@ public class GameController {
 	private static GameView viewRef = null;
 
 	public GameController(GameView view, boolean playRemote) {
-		game = new ReversiGame();
+		game = new ReversiGame(playRemote);
 		viewRef = view;
 		viewRef.updateBoardView(game);
 		if (!playRemote) {

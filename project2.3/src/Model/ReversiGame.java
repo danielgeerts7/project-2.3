@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Scanner;
 
 import Controller.ClientSocket;
+import Controller.GameController;
 import View.GameView;
+import View.Popup;
 
 import java.util.Random;
 import java.util.*;
@@ -20,9 +22,60 @@ public class ReversiGame extends SuperGame {
 	private Tuple[] offsets = new Tuple[8];
 	private Board bord;
 
-	public ReversiGame() {
+	private boolean playRemote = false;
+	private static boolean playerCanMove = true;
+	private static boolean tileIsClicked = false;
+	private static int tileX, tileY = 0;
+	private static boolean popupAlreadyOpen = false;
+
+	public ReversiGame(boolean playRemote) {
+		super();
+		this.playRemote = playRemote;
 		addOffsets();
 		bord = startGame();
+	}
+
+	/**
+	 * This method is called every available frame
+	 */
+	@Override
+	protected void update() {
+		if (!playRemote) {
+			if (playerCanMove) {
+				hasValidMove(GameView.getPlayer1().getColor());
+				if (tileIsClicked) {
+					if (valid_moves.size() > 0) {
+						int move = (BOARD_SIZE * tileX) + tileY;
+						playerCanMove = false;
+						tileIsClicked = false;
+						GameController.receivedMove(GameView.getPlayer1().getName(), Integer.toString(move));
+					} else if (!popupAlreadyOpen) {
+						Popup.getInstance().newPopup("You are out of moves! You lose", Popup.Type.LOSS);
+						popupAlreadyOpen = true;
+					}
+				}
+			} else {
+				hasValidMove(GameView.getPlayer2().getColor());
+				if (valid_moves.size() > 0) {
+					int move = (BOARD_SIZE * valid_moves.get(0).x) + valid_moves.get(0).y;
+					playerCanMove = true;
+					GameController.receivedMove(GameView.getPlayer2().getName(), Integer.toString(move));
+				} else if (!popupAlreadyOpen) {
+					Popup.getInstance().newPopup("Computer out of moves! You won", Popup.Type.WIN);
+					popupAlreadyOpen = true;
+				}
+			}
+		}
+	}
+
+	public static void tileIsClicked(int x, int y) {
+		tileIsClicked = true;
+		tileX = x;
+		tileY = y;
+	}
+	
+	public static boolean isPlayersTurn() {
+		return playerCanMove;
 	}
 
 	public static char inverse(char piece) {

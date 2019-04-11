@@ -4,9 +4,12 @@ import Model.Board;
 import Model.Config;
 import Model.ReversiGame;
 import Model.SuperGame;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 public class ReversiView extends GameView {
@@ -27,16 +30,6 @@ public class ReversiView extends GameView {
 		super.addChild(1, pane);
 	}
 
-	/**
-	 * This method is called every available frame
-	 */
-	@Override
-	protected void update() {
-		if (playRemote) {
-			// TODO: check if is your turn -> then if mouse is over valid place -> click -> place piece -> Computer is aan de beurt
-		}
-	}
-
 	@Override
 	public void updateBoardView(SuperGame game) {
 		pane.getChildren().clear();
@@ -46,8 +39,19 @@ public class ReversiView extends GameView {
 			int white = 0;
 			for (int i = 0; i < b.bord.length; i++) {
 				for (int j = 0; j < b.bord[i].length; j++) {
-					if (!playRemote && game.containsValidMove(i, j)) {
-						pane.add(new ImageView(new Image("File:img/place_stone.png", 70, 70, false, false)), i, j);
+					if (!playRemote && ReversiGame.isPlayersTurn() && game.containsValidMove(j, i)) {
+						ImageView image = new ImageView(new Image("File:img/place_stone.png", 70, 70, false, false));
+						image.setUserData(i + "," + j);
+						image.setOnMouseClicked(new EventHandler<MouseEvent>() {
+							public void handle(final MouseEvent ME) {
+								Object obj = ME.getSource();
+								if (obj instanceof ImageView) {
+									String[] s = ((ImageView) obj).getUserData().toString().split(",");
+									ReversiGame.tileIsClicked(Integer.parseInt(s[0]), Integer.parseInt(s[1]));
+								}
+							}
+						});
+						pane.add(image, i, j);
 					} else {
 						if (b.bord[i][j] == ReversiGame.BLACK) {
 							pane.add(new ImageView(new Image("File:img/black_stone.png", 70, 70, false, false)), i, j);

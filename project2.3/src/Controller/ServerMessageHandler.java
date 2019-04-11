@@ -184,7 +184,7 @@ public abstract class ServerMessageHandler {
 		String p1score = map.get("PLAYERONESCORE");
 		String p2score = map.get("PLAYERTWOSCORE");
 		String comment = map.get("COMMENT");
-		String temp = "You " + result.toString() + ", winner!" + "\n" + "score P1: " + p1score + "\n" + "score P2: "
+		String temp = "You " + result.toString() + "!" + "\n" + "score P1: " + p1score + "\n" + "score P2: "
 				+ p2score + "\n" + "Comment: " + comment;
 		Popup.getInstance().newPopup(temp, result);
 	}

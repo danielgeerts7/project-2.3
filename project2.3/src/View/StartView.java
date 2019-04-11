@@ -46,14 +46,6 @@ public class StartView extends SuperView {
 	}
 
 	/**
-	 * This method is called every available frame
-	 */
-	@Override
-	protected void update() {
-
-	}
-
-	/**
 	 * Clear pane
 	 */
 	private void clearPane() {
