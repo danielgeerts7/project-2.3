@@ -18,14 +18,17 @@ import java.util.*;
  */
 public class ReversiGame extends SuperGame {
 	private final static int BOARD_SIZE = 8;
-	public final static char BLACK = 'B';
-	public final static char WHITE = 'W';
-	public final static char EMPTY = 'o';
+	public final static char BLACK = '\u26AB';
+	public final static char WHITE = '\u26AA';
+	public final static char EMPTY = '\u2B1c';
 	private ArrayList<Tuple> valid_moves = new ArrayList<>();
-	private ArrayList<Integer> weight = new ArrayList<>(); 
+	//private ArrayList<Tuple> valid_moves2 = new ArrayList<>();
+	private ArrayList<Integer> weight = new ArrayList<Integer>();
 	private Tuple[] offsets = new Tuple[8];
 	private Board bord;
 	private Greedy greedy;
+	private int infinity = 999999999;
+	private int maxDepth = 4;
 
 	/**
 	 * Start the game Reversi, add the offsets and create a new board. if there are no valid moves left the amount of pieces each player has
@@ -110,27 +113,20 @@ public class ReversiGame extends SuperGame {
 	 * @param piece who's turn it is
 	 */
 	public void doMove(char piece) {
-		hasValidMove(piece);
+		hasValidMove(bord, piece);
 		weight.clear();
 		for (Tuple v : valid_moves) {
 			System.out.print("[" + v.x + "," + v.y + "]");
 			placePiece(bord, piece, v.y, v.x, false);
 		}
-		if (valid_moves.size() <= 0) {
-			// Sla beurt over -> stuur naar server
-		}
-		List<Tuple> greedy_moves = greedy.greedyMove(weight, valid_moves);
-		int rand = new Random().nextInt(greedy_moves.size());
-		int x = greedy_moves.get(rand).x;
-		int y = greedy_moves.get(rand).y;
+		Triplet position = maxValue(bord, 1, piece, valid_moves, weight);
+		int x = position.getX();
+		int y = position.getY();
+		System.out.println(x);
+		System.out.println(y);
+		printBoard(bord);
 		if (isValidMove(bord, piece, y, x)) {
 			int pos = (BOARD_SIZE * y) + x;
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			ClientSocket.getInstance(true).sendMove(pos);
 			return;
 		} else {
@@ -144,11 +140,20 @@ public class ReversiGame extends SuperGame {
 		x = pos % BOARD_SIZE;
 		y = pos / BOARD_SIZE;
 		if (isValidMove(bord, piece, y, x)) {
-			placePiece(bord, piece, y, x, true);
+			bord = placePiece(bord, piece, y, x, true);
 			return;
 		} else {
-			System.out.println("oei oei hij doet het niet!");
+			System.out.println("oei hij doet het niet!");
 		}
+	}
+	
+	
+	public <T> ArrayList<T> cloneList(ArrayList<T> lijst){
+		ArrayList<T> new_list = new ArrayList<>();
+		for(T l : lijst) {
+			new_list.add(l);
+		}
+		return new_list;
 	}
 
 	/**
@@ -160,17 +165,19 @@ public class ReversiGame extends SuperGame {
 	 * @return true or false if the move is valid or not
 	 */
 	public boolean isValidMove(Board bord, char piece, int x, int y) {
-		if (bord.bord[x][y] != EMPTY) {
+		Board bord5 = new Board(8);
+		bord5.setBord(bord.getCloneBoard());
+		if (bord5.bord[x][y] != EMPTY) {
 			return false;
 		}
 		for (int offset = 0; offset < offsets.length; offset++) {
 			Tuple check = new Tuple(x + offsets[offset].x, y + offsets[offset].y);
 			while (0 <= check.x && check.x < BOARD_SIZE && 0 <= check.y && check.y < BOARD_SIZE
-					&& bord.bord[check.x][check.y] == inverse(piece)) {
+					&& bord5.bord[check.x][check.y] == inverse(piece)) {
 				check.x += offsets[offset].x;
 				check.y += offsets[offset].y;
 				try {
-					Character steen1 = bord.bord[check.x][check.y];
+					Character steen1 = bord5.bord[check.x][check.y];
 					Character steen2 = piece;
 					if (steen1.equals(steen2)) {
 						return true;
@@ -192,21 +199,23 @@ public class ReversiGame extends SuperGame {
 	 * @param y		y position
 	 * @param place if true place the piece, if false don't place the piece but checking the amount of flips
 	 */
-	public void placePiece(Board bord, char piece, int x, int y, boolean place) {
+	public Board placePiece(Board bord, char piece, int x, int y, boolean place) {
+		Board bord3 = new Board(8);
+		bord3.setBord(bord.getCloneBoard());
 		int aantal = 0;
-		if(place) { bord.bord[x][y] = piece; }
+		if(place) { bord3.bord[x][y] = piece; }
 		else { } 
 		
 		for(Tuple offset: offsets) {
 			Tuple check = new Tuple(x+offset.x, y+offset.y);
 			while(0 <= check.x && check.x < BOARD_SIZE && 0 <= check.y && check.y < BOARD_SIZE) {
-				if(bord.bord[check.x][check.y] == EMPTY) { break; }
-				if(bord.bord[check.x][check.y] == piece) {
+				if(bord3.bord[check.x][check.y] == EMPTY) { break; }
+				if(bord3.bord[check.x][check.y] == piece) {
 					if(place) {
-						flip(bord, piece, x , y, offset, place);
+						flip(bord3, piece, x , y, offset, place);
 					}
 					else {
-						aantal += flip(bord, piece, x , y, offset, place);
+						aantal += flip(bord3, piece, x , y, offset, place);
 					}
 					break;
 				}
@@ -215,21 +224,6 @@ public class ReversiGame extends SuperGame {
 			}
 		}
 		if(!place) {
-//			if(x == 0 || x == 7 || y == 0 || y == 7) {
-//				aantal +=10;
-//			}
-//			if(x == 0 && y == 1) { aantal -= 15; } else if(x == 1 && y == 0) {  aantal -= 15; } 
-//			else if(x == 1 && y == 1) { aantal -= 20; } else if(x == 6 && y == 0) { aantal -= 15; }
-//			else if(x == 7 && y == 1) { aantal -= 15; } else if(x == 6 && y == 1) { aantal -= 20; }
-//			else if(x == 0 && y == 6) { aantal -= 15; } else if(x == 1 && y == 7) { aantal -= 15; }
-//			else if(x == 1 && y == 6) { aantal -= 20; } else if(x == 6 && y == 6) { aantal -= 20; }
-//			else if(x == 6 && y == 7) { aantal -= 15; } else if(x == 7 && y == 6) { aantal -= 15; } 
-//			
-//			else if(x == 0 && y == 0) { aantal += 30; } else if(x == 0 && y == 7) { aantal += 30; }
-//			else if(x == 7 && y == 0) { aantal += 30; } else if(x == 7 && y == 7) { aantal += 30; }
-//			else { }
-			
-			
 			if(x == 0 && y == 0) { aantal += 100; } else if(x == 1 && y == 0) { aantal -= 20; }
 			else if(x == 2 && y == 0) { aantal += 10; } else if(x == 3 && y == 0) { aantal += 5; }
 			else if(x == 4 && y == 0) { aantal += 5; } else if(x == 5 && y == 0) { aantal += 10; }
@@ -271,9 +265,9 @@ public class ReversiGame extends SuperGame {
 			else if(x == 6 && y == 7) { aantal -= 20; } else if(x == 7 && y == 7) { aantal += 100; }
 			else { }
 			
-			System.out.println(" : " + aantal);
 			weight.add(aantal);
 		}
+		return bord3;
 	}
 	
 	/**
@@ -287,6 +281,8 @@ public class ReversiGame extends SuperGame {
 	 * @return
 	 */
 	public int flip(Board bord, char piece, int x, int y, Tuple offset, boolean place) {
+		Board bord4 = new Board(8);
+		bord4.setBord(bord.getCloneBoard());
 		int aantal = 0;
 		Tuple check = new Tuple(x+offset.x, y+offset.y);
 		while(bord.bord[check.x][check.y] == inverse(piece)) {
@@ -307,12 +303,12 @@ public class ReversiGame extends SuperGame {
 	 * @param piece who's turn it is
 	 * @return true if has valid move, false if not
 	 */
-	public boolean hasValidMove(char piece) {
+	public boolean hasValidMove(Board bord6, char piece) {
 		//System.out.println("do: hasValidMove!");
 		valid_moves.clear();
 		for (int y = 0; y < BOARD_SIZE; y++) {
 			for (int x = 0; x < BOARD_SIZE; x++) {
-				if (isValidMove(bord, piece, y, x)) {
+				if (isValidMove(bord6, piece, y, x)) {
 					valid_moves.add(new Tuple(x, y));
 				}
 			}
@@ -322,5 +318,71 @@ public class ReversiGame extends SuperGame {
 		} else {
 			return false;
 		}
+	}
+	
+	
+	public ArrayList<Tuple> checkIfHasValidMove(Board bord, char piece) {
+		Board bord6 = new Board(8);
+		bord6.setBord(bord.getCloneBoard());
+		ArrayList<Tuple> vm = new ArrayList<>();
+		for (int y = 0; y < BOARD_SIZE; y++) {
+			for (int x = 0; x < BOARD_SIZE; x++) {
+				if (isValidMove(bord6, piece, y, x)) {
+					vm.add(new Tuple(x, y));
+				}
+			}
+		}
+		return vm;
+	}
+	
+	public Triplet maxValue(Board bord, int depth, char piece, ArrayList<Tuple> vm2, ArrayList<Integer> w2) {
+		Board bord7 = new Board(8);
+		bord7.setBord(bord.getCloneBoard());
+		if(checkIfHasValidMove(bord7, piece).size() < 1 && checkIfHasValidMove(bord7, inverse(piece)).size() < 1 || depth > maxDepth) {
+			return new Triplet(0, 0, 0);
+		}
+		int max = -infinity;
+		int j = 0;
+		ArrayList<Tuple> vm3 = cloneList(vm2);
+		ArrayList<Integer> w3 = cloneList(w2);
+		Triplet t;
+		for(int i = 0; i < vm3.size(); i++) {
+			Board bord2 = new Board(8);
+			bord2.setBord(bord7.getCloneBoard());
+			bord7 = placePiece(bord2, piece, vm3.get(i).y, vm3.get(i).x, false);
+			Triplet t3 = minValue(bord7, depth+1, inverse(piece), vm3, w3);
+			if((w3.get(i)+t3.getWeight()) > max) { 
+				max = w3.get(i)+t3.getWeight(); 
+			}
+		}
+		t = new Triplet(vm3.get(j).x, vm3.get(j).y, max);
+		return t;
+	}
+	
+	
+	
+	public Triplet minValue(Board bord, int depth, char piece, ArrayList<Tuple> vm4, ArrayList<Integer> w4) {
+		Board bord8 = new Board(8);
+		bord8.setBord(bord.getCloneBoard());
+		if(checkIfHasValidMove(bord8, piece).size() < 1 && checkIfHasValidMove(bord8, inverse(piece)).size() < 1 || depth > maxDepth) {
+			return new Triplet(0, 0, 0);
+		}
+		int min = infinity;
+		int j = 0;
+		Triplet t;
+		ArrayList<Tuple> vm5 = cloneList(vm4);
+		ArrayList<Integer> w5 = cloneList(w4);
+		for(int i = 0; i < vm5.size(); i++) {
+			Board bord3 = new Board(8);
+			bord3.setBord(bord8.getCloneBoard());
+			bord3 = placePiece(bord8, piece, vm5.get(i).y, vm5.get(i).x, false);
+			Triplet t2 = maxValue(bord3, depth+1, inverse(piece), vm5, w5);
+			if((t2.getWeight()+w5.get(i)) < min) { 
+				min = w5.get(i)+t2.getWeight();
+				j = i;
+			}
+		}
+		t = new Triplet(vm5.get(j).x, vm5.get(j).y, min);
+		return t;
 	}
 }
