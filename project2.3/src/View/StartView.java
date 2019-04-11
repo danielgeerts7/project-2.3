@@ -40,6 +40,7 @@ public class StartView extends SuperView {
 		mainpane.setPadding(new Insets(10, 10, 10, 10));
 
 		constructChooseModesPane();
+		setSubscriptionLabel("");
 
 		super.addChild(1, mainpane);
 	}
@@ -83,8 +84,12 @@ public class StartView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				if (ClientSocket.getInstance(true) != null) {
-					constructLoginPane();
-					setOnlineLabel(true); // Super -> (this)client is connected with server
+					if (Client.getUsername().isEmpty()) {
+						constructLoginPane();
+						setOnlineLabel(true); // Super -> (this)client is connected with server
+					} else {
+						constructChooseGamePane(Client.getUsername());
+					}
 				}
 			}
 		});
@@ -138,6 +143,7 @@ public class StartView extends SuperView {
 	 */
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
+		showRemoteLabels(true);
 
 		String[] games = ClientSocket.getInstance(true).getGamelist();
 		int counter = 1;
@@ -175,7 +181,7 @@ public class StartView extends SuperView {
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				constructLoginPane();
+				constructChooseModesPane();
 			}
 		});
 	}
