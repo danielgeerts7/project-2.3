@@ -1,5 +1,9 @@
 package Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import Model.Client;
 import View.Popup;
 
 /**
@@ -11,10 +15,11 @@ import View.Popup;
  */
 public abstract class CommandHandler extends ServerMessageHandler {
 
-	/*
-	 * Tries to login onto the server
+	/**
+	 * Try to login onto the server
 	 * 
-	 * @param Return True when succeeded, False when failed
+	 * @param name is the username that the client wants to use
+	 * @return int for result
 	 */
 	public int loginOnServer(String name) {
 		this.sendMessageToServer("login " + name);
@@ -31,14 +36,25 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Logout from server
+	 */
 	protected void logoutFromServer() {
 		this.sendMessageToServer("logout");
 	}
 
+	/**
+	 * Disconnect from server
+	 */
 	protected void disconnectFromServer() {
 		this.sendMessageToServer("disconnect");
 	}
 
+	/**
+	 * Get available games from the server
+	 * 
+	 * @return list of games
+	 */
 	public String[] getGamelist() {
 		this.sendMessageToServer("get gamelist");
 		this.waitForResponse(true);
@@ -59,27 +75,26 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Subscribe for a game on the server
+	 */
 	public void selectGame(String gameName) {
 		this.sendMessageToServer("subscribe " + gameName);
-		this.waitForResponse(false);
-
-		String msg = getMsgData();
-		if (!msg.contains("OK") && !msg.contains("SVR GAMELIST")) {
-			Popup.getInstance().newPopup("Failed to select game\n" + msg, Popup.Type.DEBUG);
-		}
 	}
 
+	/**
+	 * Send a move (made by the client) to the server
+	 */
 	public void sendMove(int pos) {
 		this.sendMessageToServer("move " + pos);
-		this.waitForResponse(false);
-
-		/*String msg = getMsgData();
-		if (!msg.contains("OK") && !msg.contains("SVR GAME")) {
-			System.out.println("Invalid play from our Client");
-			Popup.getInstance().newPopup("Failed to move\n" + msg, Popup.Type.DEBUG);
-		}*/
 	}
 
+	/**
+	 * Challenge a opponent
+	 * 
+	 * @param opponentName name of the player you want to challenge
+	 * @param gameName     game you want to play against this player
+	 */
 	public void challengeOpponent(String opponentName, String gameName) {
 		this.sendMessageToServer("challenge " + "\"" + opponentName + "\" \"" + gameName + "\"");
 		this.waitForResponse(false);
@@ -90,6 +105,11 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Accept a received challenge
+	 * 
+	 * @param challengeNr is the number of the challenge
+	 */
 	protected void acceptChallenge(String challengeNr) {
 		this.sendMessageToServer("challenge accept " + challengeNr);
 		this.waitForResponse(false);
@@ -100,6 +120,11 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Get available players from the server
+	 * 
+	 * @return list of players
+	 */
 	public String[] getPlayerlist() {
 		this.sendMessageToServer("get playerlist");
 		this.waitForResponse(true);
@@ -108,26 +133,31 @@ public abstract class CommandHandler extends ServerMessageHandler {
 		if (msg.contains("SVR PLAYERLIST")) {
 			String players = msg.substring(msg.indexOf('['), msg.indexOf(']'));
 			String[] availablePlayers = players.split(",");
-			int i = 0;
-			for (String game : availablePlayers) {
-				availablePlayers[i] = game.replace("\"", "").replace("]", "").replace("[", "").trim();
-				i++;
+			List<String> list = new ArrayList<String>();
+			for (String player : availablePlayers) {
+				String temp = player.replace("\"", "").replace("]", "").replace("[", "").trim();
+				list.add(temp);
 			}
-			if (availablePlayers.length <= 1) {
-				// Only our client is connected
-				return new String[0];
-			}
-			return availablePlayers;
+			list.remove(Client.getUsername());
+			String[] result = new String[list.size()];
+			list.toArray(result);
+			return result;
 		} else {
 			Popup.getInstance().newPopup("Failed to get playerlist\n" + msg, Popup.Type.DEBUG);
 			return new String[0];
 		}
 	}
 
+	/**
+	 * sends 'help' to the server for all the commands
+	 */
 	public void help() {
 		this.sendMessageToServer("help");
 	}
 
+	/**
+	 * forfeit the current game
+	 */
 	public void forfeit() {
 		this.sendMessageToServer("forfeit");
 		this.waitForResponse(false);

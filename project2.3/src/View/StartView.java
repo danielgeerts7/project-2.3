@@ -3,12 +3,17 @@ package View;
 import Controller.ClientSocket;
 import Model.Client;
 import Model.Config;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -22,6 +27,7 @@ import javafx.scene.layout.GridPane;
 public class StartView extends SuperView {
 
 	private GridPane mainpane = null;
+	private ListView<String> list = null;
 
 	public StartView() {
 		super();
@@ -37,15 +43,25 @@ public class StartView extends SuperView {
 		super.addChild(1, mainpane);
 	}
 
+	/**
+	 * This method is called every available frame
+	 */
 	@Override
 	protected void update() {
 
 	}
 
+	/**
+	 * Clear pane
+	 */
 	private void clearPane() {
 		mainpane.getChildren().clear();
 	}
-
+	
+	/**
+	 * Constructs first view -> Choose a modes of the application
+	 * Offline or online (local or remote)
+	 */
 	private void constructChooseModesPane() {
 		clearPane();
 
@@ -83,6 +99,9 @@ public class StartView extends SuperView {
 		mainpane.add(btn_remote, 1, 1);
 	}
 
+	/**
+	 * Constructs loginPane where user can login onto the server
+	 */
 	private void constructLoginPane() {
 		clearPane();
 
@@ -118,6 +137,9 @@ public class StartView extends SuperView {
 		});
 	}
 
+	/**
+	 * Constructs GamePane where user can select a game to play
+	 */
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
 
@@ -142,6 +164,17 @@ public class StartView extends SuperView {
 			mainpane.add(btn_chooseGame, 1, counter);
 			counter++;
 		}
+		if (Client.getGame().equals("")) {
+			Button btn_skipThisView = new Button("Skip view");
+			btn_skipThisView.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					constructChooseOpponentPane(playerName, "");
+				}
+			});
+
+			mainpane.add(btn_skipThisView, 0, 0);
+		}
 
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -152,34 +185,60 @@ public class StartView extends SuperView {
 		});
 	}
 
+	/**
+	 * Constructs OpponentPane, where a player lobby will be shown
+	 * The user can select a player to play against
+	 */
 	private void constructChooseOpponentPane(String playerName, String game) {
 		clearPane();
-
 		String[] opponents = ClientSocket.getInstance(true).getPlayerlist();
-		int counter = 1;
-		for (String enemie : opponents) {
-			if (!enemie.equals(playerName)) {
-				Label txt_opponentsName = new Label(enemie);
-				Button btn_chooseOpponent = new Button("Choose " + enemie);
+		list = new ListView<String>();
+		ObservableList<String> items = FXCollections.observableArrayList(opponents);
+		list.setItems(items);
+		list.setPrefWidth(300);
+		list.setPrefHeight(500);
+		Button btn_chooseOpponent = new Button("Select a player");
+		btn_chooseOpponent.setDisable(true);
+		btn_chooseOpponent.minWidth(100);
 
-				btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent e) {
-						if (ClientSocket.getInstance(true) != null) {
-							String opponent = txt_opponentsName.getText();
-							ClientSocket.getInstance(false).challengeOpponent(opponent, game);
-							System.out.println("Come at me " + opponent + ", you pussy!");						}
-					}
-				});
-
-				mainpane.add(txt_opponentsName, 0, counter);
-				mainpane.add(btn_chooseOpponent, 1, counter);
-			}
-			counter++;
+		if (!game.isEmpty()) {
+			list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+				public void changed(ObservableValue<? extends String> ov, String old_val, String new_val) {
+					btn_chooseOpponent.setText("Select " + new_val);
+					btn_chooseOpponent.setDisable(false);
+					btn_chooseOpponent.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							if (ClientSocket.getInstance(true) != null) {
+								ClientSocket.getInstance(false).challengeOpponent(new_val, game);
+							}
+						}
+					});
+				}
+			});
+		} else {
+			btn_chooseOpponent.setText("Go back and select a game first");
 		}
 
-		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
+		Button btn_refresh = new Button("Refresh player lobby");
+		btn_refresh.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				String[] opponents = ClientSocket.getInstance(true).getPlayerlist();
+				ObservableList<String> items = FXCollections.observableArrayList(opponents);
+				list.setItems(items);
+				if (!game.isEmpty()) {
+					btn_chooseOpponent.setText("Select a player");
+				}
+				btn_chooseOpponent.setDisable(true);
+			}
+		});
 
+		mainpane.add(list, 0, 0);
+		mainpane.add(btn_chooseOpponent, 0, 1);
+		mainpane.add(btn_refresh, 0, 2);
+
+		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				constructChooseGamePane(playerName);
