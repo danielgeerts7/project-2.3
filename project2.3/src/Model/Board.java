@@ -17,4 +17,13 @@ public class Board {
 		return bord;
 	}
 	
+	public char[][] getCloneBoard(){
+		return bord.clone();
+	}
+	
+	public void setBord(char[][] newB){
+		this.bord = newB;
+	}
+	
+	
 }
