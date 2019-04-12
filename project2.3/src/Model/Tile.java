@@ -16,7 +16,7 @@ public class Tile extends StackPane{
 	public boolean turnX = true;
 	
 	public Tile() {
-		Rectangle border = new Rectangle(200, 200);
+		Rectangle border = new Rectangle(150, 150);
 		border.setFill(null);
 		border.setStroke(Color.BLACK);
 		
@@ -48,11 +48,11 @@ public class Tile extends StackPane{
 	}
 	
 	public double getCenterX() {
-		return getTranslateX() + 100;
+		return getTranslateX() + 75;
 	}
 	
 	public double getCenterY() {
-		return getTranslateY() + 100;
+		return getTranslateY() + 75;
 	}
 	
 	public String getValue() {

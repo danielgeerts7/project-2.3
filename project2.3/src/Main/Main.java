@@ -3,6 +3,7 @@ package Main;
 import Controller.GameController;
 import Model.Config;
 import View.StartView;
+import View.TicTacToeView;
 import View.GameView;
 import View.ReversiView;
 import javafx.application.Application;
@@ -49,7 +50,10 @@ public class Main extends Application {
 			game = reversi;
 			break;
 		case TICTACTOE:
-			//TODO: Tictactoe view maken
+			System.out.println("----> tictactoeview");
+			TicTacToeView tictactoe = new TicTacToeView(playRemote);
+			new GameController(tictactoe, playRemote);
+			primaryReference.getScene().setRoot(tictactoe);
 			break;
 		}
 		return game;

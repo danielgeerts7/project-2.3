@@ -16,23 +16,33 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 public class TicTacToeView extends GameView {
 	
-	private Pane pane = null;
+	private Pane pane = new Pane();
+	private Tile[][] board = new Tile[3][3];
+
 	
 	public TicTacToeView(boolean playRemote) {
 		super(playRemote);
 		
 		pane.setPrefSize(450, 450);
+		pane.setPadding(value);
+		
 		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				Tile tile = new Tile();
 				tile.setTranslateX(j * 150);
 				tile.setTranslateY(i * 150);
+				
+				pane.getChildren().add(tile);
+				
+				board[j][i] = tile;
+				
 			}
 		}
 		
