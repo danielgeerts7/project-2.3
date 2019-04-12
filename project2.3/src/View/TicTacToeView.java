@@ -46,13 +46,13 @@ public class TicTacToeView extends GameView {
 	private Tile[][] board = new Tile[3][3];
 	private List<Combo> combos = new ArrayList<>();
 	
-	private GridPane pane = new GridPane();
+	private Pane pane = new Pane();
 	
 	public TicTacToeView() {
 		super();
 		
 		pane.setPrefSize(450, 450);
-		pane.setAlignment(Pos.CENTER_RIGHT);
+//		pane.setAlignment(Pos.CENTER_RIGHT);
 		
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
