@@ -15,7 +15,7 @@ public abstract class Config {
 	public final static int HEIGHT = 720;
 	public final static Color BACKGROUND_COLOR = Color.LIGHTBLUE;
 	
-	public final static String REMOTE_IP = "127.0.0.1"; // server ip: 145.33.225.170
+	public final static String REMOTE_IP = "127.0.0.1"; // server ip: 145.33.225.170 of 94.222.211.61 (denk ik)
 	public final static int REMOTE_PORT = 7789;
 	
 	public static void QuitApp() {

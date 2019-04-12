@@ -22,7 +22,6 @@ public class ReversiGame extends SuperGame {
 	public final static char WHITE = '\u26AA';
 	public final static char EMPTY = '\u2B1c';
 	private ArrayList<Tuple> valid_moves = new ArrayList<>();
-	//private ArrayList<Tuple> valid_moves2 = new ArrayList<>();
 	private ArrayList<Integer> weight = new ArrayList<Integer>();
 	private Tuple[] offsets = new Tuple[8];
 	private Board bord;
@@ -119,19 +118,27 @@ public class ReversiGame extends SuperGame {
 			System.out.print("[" + v.x + "," + v.y + "]");
 			placePiece(bord, piece, v.y, v.x, false);
 		}
-		Triplet position = maxValue(bord, 1, piece, valid_moves, weight);
-		int x = position.getX();
-		int y = position.getY();
-		System.out.println(x);
-		System.out.println(y);
-		printBoard(bord);
-		if (isValidMove(bord, piece, y, x)) {
-			int pos = (BOARD_SIZE * y) + x;
-			ClientSocket.getInstance(true).sendMove(pos);
-			return;
-		} else {
-			System.out.println("oei oei hij doet het niet!");
-		}
+		Thread t1 = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				Triplet position = maxValue(bord, 1, piece, valid_moves, weight);
+				int x = position.getX();
+				int y = position.getY();
+//				System.out.println(x);
+//				System.out.println(y);
+				printBoard(bord);
+				if (isValidMove(bord, piece, y, x)) {
+					int pos = (BOARD_SIZE * y) + x;
+					ClientSocket.getInstance(true).sendMove(pos);
+					return;
+				} else {
+					System.out.println("oei oei hij doet het niet!");
+				}
+				
+			}
+		});
+		t1.start();
 	}
 
 	public void receivedMove(char piece, int pos) {
@@ -224,45 +231,45 @@ public class ReversiGame extends SuperGame {
 			}
 		}
 		if(!place) {
-			if(x == 0 && y == 0) { aantal += 100; } else if(x == 1 && y == 0) { aantal -= 20; }
-			else if(x == 2 && y == 0) { aantal += 10; } else if(x == 3 && y == 0) { aantal += 5; }
-			else if(x == 4 && y == 0) { aantal += 5; } else if(x == 5 && y == 0) { aantal += 10; }
-			else if(x == 6 && y == 0) { aantal -= 20; } else if(x == 7 && y == 0) { aantal += 100; }
+			if     (x == 0 && y == 0) { aantal += 99;} else if(x == 1 && y == 0) { aantal -= 8;}
+			else if(x == 2 && y == 0) { aantal += 8; } else if(x == 3 && y == 0) { aantal += 6; }
+			else if(x == 4 && y == 0) { aantal += 6; } else if(x == 5 && y == 0) { aantal += 8; }
+			else if(x == 6 && y == 0) { aantal -= 8; } else if(x == 7 && y == 0) { aantal += 99;}
 			
-			else if(x == 0 && y == 1) { aantal -= 20; } else if(x == 1 && y == 1) { aantal -= 50; }
-			else if(x == 2 && y == 1) { aantal -= 2; } else if(x == 3 && y == 1) { aantal -= 2; }
-			else if(x == 4 && y == 1) { aantal -= 2; } else if(x == 5 && y == 1) { aantal -= 2; }
-			else if(x == 6 && y == 1) { aantal -= 50; } else if(x == 7 && y == 1) { aantal -= 20; }
+			else if(x == 0 && y == 1) { aantal -= 8; } else if(x == 1 && y == 1) { aantal -= 24;}
+			else if(x == 2 && y == 1) { aantal -= 4; } else if(x == 3 && y == 1) { aantal -= 3; }
+			else if(x == 4 && y == 1) { aantal -= 3; } else if(x == 5 && y == 1) { aantal -= 4; }
+			else if(x == 6 && y == 1) { aantal -= 24;} else if(x == 7 && y == 1) { aantal -= 8; }
 			
-			else if(x == 0 && y == 2) { aantal += 10; } else if(x == 1 && y == 2) { aantal -= 2; }
-			else if(x == 2 && y == 2) { aantal -= 1; } else if(x == 3 && y == 2) { aantal -= 1; }
-			else if(x == 4 && y == 2) { aantal -= 1; } else if(x == 5 && y == 2) { aantal -= 1; }
-			else if(x == 6 && y == 2) { aantal -= 2; } else if(x == 7 && y == 2) { aantal += 10; }
+			else if(x == 0 && y == 2) { aantal += 8; } else if(x == 1 && y == 2) { aantal -= 4; }
+			else if(x == 2 && y == 2) { aantal += 7; } else if(x == 3 && y == 2) { aantal += 4; }
+			else if(x == 4 && y == 2) { aantal += 4; } else if(x == 5 && y == 2) { aantal += 7; }
+			else if(x == 6 && y == 2) { aantal -= 4; } else if(x == 7 && y == 2) { aantal += 8; }
 			
-			else if(x == 0 && y == 3) { aantal += 5; } else if(x == 1 && y == 3) { aantal -= 2; }
-			else if(x == 2 && y == 3) { aantal -= 1; } else if(x == 3 && y == 3) { aantal -= 1; }
-			else if(x == 4 && y == 3) { aantal -= 1; } else if(x == 5 && y == 3) { aantal -= 1; }
-			else if(x == 6 && y == 3) { aantal -= 2; } else if(x == 7 && y == 3) { aantal += 5; }
+			else if(x == 0 && y == 3) { aantal += 6; } else if(x == 1 && y == 3) { aantal -= 3; }
+			else if(x == 2 && y == 3) { aantal += 4; } else if(x == 3 && y == 3) { aantal += 0; }
+			else if(x == 4 && y == 3) { aantal += 0; } else if(x == 5 && y == 3) { aantal += 4; }
+			else if(x == 6 && y == 3) { aantal -= 3; } else if(x == 7 && y == 3) { aantal += 6; }
 			
-			else if(x == 0 && y == 4) { aantal += 5; } else if(x == 1 && y == 4) { aantal -= 2; }
-			else if(x == 2 && y == 4) { aantal -= 1; } else if(x == 3 && y == 4) { aantal -= 1; }
-			else if(x == 4 && y == 4) { aantal -= 1; } else if(x == 5 && y == 4) { aantal -= 1; }
-			else if(x == 6 && y == 4) { aantal -= 2; } else if(x == 7 && y == 4) { aantal += 5; }
+			else if(x == 0 && y == 4) { aantal += 6; } else if(x == 1 && y == 4) { aantal -= 3; }
+			else if(x == 2 && y == 4) { aantal += 4; } else if(x == 3 && y == 4) { aantal += 0; }
+			else if(x == 4 && y == 4) { aantal += 0; } else if(x == 5 && y == 4) { aantal += 4; }
+			else if(x == 6 && y == 4) { aantal -= 3; } else if(x == 7 && y == 4) { aantal += 6; }
 			
-			else if(x == 0 && y == 5) { aantal += 10; } else if(x == 1 && y == 5) { aantal -= 2; }
-			else if(x == 2 && y == 5) { aantal -= 2; } else if(x == 3 && y == 5) { aantal -= 1; }
-			else if(x == 4 && y == 5) { aantal -= 1; } else if(x == 5 && y == 5) { aantal -= 1; }
-			else if(x == 6 && y == 5) { aantal -= 2; } else if(x == 7 && y == 5) { aantal += 10; }
+			else if(x == 0 && y == 5) { aantal += 8; } else if(x == 1 && y == 5) { aantal -= 4; }
+			else if(x == 2 && y == 5) { aantal += 7; } else if(x == 3 && y == 5) { aantal += 4; }
+			else if(x == 4 && y == 5) { aantal += 4; } else if(x == 5 && y == 5) { aantal += 7; }
+			else if(x == 6 && y == 5) { aantal -= 4; } else if(x == 7 && y == 5) { aantal += 8; }
 			
-			else if(x == 0 && y == 6) { aantal -= 20; } else if(x == 1 && y == 6) { aantal -= 50; }
-			else if(x == 2 && y == 6) { aantal -= 2; } else if(x == 3 && y == 6) { aantal -= 2; }
-			else if(x == 4 && y == 6) { aantal -= 2; } else if(x == 5 && y == 6) { aantal -= 2; }
-			else if(x == 6 && y == 6) { aantal -= 50; } else if(x == 7 && y == 6) { aantal -= 20; }
+			else if(x == 0 && y == 6) { aantal -= 8; } else if(x == 1 && y == 6) { aantal -= 24;}
+			else if(x == 2 && y == 6) { aantal -= 4; } else if(x == 3 && y == 6) { aantal -= 3; }
+			else if(x == 4 && y == 6) { aantal -= 3; } else if(x == 5 && y == 6) { aantal -= 4; }
+			else if(x == 6 && y == 6) { aantal -= 24;} else if(x == 7 && y == 6) { aantal -= 8; }
 			
-			else if(x == 0 && y == 7) { aantal += 100; } else if(x == 1 && y == 7) { aantal -= 20; }
-			else if(x == 2 && y == 7) { aantal += 10; } else if(x == 3 && y == 7) { aantal += 5; }
-			else if(x == 4 && y == 7) { aantal += 5; } else if(x == 5 && y == 7) { aantal += 10; }
-			else if(x == 6 && y == 7) { aantal -= 20; } else if(x == 7 && y == 7) { aantal += 100; }
+			else if(x == 0 && y == 7) { aantal += 99;} else if(x == 1 && y == 7) { aantal -= 8;}
+			else if(x == 2 && y == 7) { aantal += 8; } else if(x == 3 && y == 7) { aantal += 6; }
+			else if(x == 4 && y == 7) { aantal += 6; } else if(x == 5 && y == 7) { aantal += 8; }
+			else if(x == 6 && y == 7) { aantal -= 8; } else if(x == 7 && y == 7) { aantal += 99;}
 			else { }
 			
 			weight.add(aantal);
@@ -352,7 +359,8 @@ public class ReversiGame extends SuperGame {
 			bord7 = placePiece(bord2, piece, vm3.get(i).y, vm3.get(i).x, false);
 			Triplet t3 = minValue(bord7, depth+1, inverse(piece), vm3, w3);
 			if((w3.get(i)+t3.getWeight()) > max) { 
-				max = w3.get(i)+t3.getWeight(); 
+				max = w3.get(i)+t3.getWeight();
+				j = i;
 			}
 		}
 		t = new Triplet(vm3.get(j).x, vm3.get(j).y, max);
