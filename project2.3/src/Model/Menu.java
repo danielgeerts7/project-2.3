@@ -50,7 +50,7 @@ public class Menu {
 				Client.setUsername("");
 				Client.setGame("");
 				ClientSocket.getInstance(false).logout();
-				Main.switchScene(Main.SceneType.START);
+				Main.switchScene(Main.SceneType.START, false);
 				Popup.getInstance().newPopup("You have successfully logged out!", Popup.Type.OK);
 			}
 		});

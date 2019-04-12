@@ -1,15 +1,11 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 import Controller.ClientSocket;
+import Controller.GameController;
 import View.GameView;
-
-import java.util.Random;
-import java.util.*;
+import View.Popup;
 
 /**
  * This is the game Reversi that can be played. 
@@ -29,14 +25,104 @@ public class ReversiGame extends SuperGame {
 	private int infinity = 999999999;
 	private int maxDepth = 4;
 
+	private GameView viewRef = null;
+	private boolean playRemote = false;
+	private static boolean playerCanMove = true;
+	private static boolean tileIsClicked = false;
 	/**
 	 * Start the game Reversi, add the offsets and create a new board. if there are no valid moves left the amount of pieces each player has
 	 * are counted and the player with the most piece of the board at that moment is the winner. 
 	 */
-	public ReversiGame() {
+	private static int tileX, tileY = 0;
+	private boolean gameFinished = false;
+	private boolean popupAlreadyOpen = false;
+	private boolean player1outOfMoves = false;
+	private boolean player2outOfMoves = false;
+
+	public ReversiGame(GameView view, boolean playRemote) {
+		super();
+		this.viewRef = view;
+		this.playRemote = playRemote;
 		addOffsets();
 		bord = startGame();
 		greedy = new Greedy();
+	}
+
+	/**
+	 * This method is called every available frame
+	 */
+	@Override
+	protected void update() {
+		if (!playRemote && !gameFinished) {
+			if (getPieces(viewRef.getPlayer1().getColor()) + getPieces(viewRef.getPlayer2().getColor()) == 64) {
+				gameFinished = player1outOfMoves = player2outOfMoves = true;
+			} else if (playerCanMove) {
+				hasValidMove(bord, viewRef.getPlayer1().getColor());
+				if (valid_moves.size() > 0) {
+					player1outOfMoves = false;
+					player2outOfMoves = false;
+					if (tileIsClicked) {
+						int move = (BOARD_SIZE * tileX) + tileY;
+						playerCanMove = false;
+						tileIsClicked = false;
+						GameController.receivedMove(viewRef.getPlayer1().getName(), Integer.toString(move));
+					}
+				} else {
+					System.out.println("Player1: Out of moves");
+					player1outOfMoves = true;
+					playerCanMove = false;
+				}
+			} else {
+				hasValidMove(bord, viewRef.getPlayer2().getColor());
+				if (valid_moves.size() > 0) {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					};
+					player1outOfMoves = false;
+					player2outOfMoves = false;
+					int move = (BOARD_SIZE * valid_moves.get(0).y) + valid_moves.get(0).x;
+					playerCanMove = true;
+					GameController.receivedMove(viewRef.getPlayer2().getName(), Integer.toString(move));
+				} else {
+					System.out.println("Computer: Out of moves");
+					player2outOfMoves = true;
+					playerCanMove = true;
+				}
+			}
+		}
+
+		if (!popupAlreadyOpen && player1outOfMoves && player2outOfMoves) {
+			gameFinished = true;
+			String text = "";
+			if (getPieces(viewRef.getPlayer1().getColor()) + getPieces(viewRef.getPlayer2().getColor()) == 64) {
+				text = "Game is over!";
+			} else if (player1outOfMoves) {
+				text = "You are out of moves, but";
+			} else if (player2outOfMoves) {
+				text = "Computer is out of moves!";
+			} 
+			
+			if (getPieces(viewRef.getPlayer1().getColor()) > getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " You win", Popup.Type.WIN);
+			} else if (getPieces(viewRef.getPlayer1().getColor()) < getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " You lose", Popup.Type.LOSS);
+			} else if (getPieces(viewRef.getPlayer1().getColor()) == getPieces(viewRef.getPlayer2().getColor())) {
+				Popup.getInstance().newPopup(text + " Draw", Popup.Type.DRAW);
+			}
+			popupAlreadyOpen = true;
+		}
+	}
+
+	public static void tileIsClicked(int x, int y) {
+		tileIsClicked = true;
+		tileX = x;
+		tileY = y;
+	}
+
+	public static boolean isPlayersTurn() {
+		return playerCanMove;
 	}
 
 	/**
@@ -142,10 +228,8 @@ public class ReversiGame extends SuperGame {
 	}
 
 	public void receivedMove(char piece, int pos) {
-		int x;
-		int y;
-		x = pos % BOARD_SIZE;
-		y = pos / BOARD_SIZE;
+		int x = pos % BOARD_SIZE;
+		int y = pos / BOARD_SIZE;
 		if (isValidMove(bord, piece, y, x)) {
 			bord = placePiece(bord, piece, y, x, true);
 			return;
@@ -392,5 +476,29 @@ public class ReversiGame extends SuperGame {
 		}
 		t = new Triplet(vm5.get(j).x, vm5.get(j).y, min);
 		return t;
+	}
+	
+
+	@Override
+	public boolean containsValidMove(int x, int y) {
+		hasValidMove(bord, BLACK);
+		for (int i = 0; i < valid_moves.size(); i++) {
+			if (valid_moves.get(i).x == x && valid_moves.get(i).y == y) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private int getPieces(char piece) {
+		int amount = 0;
+		for (int y = 0; y < BOARD_SIZE; y++) {
+			for (int x = 0; x < BOARD_SIZE; x++) {
+				if (bord.getBord()[x][y] == piece) {
+					amount++;
+				}
+			}
+		}
+		return amount;
 	}
 }

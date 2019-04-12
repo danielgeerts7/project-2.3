@@ -1,6 +1,7 @@
 package View;
 
 import Controller.ClientSocket;
+import Main.Main;
 import Model.Client;
 import Model.Config;
 import javafx.beans.value.ChangeListener;
@@ -39,16 +40,9 @@ public class StartView extends SuperView {
 		mainpane.setPadding(new Insets(10, 10, 10, 10));
 
 		constructChooseModesPane();
+		setSubscriptionLabel("");
 
 		super.addChild(1, mainpane);
-	}
-
-	/**
-	 * This method is called every available frame
-	 */
-	@Override
-	protected void update() {
-
 	}
 
 	/**
@@ -75,7 +69,9 @@ public class StartView extends SuperView {
 			public void handle(ActionEvent e) {
 				// Do something
 				clearPane();
-				showButtons(true);
+				showRemoteLabels(false);
+				showOfflineButtons(true);
+				constructChooseOfflineGamePane();
 				menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {
@@ -88,8 +84,12 @@ public class StartView extends SuperView {
 			@Override
 			public void handle(ActionEvent e) {
 				if (ClientSocket.getInstance(true) != null) {
-					constructLoginPane();
-					setOnlineLabel(true); // Super -> (this)client is connected with server
+					if (Client.getUsername().isEmpty()) {
+						constructLoginPane();
+						setOnlineLabel(true); // Super -> (this)client is connected with server
+					} else {
+						constructChooseGamePane(Client.getUsername());
+					}
 				}
 			}
 		});
@@ -138,10 +138,12 @@ public class StartView extends SuperView {
 	}
 
 	/**
-	 * Constructs GamePane where user can select a game to play
+	 * Constructs GamePane where user can select a game to play (remote)
+	 * AI vs remote AI
 	 */
 	private void constructChooseGamePane(String playerName) {
 		clearPane();
+		showRemoteLabels(true);
 
 		String[] games = ClientSocket.getInstance(true).getGamelist();
 		int counter = 1;
@@ -179,10 +181,39 @@ public class StartView extends SuperView {
 		menu.getBackBtn().setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				constructLoginPane();
+				constructChooseModesPane();
 			}
-
 		});
+	}
+	
+	/**
+	 * Constructs GamePane where user can select a game to play (offline)
+	 * Client vs offline AI
+	 */
+	private void constructChooseOfflineGamePane() {
+		clearPane();
+
+		String[] games = { Main.SceneType.REVERSI.toString(),  Main.SceneType.TICTACTOE.toString() };
+		int counter = 1;
+		for (String i : games) {
+			Label txt_gameName = new Label(i);
+			Button btn_chooseGame = new Button("Choose " + i);
+
+			btn_chooseGame.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent e) {
+					Client.setConnected(false);
+					if (i.equals(Main.SceneType.REVERSI.toString())) {
+						Main.switchScene(Main.SceneType.REVERSI, false);
+					}	else if (i.equals(Main.SceneType.TICTACTOE.toString())) {
+						Main.switchScene(Main.SceneType.TICTACTOE, false);
+					}
+				}
+			});
+			mainpane.add(txt_gameName, 0, counter);
+			mainpane.add(btn_chooseGame, 1, counter);
+			counter++;
+		}
 	}
 
 	/**

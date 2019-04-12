@@ -35,7 +35,6 @@ public abstract class SuperView extends Pane {
 		AnimationTimer animator = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				update();
 				if (menu != null) {
 					menu.update();
 				}
@@ -157,12 +156,7 @@ public abstract class SuperView extends Pane {
 	 * Show or hide menu buttons
 	 * @param doShow do show menu buttons or hide them
 	 */
-	protected void showButtons(boolean doShow) {
+	protected void showOfflineButtons(boolean doShow) {
 		menu.showOfflineButtons(doShow);
 	}
-	
-	/**
-	 * This method is called every available frame
-	 */
-	protected abstract void update();
 }

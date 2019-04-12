@@ -74,13 +74,11 @@ public abstract class ServerMessageHandler {
 			public void run() {
 				HashMap<String, String> map = svrMessageToMap(msg);
 				String gametype = map.get("GAMETYPE");
-
 				if (gametype.toLowerCase().contains("reversi")) {
-					Main.switchScene(Main.SceneType.REVERSI);
+					Main.switchScene(Main.SceneType.REVERSI, true).updateSuperView(map);
 				} else if (gametype.toLowerCase().contains("tic-tac-toe")) {
-					Main.switchScene(Main.SceneType.TICTACTOE);
+					Main.switchScene(Main.SceneType.TICTACTOE, true).updateSuperView(map);
 				}
-				GameView.updateSuperView(map);
 				System.out.println("Match is created!");
 			}
 		});
@@ -101,8 +99,8 @@ public abstract class ServerMessageHandler {
 						e.printStackTrace();
 					}
 				}
-				HashMap<String, String> map = svrMessageToMap(msg);
-				String turnmsg = map.get("TURNMESSAGE");
+				//HashMap<String, String> map = svrMessageToMap(msg);
+				//String turnmsg = map.get("TURNMESSAGE");
 				GameController.doMove();
 			}
 		});
@@ -184,7 +182,7 @@ public abstract class ServerMessageHandler {
 		String p1score = map.get("PLAYERONESCORE");
 		String p2score = map.get("PLAYERTWOSCORE");
 		String comment = map.get("COMMENT");
-		String temp = "You " + result.toString() + ", winner!" + "\n" + "score P1: " + p1score + "\n" + "score P2: "
+		String temp = "You " + result.toString() + "!" + "\n" + "score P1: " + p1score + "\n" + "score P2: "
 				+ p2score + "\n" + "Comment: " + comment;
 		Popup.getInstance().newPopup(temp, result);
 	}

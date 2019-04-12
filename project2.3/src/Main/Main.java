@@ -1,9 +1,9 @@
 package Main;
 
-import Controller.ClientSocket;
 import Controller.GameController;
 import Model.Config;
 import View.StartView;
+import View.GameView;
 import View.ReversiView;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,15 +27,14 @@ public class Main extends Application {
 		primaryStage.show(); // Display the stage
 		
 		primaryReference = primaryStage;
-		
-		ClientSocket.getInstance(true);
 	}
 	
 	/**
 	 * Handles every command that the server has send
 	 * @param command is the message received from the server
 	 */
-	public static void switchScene(SceneType scenetype) {
+	public static GameView switchScene(SceneType scenetype, boolean playRemote) {
+		GameView game = null;
 		switch (scenetype) {
 		case START:
 			System.out.println("----> start view");
@@ -44,14 +43,16 @@ public class Main extends Application {
 			break;
 		case REVERSI:
 			System.out.println("----> reversi view");
-			ReversiView reversi = new ReversiView();
-			GameController controller = new GameController(reversi);
+			ReversiView reversi = new ReversiView(playRemote);
+			new GameController(reversi, playRemote);
 			primaryReference.getScene().setRoot(reversi);
+			game = reversi;
 			break;
 		case TICTACTOE:
 			//TODO: Tictactoe view maken
 			break;
 		}
+		return game;
 	}
 
 	public static void main(String[] args) throws Exception {
