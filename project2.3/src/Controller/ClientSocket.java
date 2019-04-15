@@ -42,7 +42,16 @@ public final class ClientSocket extends CommandHandler {
 	 * @author Daniel Geerts
 	 */
 	public static ClientSocket getInstance(boolean trySetInstance) {
-		if (instance == null && trySetInstance) {
+		boolean doReset = false;
+		if (instance != null && instance.getSocket() != null) {
+			if (!Config.REMOTE_IP.equals(instance.getSocket().getInetAddress().toString().replace("/", "")) || Config.REMOTE_PORT != instance.getSocket().getPort()) {
+				doReset = true;
+				instance.logout();
+				Client.setConnected(false);
+				Client.setUsername("");
+			}
+		}
+		if ((instance == null && trySetInstance) || doReset) {
 			try {
 				instance = new ClientSocket(Config.REMOTE_IP, Config.REMOTE_PORT);
 				Client.setConnected(true);

@@ -63,6 +63,34 @@ public class StartView extends SuperView {
 		Label modesTitle = new Label("Choose modes:");
 		Button btn_local = new Button("Local (You vs AI)");
 		Button btn_remote = new Button("Remote (AI vs AI)");
+		
+		Label label_IP = new Label("Choose a remote IP");
+		Label label_port = new Label("Choose a remote PORT");
+		TextField input_IP = new TextField(Config.REMOTE_IP);
+		TextField input_port = new TextField(Integer.toString(Config.REMOTE_PORT));
+		input_IP.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		        if(!newValue) {
+					Config.REMOTE_IP = input_IP.getText();
+		        }
+		    }
+		});
+		input_port.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		        if(!newValue) {
+		        	System.out.println(Integer.parseInt(input_port.getText()));
+					Config.REMOTE_PORT = Integer.parseInt(input_port.getText());
+		        }
+		    }
+		});
+		
+		mainpane.add(label_IP, 0, 5);
+		mainpane.add(input_IP, 1, 5);
+		
+		mainpane.add(label_port, 0, 6);
+		mainpane.add(input_port, 1, 6);
 
 		btn_local.setOnAction(new EventHandler<ActionEvent>() {
 			@Override

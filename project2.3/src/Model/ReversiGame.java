@@ -14,9 +14,9 @@ import View.Popup;
  */
 public class ReversiGame extends SuperGame {
 	private final static int BOARD_SIZE = 8;
-	public final static char BLACK = '\u26AB';
-	public final static char WHITE = '\u26AA';
-	public final static char EMPTY = '\u2B1c';
+	public final static char BLACK = 'B';//'\u26AB';
+	public final static char WHITE = 'W';//'\u26AA';
+	public final static char EMPTY = '0';//'\u2B1c';
 	private ArrayList<Tuple> valid_moves = new ArrayList<>();
 	private ArrayList<Integer> weight = new ArrayList<Integer>();
 	private Tuple[] offsets = new Tuple[8];
@@ -82,7 +82,8 @@ public class ReversiGame extends SuperGame {
 					};
 					player1outOfMoves = false;
 					player2outOfMoves = false;
-					int move = (BOARD_SIZE * valid_moves.get(0).y) + valid_moves.get(0).x;
+					Triplet t = maxValue(bord, 1, viewRef.getPlayer2().getColor(), valid_moves, weight);
+					int move = (BOARD_SIZE * t.getY()) + t.getX();
 					playerCanMove = true;
 					GameController.receivedMove(viewRef.getPlayer2().getName(), Integer.toString(move));
 				} else {
