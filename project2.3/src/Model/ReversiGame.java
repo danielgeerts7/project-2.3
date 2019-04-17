@@ -29,16 +29,17 @@ public class ReversiGame extends SuperGame {
 	private boolean playRemote = false;
 	private static boolean playerCanMove = true;
 	private static boolean tileIsClicked = false;
-	/**
-	 * Start the game Reversi, add the offsets and create a new board. if there are no valid moves left the amount of pieces each player has
-	 * are counted and the player with the most piece of the board at that moment is the winner. 
-	 */
+
 	private static int tileX, tileY = 0;
 	private boolean gameFinished = false;
 	private boolean popupAlreadyOpen = false;
 	private boolean player1outOfMoves = false;
 	private boolean player2outOfMoves = false;
-
+	
+	/**
+	 * Start the game Reversi, add the offsets and create a new board. if there are no valid moves left the amount of pieces each player has
+	 * are counted and the player with the most piece of the board at that moment is the winner. 
+	 */
 	public ReversiGame(GameView view, boolean playRemote) {
 		super();
 		this.viewRef = view;
@@ -115,13 +116,17 @@ public class ReversiGame extends SuperGame {
 			popupAlreadyOpen = true;
 		}
 	}
-
+	/**
+	 * Method for checking if a tile is clicked
+	 */
 	public static void tileIsClicked(int x, int y) {
 		tileIsClicked = true;
 		tileX = x;
 		tileY = y;
 	}
-
+	/**
+	 * return the current player's turn
+	 */
 	public static boolean isPlayersTurn() {
 		return playerCanMove;
 	}
@@ -227,7 +232,11 @@ public class ReversiGame extends SuperGame {
 		});
 		t1.start();
 	}
-
+	/**
+	 * check if a recieved move is a valid move
+	 * @param piece: the piece of the move that you receive from the server 
+	 * @param pos  : the position that the piece has moved.
+	 */
 	public void receivedMove(char piece, int pos) {
 		int x = pos % BOARD_SIZE;
 		int y = pos / BOARD_SIZE;
@@ -239,7 +248,12 @@ public class ReversiGame extends SuperGame {
 		}
 	}
 	
-	
+	/**
+	 * Method for cloning a ArrayList with given object for local use in a method.
+	 * @param <T> any given object type
+	 * @param lijst the list that has to be cloned.
+	 * @return
+	 */
 	public <T> ArrayList<T> cloneList(ArrayList<T> lijst){
 		ArrayList<T> new_list = new ArrayList<>();
 		for(T l : lijst) {
@@ -412,7 +426,12 @@ public class ReversiGame extends SuperGame {
 		}
 	}
 	
-	
+	/**
+	 * check if a player has a valid move without clearing the current list of valid moves.
+	 * @param bord : the current position of the game.
+	 * @param piece : the piece who's turn it is.
+	 * @return a new ArrayList with Tuples with valid moves.
+	 */
 	public ArrayList<Tuple> checkIfHasValidMove(Board bord, char piece) {
 		Board bord6 = new Board(8);
 		bord6.setBord(bord.getCloneBoard());
@@ -427,6 +446,15 @@ public class ReversiGame extends SuperGame {
 		return vm;
 	}
 	
+	/**
+	 * method for calculating the maximum move which is part of the Minimax algorithm.
+	 * @param bord : a given board
+	 * @param depth : the depth of searching
+	 * @param piece : the piece who's turn it is
+	 * @param vm2 : a list of valid moves for a game position
+	 * @param w2 : a list of weight for each valid move
+	 * @return the best move at that moment with a specific depth
+	 */
 	public Triplet maxValue(Board bord, int depth, char piece, ArrayList<Tuple> vm2, ArrayList<Integer> w2) {
 		Board bord7 = new Board(8);
 		bord7.setBord(bord.getCloneBoard());
@@ -453,7 +481,15 @@ public class ReversiGame extends SuperGame {
 	}
 	
 	
-	
+	/**
+	 * method for calculating the minimum move which is part of the Minimax algorithm.
+	 * @param bord : a given board
+	 * @param depth : the depth of searching
+	 * @param piece : the piece who's turn it is
+	 * @param vm2 : a list of valid moves for a game position
+	 * @param w2 : a list of weight for each valid move
+	 * @return the worst move at that moment with a specific depth
+	 */
 	public Triplet minValue(Board bord, int depth, char piece, ArrayList<Tuple> vm4, ArrayList<Integer> w4) {
 		Board bord8 = new Board(8);
 		bord8.setBord(bord.getCloneBoard());
@@ -491,6 +527,11 @@ public class ReversiGame extends SuperGame {
 		return false;
 	}
 
+	/**
+	 * method to get the current amount of pieces each player has on the board
+	 * @param piece : the piece you want to know the total amount of pieces on the board of
+	 * @return : the amount of pieces on the board for a piece
+	 */
 	private int getPieces(char piece) {
 		int amount = 0;
 		for (int y = 0; y < BOARD_SIZE; y++) {

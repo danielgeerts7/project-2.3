@@ -6,12 +6,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-// greedy algoritme voor Reversi
+/**
+ * greedy algorithm for the game Reversi
+ * @author Created by Casper
+ *
+ */
 public class Greedy {
 	public Greedy() {
 		
 	}
 	
+	/**
+	 * method used when playing the game in the console.
+	 * @return list of Integers
+	 */
 	public List<Integer> inputMove() {
 		Scanner reader = new Scanner(System.in);
 		//System.out.println(ReversiGame.getTurn() + ", Enter a coordinate: ");
@@ -41,6 +49,12 @@ public class Greedy {
 		return 0;
 	}
 	
+	/**
+	 * method for calculating the move with the highest weight 
+	 * @param w list of weight for each move
+	 * @param v list of moves
+	 * @return list with best moves.
+	 */
 	public List<Tuple> greedyMove(ArrayList<Integer> w, ArrayList<Tuple> v) {
 		System.out.println(w);
 		ArrayList<Tuple> a = new ArrayList<>();
